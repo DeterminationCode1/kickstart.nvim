@@ -857,12 +857,13 @@ require('lazy').setup({
           local buf_id = args.data.buf_id
           -- Tweak left-hand side of mini.file mapping to your liking
           -- vim.keymap.set("n", "g.", toggle_dotfiles, { buffer = buf_id })
+          -- Close MiniFile explorer
           vim.keymap.set('n', '-', require('mini.files').close, { buffer = buf_id })
           -- vim.keymap.set("n", "o", gio_open, { buffer = buf_id })
         end,
       })
-
-      vim.keymap('n', function()
+      -- Open MiniFiles explorer
+      vim.keymap.set('n','-', function()
         require('mini.files').open()
       end, { desc = 'Open MinFiles' })
     end,
