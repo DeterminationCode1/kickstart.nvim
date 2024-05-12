@@ -91,7 +91,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -102,7 +102,7 @@ vim.g.have_nerd_font = false
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true -- deafault: commented out.
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -838,6 +838,33 @@ require('lazy').setup({
 
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
+      --  NOTE: ============= All the following mini.nvim configs were added by you. =============
+
+      require('mini.files').setup {
+        -- NOTE: Your min.files config is inspired by this reddit post: https://www.reddit.com/r/neovim/comments/1bceiw2/comment/kuhmdp9/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+
+        -- Module mappings created only inside explorer.
+        mappings = {
+          synchronize = 'w', -- default is `=`
+          -- open file & close mini-file explorer. Defaults to `L`.
+          go_in_plus = '<CR>',
+        },
+      } -- Maybe Oil.nvim would be better as it's more minimalistic and more like a simple buffer.
+
+      vim.api.nvim_create_autocmd('User', {
+        pattern = 'MiniFilesBufferCreate',
+        callback = function(args)
+          local buf_id = args.data.buf_id
+          -- Tweak left-hand side of mini.file mapping to your liking
+          -- vim.keymap.set("n", "g.", toggle_dotfiles, { buffer = buf_id })
+          vim.keymap.set('n', '-', require('mini.files').close, { buffer = buf_id })
+          -- vim.keymap.set("n", "o", gio_open, { buffer = buf_id })
+        end,
+      })
+
+      vim.keymap('n', function()
+        require('mini.files').open()
+      end, { desc = 'Open MinFiles' })
     end,
   },
   { -- Highlight, edit, and navigate code
