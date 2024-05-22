@@ -104,6 +104,9 @@ vim.opt.number = true
 --  Experiment for yourself to see if you like it!
 vim.opt.relativenumber = true -- deafault: commented out.
 
+-- ME: Concela level automatically renders/hides text in e.g. markdown, latex, json files. Some find it very anoying, but the obsidian.nvim plugin requires it at level 1 or 2 for obsidian like pre-rendering of markdown to work.
+vim.opt.conceallevel = 2
+
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
 
@@ -195,7 +198,22 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 -- vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 -- vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
---
+
+-- ================= My keybindings rempas ===============
+vim.keymap.set(
+  'n',
+  '<C-f>',
+  '<cmd>silent !tmux neww tmux-sessionizer<CR>',
+  { desc = 'Fzf through all your projects and open it in tmux. Inspired by Primegan.' }
+)
+-- Primegan recommends using zz after ctr-D/U to keep curor at same position no screen easier for eyes. Source: https://youtu.be/KfENDDEpCsI?si=ClLf3MUgszp1c6op&t=242
+vim.keymap.set('n', '<C-d>', '<C-d>zz')
+vim.keymap.set('n', '<C-u>', '<C-u>zz')
+vim.keymap.set('n', '<PageUp>', '<PageUp>zz')
+vim.keymap.set('n', '<PageDown>', '<PageDown>zz')
+vim.keymap.set('x', '<leader>p', '"_dP', { desc = "[P]aste text but don't loose your copy register" })
+-- ================= END ==============================
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -729,6 +747,7 @@ require('lazy').setup({
         --
         -- No, but seriously. Please read `:help ins-completion`, it is really good!
         mapping = cmp.mapping.preset.insert {
+          -- ME: Debate over best completion keybindings. Seems like `C-Enter`, then `C-Y` are the winners. https://www.reddit.com/r/neovim/comments/1at66dc/what_key_do_you_prefer_to_press_to_accept_an/
           -- Select the [n]ext item
           ['<C-n>'] = cmp.mapping.select_next_item(),
           -- Select the [p]revious item
@@ -921,7 +940,7 @@ require('lazy').setup({
   -- require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
