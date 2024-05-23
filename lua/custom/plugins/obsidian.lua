@@ -50,7 +50,8 @@ return {
     -- dir = "~/vaults/work",
 
     -- Optional, if you keep notes in a specific subdirectory of your vault.
-    notes_subdir = '~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Knowledge_Wiki/',
+    -- NOTE: seems like `notes_subdir` ONLY accepts relative paths to the workspace.
+    -- notes_subdir = './notes',
 
     -- Optional, set the log level for obsidian.nvim. This is an integer corresponding to one of the log
     -- levels defined by "vim.log.levels.*".
@@ -116,14 +117,25 @@ return {
       local suffix = ''
       if title ~= nil then
         -- If title is given, transform it into valid file name.
-        suffix = title:gsub(' ', '-'):gsub('[^A-Za-z0-9-]', ''):lower()
+        -- suffix = title:gsub(' ', '-'):gsub('[^A-Za-z0-9-]', ''):lower()
+
+        -- NOTE: ME: don't like - instead of space. makes .md more verbose as you need to use [[a-b-c-d|a b c d]] embedds and less natural language
+        -- I also don't like the prefix as in a wiki no title should exist twice: e.g. 142-Python 4412-Python. Maybe in a pure Zettelkasten it would make sense?
+        -- ME: allowed chars in title
+        -- -- It would be convinient to use special chars like `Git & Github` vs `Git and Github`. But different operating systems might not allow & in file names
+        -- -- For long term bullet proof file names, it's a good idea to not allow special chars.
+        -- -- The only char I will use is the `space` as it significiantly improves usabiliyt in less md verbosidty and appearance in graph view
+        -- -- Also you can always use `fd` or other shell tools to quickly replace all `spaces` in the all files names with a `-`.
+        suffix = title:gsub('[^A-Za-z0-9-]', '') -- :lower()
       else
         -- If title is nil, just add 4 random uppercase letters to the suffix.
         for _ = 1, 4 do
           suffix = suffix .. string.char(math.random(65, 90))
         end
       end
-      return tostring(os.time()) .. '-' .. suffix
+      -- NOTE: I didn't like the timestamp prefix for my wiki notes. For a pure Zettelkasten it might be good?
+      -- return tostring(os.time()) .. '-' .. suffix
+      return suffix
     end,
 
     -- Optional, customize how note file names are generated given the ID, target directory, and title.
