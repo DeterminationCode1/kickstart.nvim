@@ -211,6 +211,7 @@ vim.keymap.set('n', '<C-d>', '<C-d>zz')
 vim.keymap.set('n', '<C-u>', '<C-u>zz')
 vim.keymap.set('n', '<PageUp>', '<PageUp>zz')
 vim.keymap.set('n', '<PageDown>', '<PageDown>zz')
+-- In vim it can be very anoying to past because you can only paste once as what you replace will overwrite your current regsitry. A solution is to use the following which delets into the `_` registry and then pastes. Source: https://www.youtube.com/watch?v=qZO9A5F6BZs&list=PLm323Lc7iSW_wuxqmKx_xxNtJC_hJbQ7R&index=4
 vim.keymap.set('x', '<leader>p', '"_dP', { desc = "[P]aste text but don't loose your copy register" })
 -- ================= END ==============================
 
