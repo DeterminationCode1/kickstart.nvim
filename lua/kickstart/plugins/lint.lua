@@ -1,12 +1,25 @@
 return {
 
   { -- Linting
+    -- Official docs > Usage https://github.com/mfussenegger/nvim-lint?tab=readme-ov-file#usage
     'mfussenegger/nvim-lint',
     event = { 'BufReadPre', 'BufNewFile' },
     config = function()
       local lint = require 'lint'
+
+      -- Define which linter you want for which fileformat.
       lint.linters_by_ft = {
         markdown = { 'markdownlint' },
+        python = { 'flake8' }, -- 'mypy'. ? Is Mypy or pyright better
+        typescriptreact = { 'eslint_d' },
+        javascriptreact = { 'eslint_d' },
+        typescript = { 'eslint_d' },
+        javascript = { 'eslint_d' },
+        docker = { 'hadolint' },
+        lua = { 'luacheck' },
+        sh = { 'shellcheck' },
+        bash = { 'shellcheck' },
+        zsh = { 'shellcheck' },
       }
 
       -- To allow other plugins to add linters to require('lint').linters_by_ft,
@@ -47,7 +60,17 @@ return {
       vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'InsertLeave' }, {
         group = lint_augroup,
         callback = function()
+<<<<<<< HEAD
           lint.try_lint()
+=======
+          -- try_lint without arguments runs the linters defined in `linters_by_ft`
+          -- for the current filetype
+          require('lint').try_lint()
+
+          -- You can call `try_lint` with a linter name or a list of names to always
+          -- run specific linters, independent of the `linters_by_ft` configuration
+          require('lint').try_lint 'cspell' -- WARNING: Seems like it's causing a problem that breaks telescope and opening some buffers?
+>>>>>>> 0f53f82 (Fixes: nvim-lint plugin)
         end,
       })
     end,
