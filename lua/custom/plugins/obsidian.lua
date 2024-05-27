@@ -126,7 +126,7 @@ return {
         -- -- For long term bullet proof file names, it's a good idea to not allow special chars.
         -- -- The only char I will use is the `space` as it significiantly improves usabiliyt in less md verbosidty and appearance in graph view
         -- -- Also you can always use `fd` or other shell tools to quickly replace all `spaces` in the all files names with a `-`.
-        suffix = title:gsub('[^A-Za-z0-9-]', '') -- :lower()
+        suffix = title:gsub('[^A-Za-z0-9- ]', '') -- :lower()
       else
         -- If title is nil, just add 4 random uppercase letters to the suffix.
         for _ = 1, 4 do
@@ -153,9 +153,16 @@ return {
     --  * "prepend_note_path", e.g. '[[foo-bar.md|Foo Bar]]'
     --  * "use_path_only", e.g. '[[foo-bar.md]]'
     -- Or you can set it to a function that takes a table of options and returns a string, like this:
-    wiki_link_func = function(opts)
-      return require('obsidian.util').wiki_link_id_prefix(opts)
-    end,
+    -- wiki_link_func = function(opts)
+    --   -- DEFAULT recommendation:
+    --   -- return require('obsidian.util').wiki_link_id_prefix(opts)
+    --
+    --   -- ME:
+    --   -- return require('obsidian.util').wiki_link_alias_only(opts)
+    --   return require('obsidian.util').wiki_link_note_path(opts)
+    -- end,
+    -- prepend_note_id: This is Obsidian's default behaviour. E.g. [[propositional logic - DS|aussagenlogik]]
+    wiki_link_func = 'prepend_note_id',
 
     -- Optional, customize how markdown links are formatted.
     markdown_link_func = function(opts)
@@ -174,15 +181,17 @@ return {
 
     -- Optional, boolean or a function that takes a filename and returns a boolean.
     -- `true` indicates that you don't want obsidian.nvim to manage frontmatter.
-    disable_frontmatter = false,
+    disable_frontmatter = true, -- Defaults to false.
 
     -- Optional, alternatively you can customize the frontmatter data.
     ---@return table
     note_frontmatter_func = function(note)
-      -- Add the title of the note as an alias.
-      if note.title then
-        note:add_alias(note.title)
-      end
+      -- Me: Becaus I use natural language titles without aliases or character best practices, adding the alias as title would just duplicate it.
+      -- Me: In the future if you decide to use more human unfriendly file names, this might be useful again.
+      -- Default: Add the title of the note as an alias.
+      -- if note.title then
+      --   note:add_alias(note.title)
+      -- end
 
       local out = { id = note.id, aliases = note.aliases, tags = note.tags }
 
