@@ -200,6 +200,10 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- ================= My keybindings rempas ===============
+vim.keymap.set('n', '<leader>w', '<cmd>w<CR>', { desc = '[W]rite current buffer' })
+vim.keymap.set('n', '<leader>W', '<cmd>wa<CR>', { desc = '[W]rite all buffers' })
+
+-- See Primegan nvim bindings for inspiration: https://github.com/ThePrimeagen/init.lua/blob/249f3b14cc517202c80c6babd0f9ec548351ec71/lua/theprimeagen/remap.lua
 vim.keymap.set(
   'n',
   '<C-f>',
@@ -211,8 +215,15 @@ vim.keymap.set('n', '<C-d>', '<C-d>zz')
 vim.keymap.set('n', '<C-u>', '<C-u>zz')
 vim.keymap.set('n', '<PageUp>', '<PageUp>zz')
 vim.keymap.set('n', '<PageDown>', '<PageDown>zz')
--- In vim it can be very anoying to past because you can only paste once as what you replace will overwrite your current regsitry. A solution is to use the following which delets into the `_` registry and then pastes. Source: https://www.youtube.com/watch?v=qZO9A5F6BZs&list=PLm323Lc7iSW_wuxqmKx_xxNtJC_hJbQ7R&index=4
+vim.keymap.set('n', 'n', 'nzzzv')
+vim.keymap.set('n', 'N', 'Nzzzv')
+-- In vim it can be very anoying to past because you can only paste once as what you replace will overwrite your current regsitry.
+-- A solution is to use the following which delets into the `_` registry and then pastes.
+-- Source: https://www.youtube.com/watch?v=qZO9A5F6BZs&list=PLm323Lc7iSW_wuxqmKx_xxNtJC_hJbQ7R&index=4
 vim.keymap.set('x', '<leader>p', '"_dP', { desc = "[P]aste text but don't loose your copy register" })
+
+-- Primegan uses this to open nvim builtin file explorer
+vim.keymap.set('n', '<leader>pv', vim.cmd.Ex)
 -- ================= END ==============================
 
 -- [[ Basic Autocommands ]]
@@ -391,13 +402,21 @@ require('lazy').setup({
 
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
-      vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
+      vim.keymap.set('n', '<leader>sH', builtin.help_tags, { desc = '[S]earch [H]elp' }) -- Kick original was <leader>sh` but searching hidden is more common
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
+      -- Search Files: defaults to search from current working DIR.
+      -- Kickstarter originally used: `vim.keymap.set('n','<leader>sf',builtin.find_files, {desc = '...')`
       vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
-      vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
+      vim.keymap.set('n', '<leader>sh', function()
+        builtin.find_files { hidden = true }
+      end, { desc = '[S]earch [H]idden Files' })
+      vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = 'Search [S]elect Telescope' })
+      -- Search by word:     Searches for the string under your cursor in your current working directory
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
+      -- Live grep: Search for a string and get results live as you type, respects .gitignore. Defaults to search from cwd
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
+      -- Resume: Opens the previous picker in the identical state (incl. multi selections)
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
@@ -594,9 +613,11 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        -- clangd = {},
+        -- For C. Was listed by kickstarter
+        clangd = {},
         -- gopls = {},
-        -- pyright = {},
+        -- Python. Pyright was included by Kickstarter. has a lot more stars than pylsp.
+        pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -605,6 +626,17 @@ require('lazy').setup({
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
         -- tsserver = {},
+        -- NOTE: I decided to install the typescript-tools.nvim plugin as I work a lot with ts and speed of lsp is important. It's in a separate file
+
+        -- Shell scripts: bash sh . to some extend zsh?
+        bashls = {},
+
+        -- Toml
+        taplo = {},
+
+        -- Me: Docker & docker-compose
+        dockerls = {},
+        docker_compose_language_service = {},
 
         -- Me: Setup OCaml
         ocamllsp = {},
@@ -637,7 +669,34 @@ require('lazy').setup({
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
-        'stylua', -- Used to format Lua code
+        -- The way kickstarter is setup will install all LSP listed automatically. You don't have to include them here again.
+        -- =========== Python ===========
+        'black', -- formater
+        'isort', -- sort imports
+        'flake8', -- Linter
+        -- 'mypy', -- Type checker
+
+        -- =========== JavaScript etc ===========
+        'prettier', -- formatter
+        'eslint_d', -- linter. Eslint but in deamonized verson for better performance
+
+        -- =========== Lua ===========
+        'stylua', -- Formatter
+        'luacheck', -- Linter
+
+        -- ========== Docker ===========
+        'hadolint', -- Linter
+        -- ========== Kubernetes ===========
+        -- 'kube-lint', -- Linter. -- FIX: kube-lint doesn't exist in Mason.
+
+        -- ========== Shell  ===========
+        'shfmt', -- Formater
+        'shellcheck', -- Linter. only for bash, posix-shell. Doesn't work for zsh.
+
+        -- =========== General Text ===========
+        -- Powerful speling checker for your editor. Codespell would be a ligthway alternative.
+        'cspell',
+        'markdownlint',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -685,10 +744,33 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
-        --
+        python = { 'isort', 'black' },
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
+        javascript = { 'prettier' },
+        typescript = { 'prettier' },
+        javascriptreact = { 'prettier' },
+        typescriptreact = { 'prettier' },
+        css = { 'prettier' },
+        html = { 'prettier' },
+        json = { 'prettier' },
+        yaml = { 'prettier' },
+        markdown = { 'prettier' },
+        sh = { 'shfmt' },
+        bash = { 'shfmt' },
+        zsh = { 'shfmt' },
+
+        -- Use the "*" filetype to run formatters on all filetypes.
+        -- ['*'] = { 'codespell' }, -- FIX: Not working, causing error.FIX: Not working, causing error.
+      },
+      formatters = {
+        -- This is a way of globally overwitting prettier config rules. It will be applied in all of your projects where prettier is used.
+        -- This might be concidered bad practic as different projects often have different style conventions and you should use a loacal
+        -- `.prettierrc` file - which is picked yp by conform.nvim
+        -- see reddit https://www.reddit.com/r/neovim/comments/19baed2/lazyvim_conform_prettier_configuration_not_working/
+        prettier = {
+          prepend_args = { '--single-quote', '--print-width 70' },
+        },
       },
     },
   },
@@ -938,7 +1020,7 @@ require('lazy').setup({
   --
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
