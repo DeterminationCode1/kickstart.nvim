@@ -204,12 +204,40 @@ vim.keymap.set('n', '<leader>w', '<cmd>w<CR>', { desc = '[W]rite current buffer'
 vim.keymap.set('n', '<leader>W', '<cmd>wa<CR>', { desc = '[W]rite all buffers' })
 
 -- See Primegan nvim bindings for inspiration: https://github.com/ThePrimeagen/init.lua/blob/249f3b14cc517202c80c6babd0f9ec548351ec71/lua/theprimeagen/remap.lua
+-- Me: you use Ctr+Command+ right homerow because you use cmd insteas of alt for window management. Also, ctr+shift is the same as ctr+no shift.
 vim.keymap.set(
   'n',
   '<C-f>',
   '<cmd>silent !tmux neww tmux-sessionizer<CR>',
-  { desc = 'Fzf through all your projects and open it in tmux. Inspired by Primegan.' }
+  { desc = 'Fzf through all your projects and open it with tmux. Inspired by Primegan.' }
 )
+
+-- PROBLEM: alt-shift is already maped to 'assing-node-to-workspace' in window manager.
+vim.keymap.set(
+  'n',
+  '<M-n>',
+  '<cmd>silent !tmux neww tmux-sessionizer ~/cUni/240527_FPV_functional_programming_TUM<CR>',
+  { desc = 'Quick switch to a different project' }
+)
+vim.keymap.set(
+  'n',
+  '<M-e>',
+  "<cmd>silent !tmux neww tmux-sessionizer '~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Knowledge_Wiki'<CR>",
+  { desc = 'Quick switch to a different project' }
+)
+vim.keymap.set(
+  'n',
+  '<M-i>',
+  '<cmd>silent !tmux neww tmux-sessionizer ~/cUni/240510_EIST_software_engineering_TUM<CR>',
+  { desc = 'Quick switch to a different project' }
+)
+vim.keymap.set(
+  'n',
+  '<A-o>',
+  '<cmd>silent !tmux neww tmux-sessionizer ~/cUni/240425_ADS_algorithm_data_structures_TUM<CR>',
+  { desc = 'Quick switch to a different project' }
+)
+
 -- Primegan recommends using zz after ctr-D/U to keep curor at same position no screen easier for eyes. Source: https://youtu.be/KfENDDEpCsI?si=ClLf3MUgszp1c6op&t=242
 vim.keymap.set('n', '<C-d>', '<C-d>zz')
 vim.keymap.set('n', '<C-u>', '<C-u>zz')
@@ -222,8 +250,21 @@ vim.keymap.set('n', 'N', 'Nzzzv')
 -- Source: https://www.youtube.com/watch?v=qZO9A5F6BZs&list=PLm323Lc7iSW_wuxqmKx_xxNtJC_hJbQ7R&index=4
 vim.keymap.set('x', '<leader>p', '"_dP', { desc = "[P]aste text but don't loose your copy register" })
 
+-- Error and quickfix navigation. Primegan: noticed he didn' use split and didn't need the C-arrows for split navigation
+-- Instead he bound them (originally he used k,j on dvorak) to very useful error and quick fix navigation. First search for something in telescope,
+-- then send results to quickfixlist and then navigate it with this binding.
+-- He explains it in this video: https://youtu.be/-ybCiHPWKNA?si=nWChMDCoTzSIHF7p&t=2974
+vim.keymap.set('n', '<C-Up>', '<cmd>cnext<CR>zz')
+vim.keymap.set('n', '<C-Down>', '<cmd>cprev<CR>zz')
+vim.keymap.set('n', '<leader>Up', '<cmd>lnext<CR>zz')
+vim.keymap.set('n', '<leader>Down', '<cmd>lprev<CR>zz')
+
+-- Quick substitution. Primegan a bit modified.
+vim.keymap.set('n', '<leader>rs', [[:%s/<C-r><C-w>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = 'Quickly [S]ubsitute word under curser in current buffer.' })
+
 -- Primegan uses this to open nvim builtin file explorer
 vim.keymap.set('n', '<leader>pv', vim.cmd.Ex)
+
 -- ================= END ==============================
 
 -- [[ Basic Autocommands ]]
