@@ -21,17 +21,17 @@ return {
       lsp_doc_border = true, -- add a border to hover docs and signature help
     },
     -- Me: use custom routes to skip some messages. see https://github.com/folke/noice.nvim/wiki/A-Guide-to-Messages
-    routes = {
-      -- Deactivate nvim built-in 'file was written' message after :w
-      {
-        filter = {
-          event = 'msg_show',
-          kind = '',
-          find = 'written',
-        },
-        opts = { skip = true },
-      },
-    },
+    -- routes = {
+    --   -- Deactivate nvim built-in 'file was written' message after :w
+    --   {
+    --     filter = {
+    --       event = 'msg_show',
+    --       kind = '',
+    --       find = 'written',
+    --     },
+    --     opts = { skip = true },
+    --   },
+    -- },
   },
   dependencies = {
     -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
