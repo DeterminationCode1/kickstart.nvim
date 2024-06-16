@@ -7,11 +7,14 @@ return {
     require('auto-save').setup {
       enabled = true, -- start auto-save when the plugin is loaded (i.e. when your package manager loads it)
       trigger_events = { 'InsertLeave', 'TextChanged' }, -- vim events that trigger auto-save. See :h events
+
       execution_message = {
-        message = function() -- message to print on save
-          -- default msg: 'AutoSave: saved at ' .. vim.fn.strftime '%H:%M:%S'
-          return ('AutoSave: ' .. vim.fn.strftime '%H:%M:%S')
-        end,
+        -- Turn off auto-save message by setting it to an empty string
+        message = '',
+        -- function() -- message to print on save
+        --   -- default msg: 'AutoSave: saved at ' .. vim.fn.strftime '%H:%M:%S'
+        --   return ('AutoSave: ' .. vim.fn.strftime '%H:%M:%S')
+        -- end,
         dim = 0.50, -- dim the color of `message`. Defaults to 0.18
         cleaning_interval = 500, -- (milliseconds) automatically clean MsgArea after displaying `message`. See :h MsgAsea . Defaults to 1250
       },
@@ -24,14 +27,15 @@ return {
 
         -- Me: Deactivate auto-save for oil.nvim file explorer buffers
         -- get full current buffer path: vim.api.nvim_buf_get_name(0))
-        local is_oil_buffer = vim.api.nvim_buf_get_name(buf):sub(0, 3) == 'oil:'
+        local is_oil_buffer = vim.api.nvim_buf_get_name(buf):sub(0, 4) == 'oil:'
+        -- print(is_oil_buffer, vim.api.nvim_buf_get_name(buf):sub(0, 3)) -- DEBUG
 
         if
           fn.getbufvar(buf, '&modifiable') == 1
           and utils.not_in(fn.getbufvar(buf, '&filetype'), {})
           and utils.not_in(fn.expand '%:t', {
             -- 'plugins.lua',
-            -- 'auto-save.lua',
+            'auto-save.lua',
           })
           and not is_oil_buffer
         then
