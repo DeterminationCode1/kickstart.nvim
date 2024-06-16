@@ -11,11 +11,11 @@ return {
 
     vim.keymap.set('n', '<leader>a', function()
       harpoon:list():add()
-    end)
+    end, { desc = '[A]dd current file to harpoon' })
     -- default: c-e (dvorak lm2)
     vim.keymap.set('n', '<C-s>', function()
       harpoon.ui:toggle_quick_menu(harpoon:list())
-    end)
+    end, { desc = 'Toggle harpoon quick menu' })
 
     -- primegan default: dvorak right homerow: htns
     vim.keymap.set('n', '<C-n>', function()

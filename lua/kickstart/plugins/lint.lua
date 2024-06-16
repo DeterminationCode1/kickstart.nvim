@@ -15,6 +15,7 @@ return {
         javascriptreact = { 'eslint_d' },
         typescript = { 'eslint_d' },
         javascript = { 'eslint_d' },
+        css = { 'stylelint' },
         docker = { 'hadolint' },
         lua = { 'luacheck' },
         sh = { 'shellcheck' },
