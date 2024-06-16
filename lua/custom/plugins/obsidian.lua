@@ -8,7 +8,7 @@ return {
   -- event = {
   --   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
   --   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/**.md"
-  --   "BufReadPre path/to/my-vault/**.md",
+  --   "BufReadPre path/to/my-vault/**.md",ob
   --   "BufNewFile path/to/my-vault/**.md",
   -- },
   dependencies = {
@@ -19,6 +19,16 @@ return {
     'nvim-treesitter',
     'hrsh7th/nvim-cmp',
   },
+  config = function(_, opts)
+    require('obsidian').setup(opts)
+
+    -- My keybindings
+    vim.keymap.set({ 'n', 'v' }, '<leader>e', ":'<,'>ObsidianExtractNote<CR>", { desc = '[E]xtract highlighted text to a new note and link to it' })
+    -- Open note in obsidian
+    vim.keymap.set('n', '<leader>o', '<cmd>ObsidianOpen<CR>', { desc = '[O]pen the current note in Obsidian' })
+    -- Paste image from clipboard
+    vim.keymap.set('n', '<leader>p', '<cmd>ObsidianPasteImg<CR>', { desc = '[P]aste an image from the clipboard' })
+  end,
   opts = {
     -- A list of workspace names, paths, and configuration overrides.
     -- If you use the Obsidian app, the 'path' of a workspace should generally be
@@ -78,6 +88,7 @@ return {
 
     -- Optional, configure key mappings. These are the defaults. If you don't want to set any keymappings this
     -- way then set 'mappings = {}'.
+    -- ME BE AWARE: these mappings are only set in obsidian vaults so you can override some of your coding specific mappings
     mappings = {
       -- Overrides the 'gf' mapping to work on markdown/wiki links within your vault.
       ['gf'] = {
@@ -100,6 +111,22 @@ return {
         end,
         opts = { buffer = true, expr = true },
       },
+      -- NOTE: My personal mappings. WARN: not working besides space o. besides space o.
+      -- Open the current note in the browser
+      -- ['<leader>o'] = {
+      --   action = '<cmd>ObsidianOpen<CR>',
+      --   opts = { buffer = true },
+      -- },
+      -- -- Extract the highlighted text to a new note
+      -- ['<leader>e'] = {
+      --   action = '<CMD>ObsidianExtractNote<CR>',
+      --   opts = { buffer = true },
+      -- },
+      -- -- Paste an image from the clipboard
+      -- ['<leader>p'] = {
+      --   action = '<CMD>ObsidianPasteImg<CR>',
+      --   opts = { buffer = true },
+      -- },
     },
 
     -- Where to put new notes. Valid options are

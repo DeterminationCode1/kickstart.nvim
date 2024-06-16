@@ -1,5 +1,5 @@
 --[[
-
+rst
 =====================================================================
 ==================== READ THIS BEFORE CONTINUING ====================
 =====================================================================
@@ -202,6 +202,7 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- ================= My keybindings rempas ===============
 vim.keymap.set('n', '<leader>w', '<cmd>w<CR>', { desc = '[W]rite current buffer' })
 vim.keymap.set('n', '<leader>W', '<cmd>wa<CR>', { desc = '[W]rite all buffers' })
+vim.keymap.set('n', '<C-6>', '<C-^>', { desc = 'Switch between last two buffers' })
 
 -- See Primegan nvim bindings for inspiration: https://github.com/ThePrimeagen/init.lua/blob/249f3b14cc517202c80c6babd0f9ec548351ec71/lua/theprimeagen/remap.lua
 -- Me: you use Ctr+Command+ right homerow because you use cmd insteas of alt for window management. Also, ctr+shift is the same as ctr+no shift.
@@ -263,14 +264,14 @@ vim.keymap.set('n', '<leader>Down', '<cmd>lprev<CR>zz')
 vim.keymap.set('n', '<leader>rs', [[:%s/<C-r><C-w>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = 'Quickly [S]ubsitute word under curser in current buffer.' })
 
 -- Primegan uses this to open nvim builtin file explorer
-vim.keymap.set('n', '<leader>pv', vim.cmd.Ex)
+-- vim.keymap.set('n', '<leader>pv', vim.cmd.Ex)
 
 -- ================= END ==============================
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
--- Highlight when yanking (copying) text
+-- Highlight when yanking (copying) textin
 --  Try it with `yap` in normal mode
 --  See `:help vim.highlight.on_yank()`
 vim.api.nvim_create_autocmd('TextYankPost', {
@@ -669,6 +670,9 @@ require('lazy').setup({
         -- tsserver = {},
         -- NOTE: I decided to install the typescript-tools.nvim plugin as I work a lot with ts and speed of lsp is important. It's in a separate file
 
+        -- Tailwind CSS
+        tailwindcss = {},
+
         -- Shell scripts: bash sh . to some extend zsh?
         bashls = {},
 
@@ -721,6 +725,10 @@ require('lazy').setup({
         'prettier', -- formatter
         'eslint_d', -- linter. Eslint but in deamonized verson for better performance
 
+        -- =========== CSS ===========
+        -- 'tailwindcss', -- Tailwind CSS IntelliSense
+        'stylelint', -- Linter
+
         -- =========== Lua ===========
         'stylua', -- Formatter
         'luacheck', -- Linter
@@ -738,6 +746,9 @@ require('lazy').setup({
         -- Powerful speling checker for your editor. Codespell would be a ligthway alternative.
         'cspell',
         'markdownlint',
+
+        -- ============ OCaml ==========
+        'ocamlformat', -- Formatter
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -800,6 +811,7 @@ require('lazy').setup({
         sh = { 'shfmt' },
         bash = { 'shfmt' },
         zsh = { 'shfmt' },
+        ocaml = { 'ocamlformat' }, -- OCaml uses .ml extension
 
         -- Use the "*" filetype to run formatters on all filetypes.
         -- ['*'] = { 'codespell' }, -- FIX: Not working, causing error.FIX: Not working, causing error.
@@ -820,6 +832,9 @@ require('lazy').setup({
     'hrsh7th/nvim-cmp',
     event = 'InsertEnter',
     dependencies = {
+      -- ME: Tailwind color preview in completion menu
+      'luckasRanarison/tailwind-tools.nvim',
+      'onsails/lspkind-nvim',
       -- Snippet Engine & its associated nvim-cmp source
       {
         'L3MON4D3/LuaSnip',
@@ -836,12 +851,30 @@ require('lazy').setup({
           -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
           --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              -- NOTE: Me: the following line automatically loads all existing snippets for
+              -- all languages that are supported by the friendly-snippets plugin.
+              -- Thus, the lazay loading is important to not have startup time increased.
+              require('luasnip.loaders.from_vscode').lazy_load()
+
+              -- ME: The following lines extend the default snippets to other filetypes.
+              -- Otherwise you could not use html and normal js snippets in a react file.
+              require('luasnip').filetype_extend('javascriptreact', { 'html', 'javascript' })
+              require('luasnip').filetype_extend('typescriptreact', { 'html', 'javascript' })
+
+              -- FRAMEWORKS: snippets are not laoded by default as only people using theses
+              -- frameworks would benefit from them. Thus, you must explicitly load them mere.
+              -- Exceptions: There is one exception, react.js is included by default in js/ts
+              -- and only available in jsx/tsx files. They argue every webdev will use react at
+              -- some point and making it the default alows for better support.
+              require('luasnip').filetype_extend('python', { 'django' })
+
+              -- TODO: make snippets context aware in a file. eg. html snippets only in jsx return valu but not in whole file.
+              -- https://github.com/hrsh7th/nvim-cmp/issues/806
+            end,
+          },
         },
       },
       'saadparwaiz1/cmp_luasnip',
@@ -929,6 +962,12 @@ require('lazy').setup({
           { name = 'luasnip' },
           { name = 'path' },
         },
+        -- ME: Tailwind color preview in completion menu
+        formatting = {
+          format = require('lspkind').cmp_format {
+            before = require('tailwind-tools.cmp').lspkind_format,
+          },
+        },
       }
     end,
   },
@@ -991,32 +1030,34 @@ require('lazy').setup({
       --  Check out: https://github.com/echasnovski/mini.nvim
       --  NOTE: ============= All the following mini.nvim configs were added by you. =============
 
-      require('mini.files').setup {
-        -- NOTE: Your min.files config is inspired by this reddit post: https://www.reddit.com/r/neovim/comments/1bceiw2/comment/kuhmdp9/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+      -- WARNING: MiniFiles explorer is no longer need as it was replaced by the nvim-oil plugin.
 
-        -- Module mappings created only inside explorer.
-        mappings = {
-          synchronize = 'w', -- default is `=`
-          -- open file & close mini-file explorer. Defaults to `L`.
-          go_in_plus = '<CR>',
-        },
-      } -- Maybe Oil.nvim would be better as it's more minimalistic and more like a simple buffer.
-
-      vim.api.nvim_create_autocmd('User', {
-        pattern = 'MiniFilesBufferCreate',
-        callback = function(args)
-          local buf_id = args.data.buf_id
-          -- Tweak left-hand side of mini.file mapping to your liking
-          -- vim.keymap.set("n", "g.", toggle_dotfiles, { buffer = buf_id })
-          -- Close MiniFile explorer
-          vim.keymap.set('n', '-', require('mini.files').close, { buffer = buf_id })
-          -- vim.keymap.set("n", "o", gio_open, { buffer = buf_id })
-        end,
-      })
-      -- Open MiniFiles explorer
-      vim.keymap.set('n', '-', function()
-        require('mini.files').open()
-      end, { desc = 'Open MinFiles' })
+      --   require('mini.files').setup {
+      --     -- NOTE: Your min.files config is inspired by this reddit post: https://www.reddit.com/r/neovim/comments/1bceiw2/comment/kuhmdp9/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+      --
+      --     -- Module mappings created only inside explorer.
+      --     mappings = {
+      --       synchronize = 'w', -- default is `=`
+      --       -- open file & close mini-file explorer. Defaults to `L`.
+      --       go_in_plus = '<CR>',
+      --     },
+      --   } -- Maybe Oil.nvim would be better as it's more minimalistic and more like a simple buffer.
+      --
+      --   vim.api.nvim_create_autocmd('User', {
+      --     pattern = 'MiniFilesBufferCreate',
+      --     callback = function(args)
+      --       local buf_id = args.data.buf_id
+      --       -- Tweak left-hand side of mini.file mapping to your liking
+      --       -- vim.keymap.set("n", "g.", toggle_dotfiles, { buffer = buf_id })
+      --       -- Close MiniFile explorer
+      --       vim.keymap.set('n', '-', require('mini.files').close, { buffer = buf_id })
+      --       -- vim.keymap.set("n", "o", gio_open, { buffer = buf_id })
+      --     end,
+      --   })
+      --   -- Open MiniFiles explorer
+      --   vim.keymap.set('n', '-', function()
+      --     require('mini.files').open()
+      --   end, { desc = 'Open MinFiles' })
     end,
   },
   { -- Highlight, edit, and navigate code
@@ -1049,7 +1090,34 @@ require('lazy').setup({
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
   },
+  -- A game to learn vim relative line number motions https://github.com/ThePrimeagen/vim-be-good
+  { 'ThePrimeagen/vim-be-good' },
+  {
+    'github/copilot.vim',
 
+    config = function()
+      -- Tip: all copilot commands use the syntax `:Copilot <command>`
+
+      -- Toggle copilot on and off. These is no default toggle command.
+      -- But you can combine `:Copilot enable` and `:Copilot disable` to create a toggle command
+      -- and track the state in a variable.
+      -- SOURCE: https://www.reddit.com/r/neovim/comments/w2exp5/comment/j1cum3d/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+      -- Because there doesn't seem to be a way to check if copilot is enabled or not, we have to assume it's enabled by default.
+      local copilot_on = true
+      vim.api.nvim_create_user_command('CopilotToggle', function()
+        if copilot_on then
+          vim.cmd 'Copilot disable'
+          print 'Copilot OFF'
+        else
+          vim.cmd 'Copilot enable'
+          print 'Copilot ON'
+        end
+        copilot_on = not copilot_on
+      end, { nargs = 0 })
+
+      vim.keymap.set('n', '<leader>tc', '<cmd>CopilotToggle<CR>', { desc = 'Toggle [C]opilot', noremap = true, silent = true })
+    end,
+  },
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
   -- place them in the correct locations.
@@ -1059,7 +1127,7 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
   require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
