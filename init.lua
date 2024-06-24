@@ -1,5 +1,5 @@
 --[[
-rst
+
 =====================================================================
 ==================== READ THIS BEFORE CONTINUING ====================
 =====================================================================
@@ -159,6 +159,14 @@ vim.opt.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
+
+-- =========== Me: Foliding configuration ===========
+-- official nvim docs: https://neovim.io/doc/user/fold.html
+-- Tip: all fold commands start with z, z looks like a folded paper.
+-- Useful commands: za toggle fold, zR unfold all, zM fold all
+vim.opt.foldmethod = 'indent'
+-- By default nvim folds files you open. set foldleve to high number to not close them by default.
+vim.opt.foldlevel = 99
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -1002,7 +1010,24 @@ require('lazy').setup({
       --  - va)  - [V]isually select [A]round [)]paren
       --  - yinq - [Y]ank [I]nside [N]ext [Q]uote
       --  - ci'  - [C]hange [I]nside [']quote
-      require('mini.ai').setup { n_lines = 500 }
+      --  Me: Important aliases to know!
+      --  - b - block: { }, [ ], ( ), < >, etc.
+      --  - q - quote: ', ", `, etc.
+      require('mini.ai').setup {
+        n_lines = 500,
+        custom_textobjects = {
+          -- Whole buffer. Official helpfile:
+          -- https://github.com/echasnovski/mini.ai/blob/9fef1097bca44616133cde6a6769e7aa07d12d7d/doc/mini-ai.txt#L461C5-L469C10
+          g = function()
+            local from = { line = 1, col = 1 }
+            local to = {
+              line = vim.fn.line '$',
+              col = math.max(vim.fn.getline('$'):len(), 1),
+            }
+            return { from = from, to = to }
+          end,
+        },
+      }
 
       -- Add/delete/replace surroundings (brackets, quotes, etc.)
       --
@@ -1063,10 +1088,39 @@ require('lazy').setup({
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
+    dependencies = {
+      -- Treesitter textobjects module. Laod this when treesitter is loaded.
+      'nvim-treesitter/nvim-treesitter-textobjects',
+    },
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = {
+        -- Kickstarter default
+        'bash',
+        'c',
+        'diff',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'query',
+        'vim',
+        'vimdoc',
+        -- My languages
+        'python',
+        'javascript',
+        'typescript',
+        'css',
+        'html',
+        'json',
+        'yaml',
+        'toml',
+        'dockerfile',
+        'gitignore',
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
+      -- Syntax highlighting
       highlight = {
         enable = true,
         -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
@@ -1075,6 +1129,18 @@ require('lazy').setup({
         additional_vim_regex_highlighting = { 'ruby' },
       },
       indent = { enable = true, disable = { 'ruby' } },
+      -- Modules can be activated here
+      -- Me: Incremental selection allows you to select the current node and go up the tree
+      incremental_selection = {
+        enable = true,
+        keymaps = {
+          init_selection = '<C-space>',
+          node_incremental = '<C-space>',
+          cope_incremental = false,
+          node_decremental = '<bs>',
+        },
+      },
+      -- Me: Treesitter textobjects module.
     },
     config = function(_, opts)
       -- [[ Configure Treesitter ]] See `:help nvim-treesitter`

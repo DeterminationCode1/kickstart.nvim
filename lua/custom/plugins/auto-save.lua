@@ -45,7 +45,7 @@ return {
         end
 
         -- Deactivate auto-save for specific files
-        if not utils.not_in(an.expand '%:t', {
+        if not utils.not_in(fn.expand '%:t', {
           'auto-save.lua',
         }) then
           return false -- can't save

@@ -107,7 +107,8 @@ return {
       -- Smart action depending on context, either follow link or toggle checkbox.
       ['<cr>'] = {
         action = function()
-          return require('obsidian').util.smart_action()
+          -- WARN: Originally this used util.smart_action() but hitting enter accidentally created new checkboxes which was annoying.
+          return require('obsidian').util.gf_passthrough()
         end,
         opts = { buffer = true, expr = true },
       },
@@ -235,7 +236,7 @@ return {
 
     -- Optional, for templates (see below).
     templates = {
-      folder = 'Assets/templates',
+      folder = 'templates', -- Old location: 'Assets/templates'
       date_format = '%Y-%m-%d',
       time_format = '%H:%M',
       -- A map for custom variables, the key should be the variable and the value a function
