@@ -104,6 +104,15 @@ vim.opt.number = true
 --  Experiment for yourself to see if you like it!
 vim.opt.relativenumber = true -- deafault: commented out.
 
+-- Me: set default tab/shift width and policies
+-- NOTE: kickstart uses the vim-sleuth plugin to automatically detect tabstop and shiftwidth
+-- I'm not sure if it conflicts with the following settings.
+-- But it seems like vim-sleuth will overwrite these settings if it detects a different policies
+-- and fall back to these settings otherwise.
+vim.opt.tabstop = 4 -- number of spaces that a <Tab> in the file counts for
+vim.opt.shiftwidth = 4 -- size of each indent level
+vim.opt.expandtab = true -- convert tabs to spaces
+
 -- ME: Concela level automatically renders/hides text in e.g. markdown, latex, json files. Some find it very anoying, but the obsidian.nvim plugin requires it at level 1 or 2 for obsidian like pre-rendering of markdown to work.
 vim.opt.conceallevel = 2
 
@@ -980,21 +989,30 @@ require('lazy').setup({
     end,
   },
 
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
+  -- { -- You can easily change to a different colorscheme.
+  --   -- Change the name of the colorscheme plugin below, and then
+  --   -- change the command in the config to whatever the name of that colorscheme is.
+  --   --
+  --   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
+  --   'folke/tokyonight.nvim',
+  --   priority = 1000, -- Make sure to load this before all the other start plugins.
+  --   init = function()
+  --     -- Load the colorscheme here.
+  --     -- Like many other themes, this one has different styles, and you could load
+  --     -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
+  --     vim.cmd.colorscheme 'tokyonight-night'
+  --
+  --     -- You can configure highlights by doing something like:
+  --     vim.cmd.hi 'Comment gui=none'
+  --   end,
+  -- },
+  -- Me: my self implemented colorschemes
+  {
+    'catppuccin/nvim',
+    name = 'catppuccin',
+    priority = 1000,
     init = function()
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
-
-      -- You can configure highlights by doing something like:
-      vim.cmd.hi 'Comment gui=none'
+      vim.cmd.colorscheme 'catppuccin'
     end,
   },
 
