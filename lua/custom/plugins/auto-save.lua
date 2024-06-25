@@ -54,7 +54,7 @@ return {
         return true -- met condition(s), can save
       end,
       -- the new fork of auto-save now treats debounce as: delay after which a pending save is executed
-      debounce_delay = 1500, -- Defaults to 1000 ms.
+      debounce_delay = 1000, -- Defaults to 1000 ms.
     }
 
     -- keymap
