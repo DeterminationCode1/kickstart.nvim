@@ -1007,10 +1007,31 @@ require('lazy').setup({
   --   end,
   -- },
   -- Me: my self implemented colorschemes
+  -- All hex colors of catppuccin: https://github.com/catppuccin/catppuccin/blob/main/docs/translation-table.md
   {
     'catppuccin/nvim',
     name = 'catppuccin',
     priority = 1000,
+    opts = {
+      flavour = 'mocha',
+      integrations = {
+        -- gitsigns = false,
+      },
+      custom_highlights = function(colors)
+        -- return {
+        --   Comment = { fg = colors.flamingo },
+        --   TabLineSel = { bg = colors.pink },
+        --   CmpBorder = { fg = colors.surface2 },
+        --   Pmenu = { bg = colors.none },
+        -- }
+        return {
+          GitSignsAdd = { fg = colors.green },
+          -- GitSignsChange = { fg = colors.blue },
+          GitSignsChange = { fg = '#22a2f7' },
+          GitSignsDelete = { fg = colors.red },
+        }
+      end,
+    },
     init = function()
       vim.cmd.colorscheme 'catppuccin'
     end,
