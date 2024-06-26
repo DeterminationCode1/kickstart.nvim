@@ -6,7 +6,8 @@ return {
   cmd = { 'Outline', 'OutlineOpen' },
   keys = { -- Example mapping to toggle outline
     -- TODO: maybe use <leader>to instead and use <leader>o for something more important?
-    { '<leader>o', '<cmd>Outline<CR>', desc = 'Toggle outline' },
+    -- Yes,  decided to use  <leader>o for opening toggleterm instead.
+    { '<leader>to', '<cmd>Outline<CR>', desc = 'Toggle outline' },
   },
   opts = {
     -- Your setup opts here
