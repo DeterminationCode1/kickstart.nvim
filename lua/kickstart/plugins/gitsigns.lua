@@ -91,6 +91,7 @@ return {
 
         -- Text object
         map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
+        map({ 'o', 'x' }, 'ah', ':<C-U>Gitsigns select_hunk<CR>')
 
         -- Me: Highlight groups
         -- -- Catpuccin theme https://github.com/catppuccin/nvim/blob/894efb557728e532aa98b98029d16907a214ec05/lua/catppuccin/groups/integrations/gitsigns.lua
