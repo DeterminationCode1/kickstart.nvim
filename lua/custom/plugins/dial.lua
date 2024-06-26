@@ -20,13 +20,12 @@ end
 
 return {
   'monaqa/dial.nvim',
-  recommended = true,
   desc = 'Increment and decrement numbers, dates, and more',
   -- stylua: ignore
   keys = {
-    { "<C-c>", function() return M.dial(true) end, expr = true, desc = "Increment", mode = {"n", "v"} },
+    { "<C-a>", function() return M.dial(true) end, expr = true, desc = "Increment", mode = {"n", "v"} },
     { "<C-x>", function() return M.dial(false) end, expr = true, desc = "Decrement", mode = {"n", "v"} },
-    { "g<C-c>", function() return M.dial(true, true) end, expr = true, desc = "Increment", mode = {"n", "v"} },
+    { "g<C-a>", function() return M.dial(true, true) end, expr = true, desc = "Increment", mode = {"n", "v"} },
     { "g<C-x>", function() return M.dial(false, true) end, expr = true, desc = "Decrement", mode = {"n", "v"} },
   },
   opts = function()
@@ -200,74 +199,6 @@ return {
 --     local logical_alias = augend.constant.new {
 --       elements = { '&&', '||' },
 --       word = false,
---       cyclic = true,
---     }
---
---     local ordinal_numbers = augend.constant.new {
---       -- elements through which we cycle. When we increment, we go down
---       -- On decrement we go up
---       elements = {
---         'first',
---         'second',
---         'third',
---         'fourth',
---         'fifth',
---         'sixth',
---         'seventh',
---         'eighth',
---         'ninth',
---         'tenth',
---       },
---       -- if true, it only matches strings with word boundary. firstDate wouldn't work for example
---       word = false,
---       -- do we cycle back and forth (tenth to first on increment, first to tenth on decrement).
---       -- Otherwise nothing will happen when there are no further values
---       cyclic = true,
---     }
---
---     local weekdays = augend.constant.new {
---       elements = {
---         'Monday',
---         'Tuesday',
---         'Wednesday',
---         'Thursday',
---         'Friday',
---         'Saturday',
---         'Sunday',
---       },
---       word = true,
---       cyclic = true,
---     }
---
---     local months = augend.constant.new {
---       elements = {
---         'January',
---         'February',
---         'March',
---         'April',
---         'May',
---         'June',
---         'July',
---         'August',
---         'September',
---         'October',
---         'November',
---         'December',
---         -- Me: Abbreviated months
---         'Jan',
---         'Feb',
---         'Mar',
---         'Apr',
---         'May',
---         'Jun',
---         'Jul',
---         'Aug',
---         'Sep',
---         'Oct',
---         'Nov',
---         'Dec',
---       },
---       word = true,
 --       cyclic = true,
 --     }
 --
