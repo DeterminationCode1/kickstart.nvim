@@ -30,7 +30,7 @@ return {
       version = '1.x',
       build = 'npm i && npm run compile vsDebugServerBundle && mv dist out',
     },
-    'mfussenegger/nvim-dap-python',
+    -- 'mfussenegger/nvim-dap-python',
   },
   config = function()
     local dap = require 'dap'
