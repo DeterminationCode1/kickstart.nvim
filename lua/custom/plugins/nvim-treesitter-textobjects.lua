@@ -11,7 +11,6 @@ return {
 
         select = {
           enable = true,
-
           -- Automatically jump forward to textobj, similar to targets.vim
           lookahead = true,
 
@@ -22,8 +21,9 @@ return {
             ['a='] = { query = '@assignment.outer', desc = 'Select outer part of an assignment' },
             ['i='] = { query = '@assignment.inner', desc = 'Select inner part of an assignment' },
             -- originally l=, r=, but conflicted with built-in mappings
-            ['p='] = { query = '@assignment.lhs', desc = 'Select left hand side of an assignment' },
-            ['n='] = { query = '@assignment.rhs', desc = 'Select right hand side of an assignment' },
+            -- Me: seems like @assignment.lhs is similar to @assignment.inner
+            -- ['p='] = { query = '@assignment.lhs', desc = 'Select left hand side of an assignment' },
+            ['r='] = { query = '@assignment.rhs', desc = 'Select right hand side of an assignment' },
 
             ['aa'] = { query = '@parameter.outer', desc = 'Select outer part of a parameter/argument' },
             ['ia'] = { query = '@parameter.inner', desc = 'Select inner part of a parameter/argument' },
@@ -42,6 +42,9 @@ return {
 
             ['ac'] = { query = '@class.outer', desc = 'Select outer part of a class' },
             ['ic'] = { query = '@class.inner', desc = 'Select inner part of a class' },
+
+            ['ae'] = { query = '@comment.outer', desc = 'Select inner part of a comment' },
+            ['ie'] = { query = '@comment.inner', desc = 'Select inner part of a comment' },
           },
           -- You can choose the select mode (default is charwise 'v')
           --
