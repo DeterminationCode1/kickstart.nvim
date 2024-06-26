@@ -332,6 +332,11 @@ require('lazy').setup({
   --
   -- Use `opts = {}` to force a plugin to be loaded.
   --
+  --  This is equivalent to:
+  --    require('Comment').setup({})
+
+  -- WARNING: ME: I modified the kickstart original to my liking and moved the whole
+  -- comment.nvim plugin config into a separate file in the custom plugins folder.
 
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
