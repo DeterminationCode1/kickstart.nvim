@@ -93,6 +93,9 @@ vim.g.maplocalleader = ' '
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
+-- Enable true color support in Neovim
+vim.opt.termguicolors = true
+
 -- [[ Setting options ]]
 -- See `:help vim.opt`
 -- NOTE: You can change these options as you wish!
@@ -146,9 +149,12 @@ vim.opt.signcolumn = 'yes'
 -- Decrease update time
 vim.opt.updatetime = 250
 
--- Decrease mapped sequence wait time
+-- Decrease mapped sequence wait time. See nvim docs https://neovim.io/doc/user/options.html#'timeoutlen'
 -- Displays which-key popup sooner
-vim.opt.timeoutlen = 300
+-- Me: I think these low values cause sequences like 'gcO' to fail because gc are quick but
+-- O then takes more than 300ms. Then the cursor becomes a small bottom line indicating
+-- that an invalid sequence was entered.
+vim.opt.timeoutlen = 800 -- Kickstarter default: 300 (to open which-key early). Neovim default: 1000
 
 -- Configure how new splits should be opened
 vim.opt.splitright = true
