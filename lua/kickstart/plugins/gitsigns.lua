@@ -79,7 +79,7 @@ return {
         map('n', '<leader>hR', gitsigns.reset_buffer, { desc = 'git [R]eset buffer' })
         -- Use gitsigns.preview_hunk if you prefer a floating window and preview_hunk otherwise
         map('n', '<leader>hp', gitsigns.preview_hunk, { desc = 'git [p]review hunk' })
-        map('n', '<leader>hb', gitsigns.blame_line, { desc = 'git [b]lame line' })
+        map('n', '<leader>hB', gitsigns.blame_line, { desc = 'git [b]lame line' }) -- B because b is used for 'select branches' in neogit telescope
         map('n', '<leader>hd', gitsigns.diffthis, { desc = 'git [d]iff against index' })
         map('n', '<leader>hD', function()
           gitsigns.diffthis '@'
@@ -88,6 +88,9 @@ return {
         map('n', '<leader>tb', gitsigns.toggle_current_line_blame, { desc = 'GitSigns: [T]oggle git show [b]lame line' })
         map('n', '<leader>td', gitsigns.toggle_deleted, { desc = 'GitSigns: [T]oggle git show [D]eleted' }) -- Defaults to '<>tD'
         map('n', '<leader>th', gitsigns.toggle_linehl, { desc = 'GitSigns: [T]oggle git show [h]ighlight' })
+
+        -- Text object
+        map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
 
         -- Me: Highlight groups
         -- -- Catpuccin theme https://github.com/catppuccin/nvim/blob/894efb557728e532aa98b98029d16907a214ec05/lua/catppuccin/groups/integrations/gitsigns.lua
