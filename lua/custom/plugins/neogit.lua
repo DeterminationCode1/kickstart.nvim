@@ -32,7 +32,7 @@ return {
       'n',
       '<leader>gl',
       -- Is '--all' better than 'max-count=254'
-      neogit.action('log', 'log_all_branches', { '--max-count=254', '--graph', '--decorate', '--oneline', '--color' }),
+      neogit.action('log', 'log_all_branches', { '--max-count=254', '--graph', '--decorate', '--color' }), -- '--oneline',
       { silent = true, noremap = true, desc = 'Git: log all branches as concise graph' }
     )
 
@@ -48,11 +48,22 @@ return {
 
     -- Commit all staged changes with verbose output
     vim.keymap.set('n', '<leader>gc', neogit.action('commit', 'commit', { '--verbose' }), { desc = 'Git: Commit all staged changes with verbose output' })
+
     vim.keymap.set('n', '<leader>gcc', '<cmd>Neogit commit<CR>', { silent = true, noremap = true, desc = 'Git: open "Commit Menu"' })
+    -- Easy git commit all push for small unimportant changes -- FIX: not working.
+    -- vim.keymap.set(
+    --   'n',
+    --   '<leader>gE', -- It's capital for making it less typo prone for safety reasons.
+    --   function()
+    --     neogit.action('commit', 'commit', { '--verbose', '--all' }) -- allow-empty-message. '--message="Easy commit"'
+    --     neogit.action('push', 'push', {})
+    --   end,
+    --   { noremap = true, desc = 'Git: [E]asy Commit all changes and push' }
+    -- )
 
-    vim.keymap.set('n', '<leader>gP', '<cmd>Neogit pull<CR>', { silent = true, noremap = true, desc = 'Git: open Pull' })
+    vim.keymap.set('n', '<leader>gP', '<cmd>Neogit pull<CR>', { silent = true, noremap = true, desc = 'Git: open "Pull Menu"' })
 
-    vim.keymap.set('n', '<leader>gp', '<cmd>Neogit push<CR>', { silent = true, noremap = true, desc = 'Git: open Push' })
+    vim.keymap.set('n', '<leader>gp', '<cmd>Neogit push<CR>', { silent = true, noremap = true, desc = 'Git: open "Push Menu"' })
 
     vim.keymap.set('n', '<leader>gb', '<cmd>Telescope git_branches<CR>', { silent = true, noremap = true, desc = 'Git: List branches' })
 
