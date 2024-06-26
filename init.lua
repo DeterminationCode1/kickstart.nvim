@@ -1048,11 +1048,39 @@ require('lazy').setup({
       }
 
       -- Add/delete/replace surroundings (brackets, quotes, etc.)
+      -- see `:help mini.surround` for more information
       --
-      -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
-      -- - sd'   - [S]urround [D]elete [']quotes
-      -- - sr)'  - [S]urround [R]eplace [)] [']
-      require('mini.surround').setup()
+      -- - gsaiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
+      -- - gsd'   - [S]urround [D]elete [']quotes
+      -- - gsr)'  - [S]urround [R]eplace [)] [']
+      -- Me: You can use textobjects from mini.ai too!
+      -- - gsdb   - [S]urround Delete [B]lock. E.g. delete { } or [ ] from { foo: 'bar', baz: 'qux'}
+      -- Also
+      -- - You can use gsa' in visual mode to surround the selected text with '.
+      -- - You can surround more than just words. E.g. gsaap" to surround a paragraph with ".
+      -- NOTE: I added a 'g' in front of all surround default mappings because the 's' conflicted
+      -- with 'flash.nvim' [s]earch mappings.
+      require('mini.surround').setup {
+        -- Funy enough, I came up with the same alternative mappings as LazyVim:
+        -- https://www.lazyvim.org/extras/coding/mini-surround
+        mappings = {
+          add = 'gsa', -- Add surrounding in Normal and Visual modes
+          delete = 'gsd', -- Delete surrounding
+          find = 'gsf', -- Find surrounding (to the right)
+          find_left = 'gsF', -- Find surrounding (to the left)
+          highlight = 'gsh', -- Highlight surrounding
+          replace = 'gsr', -- Replace surrounding
+          update_n_lines = 'gsn', -- Update `n_lines`
+        },
+      }
+      -- Me: Some shortcuts for surround
+      vim.keymap.set('n', 'gs', '', { desc = 'Surround' })
+      -- WARN: it needs the `remap=true` to work. Otherwise RHS will be treated as pure vim commands.
+      vim.keymap.set('n', 'gsw', 'gsaiw', { desc = 'Surround a word (Alias/Shortcut for "gsaiw")', remap = true })
+      -- Remap adding surrounding to Visual mode selection
+      -- vim.keymap.set('x', 'S', [[:<C-u>lua MiniSurround.add('visual')<CR>]], { silent = true })
+      -- Make special mapping for "add surrounding for line"
+      vim.keymap.set('n', 'gss', 'ys_', { remap = true })
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
