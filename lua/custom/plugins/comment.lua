@@ -1,4 +1,6 @@
 -- inspired by https://github.com/catgoose/nvim/blob/main/lua/plugins/comment.lua
+--
+-- Maybe you need to disable autocammnd? Not sure:   { 'JoosepAlviste/nvim-ts-context-commentstring', opts = { enable_autocmd = false } },
 return {
   'numToStr/Comment.nvim',
   config = function()
