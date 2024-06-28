@@ -979,7 +979,9 @@ require('lazy').setup({
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
           { name = 'path' },
+          { name = 'buffer' }, -- Suggestions based on content of current buffer
         },
+
         -- ME: Tailwind color preview in completion menu
         formatting = {
           format = require('lspkind').cmp_format {
