@@ -987,6 +987,17 @@ require('lazy').setup({
           },
         },
       }
+
+      -- Me: Setup Dadbod ui completion
+      cmp.setup.filetype({ 'sql', 'mysql', 'plsql' }, {
+        sources = {
+          -- { name = 'nvim_lsp' },
+          { name = 'luasnip' },
+          -- { name = 'path' },
+          { name = 'buffer' },
+          { name = 'vim-dadbod-completion' }, -- NOTE: this is the important line
+        },
+      })
     end,
   },
 
