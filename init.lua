@@ -1028,6 +1028,19 @@ require('lazy').setup({
       flavour = 'mocha',
       integrations = {
         -- gitsigns = false,
+        cmp = true,
+        flash = true,
+        gitsigns = true,
+        headlines = true, -- plugin not installed
+        leap = true, -- plugin not installed
+        mason = true,
+        markdown = true,
+        mini = true,
+        -- native lsp settings
+        noice = true,
+        telescope = true,
+        treesitter = true,
+        which_key = true,
       },
       custom_highlights = function(colors)
         -- return {
