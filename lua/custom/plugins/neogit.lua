@@ -1,5 +1,5 @@
 -- repo https://github.com/NeogitOrg/neogit
--- Description: Neovim frontend for Git
+-- Description: Neovim frontend for Git. See `h: neogit` for more info.
 -- Keymaps inspired by https://github.com/omerxx/dotfiles/blob/62c1c535fdf0bd33b8ae62e0ac1122db2866492e/nvim/lua/plugins/neogit.lua
 
 -- To understand some of the git keymaps here, you should know what the individual flags mean
@@ -47,24 +47,61 @@ return {
     -- vim.keymap.set('n', '<leader>gcc', neogit.action('commit', 'commit', { '--verbose', '--all' }))
 
     -- Commit all staged changes with verbose output
-    vim.keymap.set('n', '<leader>gc', neogit.action('commit', 'commit', { '--verbose' }), { desc = 'Git: Commit all staged changes with verbose output' })
+    vim.keymap.set(
+      'n',
+      '<leader>gc',
+      neogit.action('commit', 'commit', { '--verbose' }),
+      { desc = 'Git: Commit all staged changes with verbose change preview' }
+    )
 
     vim.keymap.set('n', '<leader>gcc', '<cmd>Neogit commit<CR>', { silent = true, noremap = true, desc = 'Git: open "Commit Menu"' })
     -- Easy git commit all push for small unimportant changes -- FIX: not working.
-    -- vim.keymap.set(
-    --   'n',
-    --   '<leader>gE', -- It's capital for making it less typo prone for safety reasons.
-    --   function()
-    --     neogit.action('commit', 'commit', { '--verbose', '--all' }) -- allow-empty-message. '--message="Easy commit"'
-    --     neogit.action('push', 'push', {})
-    --   end,
-    --   { noremap = true, desc = 'Git: [E]asy Commit all changes and push' }
-    -- )
+    vim.keymap.set(
+      'n',
+      -- INFO: maybe use capital E for safety reasons.
+      '<leader>ge', -- It's capital for making it less typo prone for safety reasons.
+      function()
+        neogit.cli.add { '--all' }
+        neogit.action('commit', 'commit', { '--verbose', '--all' }) -- allow-empty-message. '--message="Easy commit"'
+        neogit.action('push', 'to_pushremote', {})
+      end,
+      { noremap = true, desc = 'Git: [E]asy Commit all changes and push' }
+    )
+
+    vim.keymap.set(
+      'n',
+      -- INFO: maybe use capital E for safety reasons.
+      '<leader>gi', -- Itgs capital for making it less typo prone for safety reasons.
+      function()
+        -- Stage all changes. Using native git cli
+        -- NOTE: :wait is needed to make it synchronous
+        vim
+          .system({ 'git', 'add', '--all' }, { text = true }, function(obj)
+            print(obj.code)
+            print(obj.stdout)
+            print(obj.stderr)
+          end)
+          :wait()
+        -- Commit all staged changes
+        vim
+          .system({ 'git', 'commit', '--message="Easy git"' }, { text = true }, function(obj)
+            print(obj.code)
+            print(obj.stdout)
+            print(obj.stderr)
+          end)
+          :wait()
+
+        -- Push to remote
+        neogit.action('push', 'to_pushremote', {})
+      end,
+      { noremap = true, desc = 'gGit: [E]asy Commit all changes and push' }
+    )
 
     vim.keymap.set('n', '<leader>gP', '<cmd>Neogit pull<CR>', { silent = true, noremap = true, desc = 'Git: open "Pull Menu"' })
 
     vim.keymap.set('n', '<leader>gp', '<cmd>Neogit push<CR>', { silent = true, noremap = true, desc = 'Git: open "Push Menu"' })
 
+    vim.keymap.set('n', '<leader>gp', neogit.action('push', 'to_pushremote', {}), { silent = true, noremap = true, desc = 'Git: push to Remote Origin' })
     vim.keymap.set('n', '<leader>gb', '<cmd>Telescope git_branches<CR>', { silent = true, noremap = true, desc = 'Git: List branches' })
 
     -- vim.keymap.set('n', '<leader>gB', ':G blame<CR>', { silent = true, noremap = true }) -- Me: I don't use fugitive
