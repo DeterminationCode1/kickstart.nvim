@@ -75,7 +75,7 @@ return {
           :wait()
         -- Commit all staged changes
         vim
-          .system({ 'git', 'commit', '--message=Easy git' }, { text = true }, function(obj)
+          .system({ 'git', 'commit', '--message="Easy git"' }, { text = true }, function(obj)
             print(obj.code)
             print(obj.stdout)
             print(obj.stderr)
@@ -83,12 +83,7 @@ return {
           :wait()
 
         -- Push to remote
-        neogit.action('push', 'to_pushremote', {}) -- FIX:for some reason this doesn't work
-        vim.system({ 'git', 'push' }, { text = true }, function(obj)
-          print(obj.code)
-          print(obj.stdout)
-          print(obj.stderr)
-        end)
+        neogit.action('push', 'to_pushremote', {})
       end,
       { noremap = true, desc = 'gGit: [E]asy Commit all changes and push' }
     )
