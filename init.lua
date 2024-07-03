@@ -1204,6 +1204,7 @@ require('lazy').setup({
         'toml',
         'dockerfile',
         'gitignore',
+        'java',
       },
       -- Autoinstall languages that are not installed
       auto_install = true,
