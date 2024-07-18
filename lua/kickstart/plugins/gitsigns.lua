@@ -34,6 +34,7 @@ return {
         changedelete = { text = '▎' },
         untracked = { text = '┆' },
       },
+      attach_to_untracked = true, -- Me: Defaults to false in both gitsigns and kickstart.
       -- Override the highlight groups to use custom colors
       -- Use your preferred highlight groups or define new ones
       on_attach = function(bufnr) -- zst
@@ -98,6 +99,7 @@ return {
         -- WARNING: Your colorscheme often has an integration to alter gitsigns highlight/signe colors
         -- Or you can write your own highlight groups like GitSignsAdd, GitSignsChange, GitSignsDelete...
         -- or customise in your colorscheme plugin setup the gitsigns highlights. This is what you did for catppuccin
+        --
       end,
     },
   },
