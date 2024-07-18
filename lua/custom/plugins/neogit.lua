@@ -58,7 +58,7 @@ return {
     -- Stage all and commit
     -- vim.keymap.set('n', '<leader>gC', neogit.action('commit', 'commit', { '--verbose', '--all' }), { desc = 'Git: Stage all and commit' })
 
-    -- Easy git commit all push for small unimportant changes -- FIX: not working.
+    -- Easy git commit all push for small unimportant changes
     vim.keymap.set(
       'n',
       -- INFO: maybe use capital E for safety reasons.
