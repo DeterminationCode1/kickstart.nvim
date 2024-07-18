@@ -1,3 +1,4 @@
+-- repo https://github.com/nvim-java/nvim-java?tab=readme-ov-file
 return {
   'nvim-java/nvim-java',
   dependencies = {
@@ -23,7 +24,15 @@ return {
     require('java').setup {}
     require('lspconfig').jdtls.setup {}
 
-    vim.keymap.set('n', '<leader>rjt', function()
+    -- FIX: .run_app() needs an argument i don't know.
+    -- vim.keymap.set('n', '<leader>ja', function()
+    --   require('java').runner.built_in.run_app()
+    -- end, { desc = 'Run Java app' })
+
+    vim.keymap.set('n', '<leader>ja', '<cmd>JavaRunnerRunMain<CR>', { desc = 'Run Java [A]pp' })
+
+    -- NOTE: maybe set a r for run beforte the jt and ja.
+    vim.keymap.set('n', '<leader>jt', function()
       require('java').test.run_current_class()
     end, { desc = 'Run Java Test' })
     vim.keymap.set('n', '<leader>djt', function()
