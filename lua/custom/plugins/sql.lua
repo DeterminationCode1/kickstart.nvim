@@ -7,10 +7,13 @@
 --
 -- :DBUIAddConnection
 --    To add a new connection use :DBUIAddConnection or hit enter on the connection word or hit 'A'
---    Now, add add a connection string in the format of your DB provider
+--    Now, add a connection string in the format of your DB provider
 --    E.g. in a Django project using Postgresql you can find the connection detalis in the .env file:
 --    url format: postgres://POSTGRES_USER:POSTGRES_PASSWORD@POSTGRES_HOST:POSTGRES_PORT/POSTGRES_DB
 --    connect url: postgres://myuser:mysecretpassword@localhost:5434/dockerdc
+--    - E.g. SQLite:
+--    url format: sqlite://path/to/your/database.db
+--    connect url (for key analysis db): :
 --    TODO: you might be able to construct the url in the .env file and store it in DAD_UI_URL env var that
 --    is automatically picked up by dadbod-ui?
 --
