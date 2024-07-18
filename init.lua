@@ -762,6 +762,10 @@ require('lazy').setup({
         -- 'tailwindcss', -- Tailwind CSS IntelliSense
         'stylelint', -- Linter
 
+        -- =========== C ===========
+        -- Some of these might also apply to cpp
+        'clang-format', -- Formatter
+
         -- =========== Lua ===========
         'stylua', -- Formatter
         'luacheck', -- Linter
@@ -841,6 +845,8 @@ require('lazy').setup({
         json = { 'prettier' },
         yaml = { 'prettier' },
         markdown = { 'prettier' },
+        -- c = { 'clang-format' },
+        -- cpp = { 'clang-format' },
         sh = { 'shfmt' },
         bash = { 'shfmt' },
         zsh = { 'shfmt' },
