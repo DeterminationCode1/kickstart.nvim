@@ -218,16 +218,29 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
--- FIX: add ctr-arrow keys not workin, overwritten by mac builtin window management.
-vim.keymap.set('n', '<C-<left>>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-<right>>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-<down>>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-<up>>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+-- Keybinds to make split navigation easier.
+-- NOTE: If you are on MacOS you must deactivate the default Mission Control shortcuts that override ^+arrows.
+-- You can find all of them in the System Preferences > Keyboard > Shortcuts > Mission Control
+vim.keymap.set('n', '<C-left>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
+vim.keymap.set('n', '<C-right>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
+vim.keymap.set('n', '<C-down>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+vim.keymap.set('n', '<C-up>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- ================= My keybindings rempas ===============
 vim.keymap.set('n', '<leader>w', '<cmd>w<CR>', { desc = '[W]rite current buffer' })
 vim.keymap.set('n', '<leader>W', '<cmd>wa<CR>', { desc = '[W]rite all buffers' })
 vim.keymap.set('n', '<C-6>', '<C-^>', { desc = 'Switch between last two buffers' })
+
+-- IntelliJ
+vim.keymap.set('n', 'gj', function()
+  local currentFile = vim.fn.expand '%:p'
+  -- local command = 'open -a "IntelliJ IDEA" ' .. currentFile -- This actually works...
+  vim.system({ 'idea', currentFile }, { text = true }, function(obj)
+    print(obj.code)
+    print(obj.stdout)
+    print(obj.stderr)
+  end)
+end, { desc = '[G]o to Intelli[J] - open current file' })
 
 -- See Primegan nvim bindings for inspiration: https://github.com/ThePrimeagen/init.lua/blob/249f3b14cc517202c80c6babd0f9ec548351ec71/lua/theprimeagen/remap.lua
 -- Me: you use Ctr+Command+ right homerow because you use cmd insteas of alt for window management. Also, ctr+shift is the same as ctr+no shift.
