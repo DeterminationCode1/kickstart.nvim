@@ -1074,13 +1074,24 @@ require('lazy').setup({
         which_key = true,
       },
       custom_highlights = function(colors)
+        -- me: find nall nvim builting groups with preview with h: highlight-groups
         -- return {
         --   Comment = { fg = colors.flamingo },
         --   TabLineSel = { bg = colors.pink },
         --   CmpBorder = { fg = colors.surface2 },
         --   Pmenu = { bg = colors.none },
         -- }
+
+        -- NOTE: Catputccin integrates with GitSignsAdd, GitSignsChange, GitSignsDelete, GitSignsChangeDelete, GitSignsTopDelete, ... groups but NOT with GitSignsUntracked.
+        -- Thus, you need to manually configure it using the nvim builtin api.
+        -- param 0 means it's a global highlight group
+        -- vim.api.nvim_set_hl(0, 'GitSignsUntracked', { fg = colors.gray0 }) -- Me: There are gray0 to 2 from dark to light
+
+        -- WARN: using `colors.gray0` didn't work for some reason...
+        vim.api.nvim_set_hl(0, 'GitSignsUntracked', { fg = '#565970' }) -- Me: There are gray0 to 2 from dark to light
+
         return {
+          -- ME: find all gitsigns highlight-groups under 'h: gitsigns-highlight-groups'
           GitSignsAdd = { fg = colors.green },
           -- GitSignsChange = { fg = colors.blue },
           GitSignsChange = { fg = '#22a2f7' },
