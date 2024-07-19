@@ -23,11 +23,13 @@ return {
     require('obsidian').setup(opts)
 
     -- My keybindings
-    vim.keymap.set({ 'n', 'v' }, '<leader>e', ":'<,'>ObsidianExtractNote<CR>", { desc = 'Obsidian: [E]xtract highlighted text to a new note and link to it' })
+    -- Think of the prefix as '[G]o to [O]bsidian'
+    vim.keymap.set('n', 'go', '', { desc = 'Obsidian: [G]o to [O]bsidian' }) -- for which-key
+    vim.keymap.set({ 'n', 'v' }, 'goe', ":'<,'>ObsidianExtractNote<CR>", { desc = 'Obsidian: [E]xtract highlighted text to a new note and link to it' })
     -- Open note in obsidian
-    vim.keymap.set('n', '<leader>go', '<cmd>ObsidianOpen<CR>', { desc = 'Obsidian: [O]pen the current note in Obsidian' })
+    vim.keymap.set('n', 'goo', '<cmd>ObsidianOpen<CR>', { desc = 'Obsidian: [O]pen the current note in Obsidian' })
     -- Paste image from clipboard
-    vim.keymap.set('n', '<leader>p', '<cmd>ObsidianPasteImg<CR>', { desc = 'Obsidian: [P]aste an image from the clipboard' })
+    vim.keymap.set('n', 'gop', '<cmd>ObsidianPasteImg<CR>', { desc = 'Obsidian: [P]aste an image from the clipboard' })
   end,
   opts = {
     -- A list of workspace names, paths, and configuration overrides.
