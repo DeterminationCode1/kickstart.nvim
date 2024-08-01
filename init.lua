@@ -175,6 +175,29 @@ vim.opt.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
+-- =========== Me: spell checking ===========
+-- See `:help spell` for detailed information
+-- Enable spell checking
+vim.opt.spell = true
+-- Set the language for spell checking: comma separated list of words
+-- See `:help spellang` for more information
+vim.opt.spelllang = { 'en', 'de' } -- en for all english regions, de for german, etc.
+
+vim.opt.spelloptions = 'camel' -- treat camel case words as separate words
+
+-- Toggle spell checking with leader>ts
+vim.keymap.set('n', '<leader>ts', ':set spell!<CR>', { desc = '[T]oggle [S]pell checking' })
+
+-- Shortcut to accept the first suggestion for the word under the cursor
+-- `ga` was free. It defaults to 'print ascii val under cursor' but I don't use that.
+-- NOTE: Maybe extend the above command to also jump back to the last spelling error with `]s` so
+-- your cursors doesn't have to be on the exact word?
+vim.keymap.set('n', 'ga', '1z=', { desc = '[G]o spelling: [A]ccept the first suggestion for the word under the cursor' })
+-- "DevOps Toolbox" Youtuber used the following handy mapping to quickly fix the
+-- last spelling error from insert mode: https://youtu.be/oLpGahrsSGQ?si=eyhGVtNq7O0MrPHp&t=360
+vim.keymap.set('i', '<C-l>', '<Esc>[s1z=`]a', { desc = 'Fix last spelling error' }) -- FIX: doesn't work?
+-- =========== Me: END ===================
+
 -- =========== Me: Foliding configuration ===========
 -- official nvim docs: https://neovim.io/doc/user/fold.html
 -- Tip: all fold commands start with z, z looks like a folded paper.
