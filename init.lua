@@ -506,6 +506,9 @@ require('lazy').setup({
       -- Search Files: defaults to search from current working DIR.
       -- Kickstarter originally used: `vim.keymap.set('n','<leader>sf',builtin.find_files, {desc = '...')`
       vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
+      -- ============ Me: shortcut for seraching files because it's so common ============
+      vim.keymap.set('n', '<leader>f', builtin.find_files, { desc = 'Search [F]iles (Shortcut)' })
+      -- ==================== Me: END ====================================================
       vim.keymap.set('n', '<leader>sh', function()
         builtin.find_files { hidden = true }
       end, { desc = '[S]earch [H]idden Files' })
@@ -829,16 +832,18 @@ require('lazy').setup({
   { -- Autoformat
     'stevearc/conform.nvim',
     lazy = false,
-    keys = {
-      {
-        '<leader>f',
-        function()
-          require('conform').format { async = true, lsp_fallback = true }
-        end,
-        mode = '',
-        desc = '[F]ormat buffer',
-      },
-    },
+    -- NOTES: The "<leader>f" keybinding for formatting was removed because I use "format on save"
+    -- instead and <leader>f is a valuable well positioned keybinding that's now use for 'search files' in telescope.
+    -- keys = {
+    --   {
+    --     '<leader>f',
+    --     function()
+    --       require('conform').format { async = true, lsp_fallback = true }
+    --     end,
+    --     mode = '',
+    --     desc = '[F]ormat buffer',
+    --   },
+    -- },
     opts = {
       notify_on_error = false,
       format_on_save = function(bufnr)
