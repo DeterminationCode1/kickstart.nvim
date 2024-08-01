@@ -206,7 +206,7 @@ return {
     ---@return string
     image_name_func = function()
       -- Prefix image names with timestamp.
-      return string.format('%s-', os.time())
+      return string.format('%s', os.time()) -- Me, defaults to timestamp '%s-'
     end,
 
     -- Optional, boolean or a function that takes a filename and returns a boolean.
@@ -360,7 +360,7 @@ return {
       -- The default folder to place images in via `:ObsidianPasteImg`.
       -- If this is a relative path it will be interpreted as relative to the vault root.
       -- You can always override this per image by passing a full path to the command instead of just a filename.
-      img_folder = 'Assets', -- This is the default
+      img_folder = 'assets', -- This is the default
       -- A function that determines the text to insert in the note when pasting an image.
       -- It takes two arguments, the `obsidian.Client` and an `obsidian.Path` to the image file.
       -- This is the default implementation.
@@ -368,8 +368,9 @@ return {
       ---@param path obsidian.Path the absolute path to the image file
       ---@return string
       img_text_func = function(client, path)
+        -- Me: added space before img because the formatter automatically removes the previous space,
         path = client:vault_relative_path(path) or path
-        return string.format('![%s](%s)', path.name, path)
+        return string.format(' ![%s|600](%s)', path.name, path)
       end,
     },
   },
