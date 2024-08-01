@@ -265,6 +265,25 @@ vim.keymap.set('n', 'gj', function()
   end)
 end, { desc = '[G]o to Intelli[J] - open current file' })
 
+-- Format bullet points in markdown -- WARN: not working yet
+-- vim.keymap.set({ 'n', 'v' }, '<leader>mf', function()
+--   -- Get the selected lines
+--   local start_pos = vim.fn.getpos "'<"
+--   local end_pos = vim.fn.getpos "'>"
+--   local lines = vim.api.nvim_buf_get_lines(0, start_pos[2] - 1, end_pos[2], false)
+
+--   local formatted_lines = {}
+--   for _, line in ipairs(lines) do
+--     -- Trim leading and trailing whitespaces
+--     line = line:gsub('^%s+', ''):gsub('%s+$', '')
+--     -- Add proper indentation for bullet points
+--     if line:match '^%- %-%s' then
+--       line = line:gsub('^%- %-%s', '- ')
+--     end
+--     table.insert(formatted_lines, line)
+--   end
+-- end, { desc = 'Format bullet list' })
+
 -- See Primegan nvim bindings for inspiration: https://github.com/ThePrimeagen/init.lua/blob/249f3b14cc517202c80c6babd0f9ec548351ec71/lua/theprimeagen/remap.lua
 -- Me: you use Ctr+Command+ right homerow because you use cmd insteas of alt for window management. Also, ctr+shift is the same as ctr+no shift.
 vim.keymap.set(
