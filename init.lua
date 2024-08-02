@@ -254,6 +254,33 @@ vim.keymap.set('n', '<leader>w', '<cmd>w<CR>', { desc = '[W]rite current buffer'
 vim.keymap.set('n', '<leader>W', '<cmd>wa<CR>', { desc = '[W]rite all buffers' })
 vim.keymap.set('n', '<C-6>', '<C-^>', { desc = 'Switch between last two buffers' })
 
+-- Char counter in status line / or as command
+vim.keymap.set('v', '<leader>c', function() -- use <leader>cc if
+  local char_count = vim.fn.wordcount().visual_chars
+  local word_count = vim.fn.wordcount().visual_words
+  -- different msg styles. minimalistic was best
+  local message = word_count .. ' words' .. '\n' .. char_count .. ' chars'
+  -- local message = word_count .. ' Words' .. '\n' .. char_count .. ' Chars'
+  -- local message = 'Words: ' .. word_count .. '\nChars: ' .. char_count
+  vim.notify(message)
+end, { desc = '[C]ount characters and words' })
+
+-- NOTE: if the above word_count script is not working, use https://www.reddit.com/r/neovim/comments/z2tgf5/how_to_show_selected_characterline_count_on/
+--
+-- local char_and_line_count = function() -- m
+--   if visual_str[tostring(vim.fn.mode())] then
+--     local ln_beg = vim.fn.line 'v'
+--     local ln_end = vim.fn.line '.'
+
+--     local lines = ln_beg <= ln_end and ln_end - ln_beg + 1 or ln_beg - ln_end + 1
+
+--     return tostring(vim.fn.wordcount().visual_chars) .. ' chars' .. ' / ' .. tostring(lines) .. ' lines'
+--   else
+--     -- return ''
+--     return '[' .. tostring(vim.fn.mode()) .. ']' -- for debugging
+--   end
+-- end
+
 -- IntelliJ
 vim.keymap.set('n', 'gj', function()
   local currentFile = vim.fn.expand '%:p'
