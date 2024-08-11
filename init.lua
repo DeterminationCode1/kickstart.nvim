@@ -179,9 +179,10 @@ vim.opt.scrolloff = 10
 -- See `:help spell` for detailed information
 -- Enable spell checking
 vim.opt.spell = true
--- Set the language for spell checking: comma separated list of words
+-- Set the language for spell checking:
 -- See `:help spellang` for more information
-vim.opt.spelllang = { 'en', 'de' } -- en for all english regions, de for german, etc.
+-- en: (all) English, en_uk: English UK, en_us, de: German, ...
+vim.opt.spelllang = { 'en', 'de' } -- (string or list of strings)
 
 vim.opt.spelloptions = 'camel' -- treat camel case words as separate words
 
