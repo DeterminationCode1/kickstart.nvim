@@ -573,6 +573,10 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
+      -- Me: search through all todos. Copied from 'Omerxx':
+      -- https://github.com/omerxx/dotfiles/blob/fffac07f46987fbb6b3dfef9113fae5875a1332d/nvim/lua/plugins/tele.lua
+      vim.api.nvim_set_keymap('n', 'st', ':TodoTelescope<CR>', { noremap = true }) -- WARN: not sure if working?
+
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
         -- You can pass additional configuration to Telescope to change the theme, layout, etc.
@@ -1243,6 +1247,10 @@ require('lazy').setup({
       vim.keymap.set('n', 'gs', '', { desc = 'Surround' })
       -- WARN: it needs the `remap=true` to work. Otherwise RHS will be treated as pure vim commands.
       vim.keymap.set('n', 'gsw', 'gsaiw', { desc = 'Surround a word (Alias/Shortcut for "gsaiw")', remap = true })
+      -- same but dnt overwrite the normal clipboard register with ciw
+      vim.keymap.set('n', 'gsl', '"ndiwi []()<esc>b"npf)P', { desc = 'Surround: word with markdown [L]ink' })
+      -- TODO adopt gsl command to handle selected text parts from visual mode.
+
       -- Remap adding surrounding to Visual mode selection
       -- vim.keymap.set('x', 'S', [[:<C-u>lua MiniSurround.add('visual')<CR>]], { silent = true })
       -- Make special mapping for "add surrounding for line"

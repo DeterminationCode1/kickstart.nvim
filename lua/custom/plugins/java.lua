@@ -9,6 +9,7 @@ return {
     'nvim-java/nvim-java-dap',
     'MunifTanjim/nui.nvim',
     'neovim/nvim-lspconfig',
+    'JavaHello/spring-boot.nvim', -- Unsure if this is correct?
     'mfussenegger/nvim-dap',
     {
       'williamboman/mason.nvim',

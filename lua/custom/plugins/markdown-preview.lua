@@ -1,8 +1,9 @@
 -- repo https://github.com/iamcco/markdown-preview.nvim
 -- Description: Preview markdown files from nvim in the browser
+-- Funfact: The auto-generated website of the markdown file seems to be done with Next.js
 --
--- You can with or without yarn/npm
--- Stand of 2024-08-01 you chose to use yarn or npm
+-- You can install with or without yarn/npm
+-- Stand of 2024-08-01 you chose to use yarn/npm instead of building from source
 return {
   'iamcco/markdown-preview.nvim',
   cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
