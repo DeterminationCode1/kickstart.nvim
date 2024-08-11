@@ -251,6 +251,10 @@ vim.keymap.set('n', '<C-down>', '<C-w><C-j>', { desc = 'Move focus to the lower 
 vim.keymap.set('n', '<C-up>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- ================= My keybindings rempas ===============
+-- WARN using 'nvim-recorder' plugin is not working
+-- Remap  q 'record macro' to 'gq' as 'q' is used as comment prefix for 'gc'
+-- vim.keymap.set('n', 'gq', '', { desc = 'Record macro w nvim-record' })
+-- vim.keymap.set('n', 'gq', 'qq', { desc = 'End record macro' })
 vim.keymap.set('n', '<leader>w', '<cmd>w<CR>', { desc = '[W]rite current buffer' })
 vim.keymap.set('n', '<leader>W', '<cmd>wa<CR>', { desc = '[W]rite all buffers' })
 vim.keymap.set('n', '<C-6>', '<C-^>', { desc = 'Switch between last two buffers' })
