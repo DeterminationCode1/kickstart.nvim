@@ -216,14 +216,25 @@ return {
     -- Optional, alternatively you can customize the frontmatter data.
     ---@return table
     note_frontmatter_func = function(note)
-      -- Me: Becaus I use natural language titles without aliases or character best practices, adding the alias as title would just duplicate it.
+      -- Me: Because I use natural language titles without aliases or character best practices, adding the alias as title would just duplicate it.
       -- Me: In the future if you decide to use more human unfriendly file names, this might be useful again.
       -- Default: Add the title of the note as an alias.
       -- if note.title then
       --   note:add_alias(note.title)
       -- end
+      -- TODO: find a way to automatically sync the note file name with the first heading in the note.
+      -- But it should only be one way from file name to heading and not the other way around (safety reasons)
 
-      local out = { id = note.id, aliases = note.aliases, tags = note.tags }
+      -- local out = { id = note.id, aliases = note.aliases, tags = note.tags } -- Me: default
+      local out = {}
+      -- Me: add aliases, tags if they exist
+      -- TODO: maybe the two if statements could be done in the note.metadata loop?
+      if note.aliases ~= nil and not vim.tbl_isempty(note.aliases) then
+        out.aliases = note.aliases
+      end
+      if note.tags ~= nil and not vim.tbl_isempty(note.tags) then
+        out.tags = note.tags
+      end
 
       -- `note.metadata` contains any manually added fields in the frontmatter.
       -- So here we just make sure those fields are kept in the frontmatter.
@@ -259,7 +270,7 @@ return {
     use_advanced_uri = false,
 
     -- Optional, set to true to force ':ObsidianOpen' to bring the app to the foreground.
-    open_app_foreground = false,
+    open_app_foreground = true, -- Defaults to false.
 
     picker = {
       -- Set your preferred picker. Can be one of 'telescope.nvim', 'fzf-lua', or 'mini.pick'.
@@ -287,6 +298,11 @@ return {
     open_notes_in = 'current',
 
     -- Optional, define your own callbacks to further customize behavior.
+    -- NOTE: Me: Tip: read through the `obsidian.nvim/lua/obsidian/client.lua` file to see all the available callbacks.
+    -- You can find it by hitting `gf` on `obsidian.Client` in the statement below.
+    -- WARNING: Me: You cannot use note.contents = ... to update the note contents - it's read
+    -- only (i think, or maybe you could call a commit method on the note somehow?).
+    -- Use the `update_content` option in `client:write_note` instead.
     callbacks = {
       -- Runs at the end of `require("obsidian").setup()`.
       ---@param client obsidian.Client
@@ -295,7 +311,45 @@ return {
       -- Runs anytime you enter the buffer for a note.
       ---@param client obsidian.Client
       ---@param note obsidian.Note
-      enter_note = function(client, note) end,
+      enter_note = function(client, note)
+        -- FIX: important: than solution for automating the heading sync is the method `note:save_to_buffer()`
+        -- It uses the nvim lua api to inject new lines into the buffer after the frontmatter. You don't need the obsidian.nvim functions.
+        -- TODO:implement the fix above.
+        -- TODO: find a way to automatically sync the note file name with the first heading in the note.
+        -- But it should only be one way from file name to heading and not the other way around (safety reasons)
+
+        -- if note == nil then
+        --   return
+        -- end
+        -- -- If it's not a markdown file, don't do anything.
+        -- if not note.path.filename:match '%.md$' then
+        --   return
+        -- end
+
+        -- WARNING: old bad not working solution
+        -- @param lines table: A table of strings representing the lines of the note (excluding frontmatter).
+        -- @return table: A table of strings representing the updated contents of the note.
+        -- local update_content_func = function(lines)
+        --   local updated_contents = lines or {}
+        --   if updated_contents == nil then
+        --     return {}
+        --   end
+        --   -- if the first line is a heading, update it
+        --   -- else inject a new heading with the note title
+        --   if updated_contents[1]:match '^#' then
+        --     updated_contents[1] = '# ' .. note.id
+        --   else
+        --     table.insert(updated_contents, 1, '# ' .. note.id)
+        --   end
+        --   return updated_contents
+        -- end
+
+        -- Commit changes to disk.
+        -- client:write_note_to_buffer(note)
+        -- client:write_note(note, { update_content = update_content_func })
+        -- Reopen the same note in the buffer. This will load the new disk changes.
+        -- client:open_note(note)
+      end,
 
       -- Runs anytime you leave the buffer for a note.
       ---@param client obsidian.Client
