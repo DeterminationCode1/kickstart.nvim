@@ -17,7 +17,9 @@ return {
         javascript = { 'eslint_d' },
         css = { 'stylelint' },
         docker = { 'hadolint' },
-        lua = { 'luacheck' },
+        -- NOTE: I deactivated luacheck because I only use it for Neovim configs and in
+        -- these files it was throwing a lot of errors like "undefined global variable vim"
+        -- lua = { 'luacheck' },
         sh = { 'shellcheck' },
         bash = { 'shellcheck' },
         zsh = { 'shellcheck' },
