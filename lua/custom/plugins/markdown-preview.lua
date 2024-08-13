@@ -14,7 +14,8 @@ return {
 
   ft = { 'markdown' },
   config = function()
-    -- Toggle the markdown preview (<leader>mp would also be okay)
-    vim.keymap.set('n', '<leader>m', '<CMD>MarkdownPreviewToggle<CR>', { noremap = true, silent = true, desc = 'Markdown Preview: Toggle' })
+    -- Toggle the markdown preview (<leader>mp would also be okay -> more space for other mappings on `m`)
+    -- NOTE: maybe `<leader>m` would be better
+    vim.keymap.set('n', '<leader>mp', '<CMD>MarkdownPreviewToggle<CR>', { noremap = true, silent = true, desc = 'Markdown Preview: Toggle' })
   end,
 }

@@ -46,6 +46,7 @@ return {
     -- - prefix c creat new terminal
     -- - prefix 2 go to terminal
     -- - prefix 1 go back to nvim.
-    vim.keymap.set('n', '<C-t>', '<cmd>!tmux-harpoon-toggle<CR>', { desc = 'Toggle between tmux window 1 and 2' })
+    -- WARN: I prefer toggleterm to quickly open a terminal because it's automatically in the right directory and has first-class vim motions integrated.
+    -- vim.keymap.set('n', '<C-t>', '<cmd>!tmux-harpoon-toggle<CR>', { desc = 'Toggle between tmux window 1 and 2' })
   end,
 }
