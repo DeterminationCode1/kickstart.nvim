@@ -25,9 +25,15 @@ return {
     local neogit = require 'neogit'
     neogit.setup(opts)
 
+    -- Originally, I used '<leader>gs', but because it was very often used and
+    -- `ge` was never uesed for "go back previous end of word" as the motion "be" is easier.
+    -- So I changed it to `ge`. The old <leader>gs is still
+    -- available in case you forgot the binding and just remember <leader>g for
+    -- 'git'
+    vim.keymap.set('n', 'ge', neogit.open, { silent = true, noremap = true, desc = 'Git: Open "Status Menu"' })
     vim.keymap.set('n', '<leader>gs', neogit.open, { silent = true, noremap = true, desc = 'Git: Open "Status Menu"' })
 
-    -- The alias i used before was: git log --all --graph --decorate --oneline
+    -- The alias I used before was: git log --all --graph --decorate --oneline
     vim.keymap.set(
       'n',
       '<leader>gl',
