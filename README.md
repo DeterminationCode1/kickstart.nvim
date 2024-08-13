@@ -1,3 +1,21 @@
+# My Neovim
+
+## Installation
+
+The neovim configs must be placed inside the `~/.config/nvim` directory. To download the
+content of this to the correct location in your dotfiles, do the following:
+
+```sh
+# Open your dotfiles directory
+cd ~/dotfiles/nvim/.config/
+# Clone your nvim config into a new folder called "nvim"
+git clone https://github.com/DeterminationCode1/kickstart.nvim.git nvim
+# Check everything is working by opening neovim
+nvim
+```
+
+---
+
 # kickstart.nvim
 
 ## Introduction

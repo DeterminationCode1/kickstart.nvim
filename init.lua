@@ -200,12 +200,9 @@ vim.keymap.set('i', '<C-l>', '<Esc>[s1z=`]a', { desc = 'Fix last spelling error'
 -- =========== Me: END ===================
 
 -- =========== Me: Foliding configuration ===========
--- official nvim docs: https://neovim.io/doc/user/fold.html
--- Tip: all fold commands start with z, z looks like a folded paper.
--- Useful commands: za toggle fold, zR unfold all, zM fold all
-vim.opt.foldmethod = 'indent'
--- By default nvim folds files you open. set foldleve to high number to not close them by default.
-vim.opt.foldlevel = 99
+-- TODO: move options in this file to the custom.options.lua file?
+require 'custom.options'
+-- =========== Me: END ===================
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -251,133 +248,7 @@ vim.keymap.set('n', '<C-down>', '<C-w><C-j>', { desc = 'Move focus to the lower 
 vim.keymap.set('n', '<C-up>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- ================= My keybindings rempas ===============
--- WARN using 'nvim-recorder' plugin is not working
--- Remap  q 'record macro' to 'gq' as 'q' is used as comment prefix for 'gc'
--- vim.keymap.set('n', 'gq', '', { desc = 'Record macro w nvim-record' })
--- vim.keymap.set('n', 'gq', 'qq', { desc = 'End record macro' })
-vim.keymap.set('n', '<leader>w', '<cmd>w<CR>', { desc = '[W]rite current buffer' })
-vim.keymap.set('n', '<leader>W', '<cmd>wa<CR>', { desc = '[W]rite all buffers' })
-vim.keymap.set('n', '<C-6>', '<C-^>', { desc = 'Switch between last two buffers' })
-
--- Char counter in status line / or as command
-vim.keymap.set('v', '<leader>c', function() -- use <leader>cc if
-  local char_count = vim.fn.wordcount().visual_chars
-  local word_count = vim.fn.wordcount().visual_words
-  -- different msg styles. minimalistic was best
-  local message = word_count .. ' words' .. '\n' .. char_count .. ' chars'
-  -- local message = word_count .. ' Words' .. '\n' .. char_count .. ' Chars'
-  -- local message = 'Words: ' .. word_count .. '\nChars: ' .. char_count
-  vim.notify(message)
-end, { desc = '[C]ount characters and words' })
-
--- NOTE: if the above word_count script is not working, use https://www.reddit.com/r/neovim/comments/z2tgf5/how_to_show_selected_characterline_count_on/
---
--- local char_and_line_count = function() -- m
---   if visual_str[tostring(vim.fn.mode())] then
---     local ln_beg = vim.fn.line 'v'
---     local ln_end = vim.fn.line '.'
-
---     local lines = ln_beg <= ln_end and ln_end - ln_beg + 1 or ln_beg - ln_end + 1
-
---     return tostring(vim.fn.wordcount().visual_chars) .. ' chars' .. ' / ' .. tostring(lines) .. ' lines'
---   else
---     -- return ''
---     return '[' .. tostring(vim.fn.mode()) .. ']' -- for debugging
---   end
--- end
-
--- IntelliJ
-vim.keymap.set('n', 'gj', function()
-  local currentFile = vim.fn.expand '%:p'
-  -- local command = 'open -a "IntelliJ IDEA" ' .. currentFile -- This actually works...
-  vim.system({ 'idea', currentFile }, { text = true }, function(obj)
-    print(obj.code)
-    print(obj.stdout)
-    print(obj.stderr)
-  end)
-end, { desc = '[G]o to Intelli[J] - open current file' })
-
--- Format bullet points in markdown -- WARN: not working yet
--- vim.keymap.set({ 'n', 'v' }, '<leader>mf', function()
---   -- Get the selected lines
---   local start_pos = vim.fn.getpos "'<"
---   local end_pos = vim.fn.getpos "'>"
---   local lines = vim.api.nvim_buf_get_lines(0, start_pos[2] - 1, end_pos[2], false)
-
---   local formatted_lines = {}
---   for _, line in ipairs(lines) do
---     -- Trim leading and trailing whitespaces
---     line = line:gsub('^%s+', ''):gsub('%s+$', '')
---     -- Add proper indentation for bullet points
---     if line:match '^%- %-%s' then
---       line = line:gsub('^%- %-%s', '- ')
---     end
---     table.insert(formatted_lines, line)
---   end
--- end, { desc = 'Format bullet list' })
-
--- See Primegan nvim bindings for inspiration: https://github.com/ThePrimeagen/init.lua/blob/249f3b14cc517202c80c6babd0f9ec548351ec71/lua/theprimeagen/remap.lua
--- Me: you use Ctr+Command+ right homerow because you use cmd insteas of alt for window management. Also, ctr+shift is the same as ctr+no shift.
-vim.keymap.set(
-  'n',
-  '<C-f>',
-  '<cmd>silent !tmux neww tmux-sessionizer<CR>',
-  { desc = 'Fzf through all your projects and open it with tmux. Inspired by Primegan.' }
-)
-
--- PROBLEM: alt-shift is already maped to 'assing-node-to-workspace' in window manager.
-vim.keymap.set(
-  'n',
-  '<M-n>',
-  '<cmd>silent !tmux neww tmux-sessionizer ~/cUni/240527_FPV_functional_programming_TUM<CR>',
-  { desc = 'Quick switch to a different project' }
-)
-vim.keymap.set(
-  'n',
-  '<M-e>',
-  "<cmd>silent !tmux neww tmux-sessionizer '~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Knowledge_Wiki'<CR>",
-  { desc = 'Quick switch to a different project' }
-)
-vim.keymap.set(
-  'n',
-  '<M-i>',
-  '<cmd>silent !tmux neww tmux-sessionizer ~/cUni/240510_EIST_software_engineering_TUM<CR>',
-  { desc = 'Quick switch to a different project' }
-)
-vim.keymap.set(
-  'n',
-  '<A-o>',
-  '<cmd>silent !tmux neww tmux-sessionizer ~/cUni/240425_ADS_algorithm_data_structures_TUM<CR>',
-  { desc = 'Quick switch to a different project' }
-)
-
--- Primegan recommends using zz after ctr-D/U to keep curor at same position no screen easier for eyes. Source: https://youtu.be/KfENDDEpCsI?si=ClLf3MUgszp1c6op&t=242
-vim.keymap.set('n', '<C-d>', '<C-d>zz')
-vim.keymap.set('n', '<C-u>', '<C-u>zz')
-vim.keymap.set('n', '<PageUp>', '<PageUp>zz')
-vim.keymap.set('n', '<PageDown>', '<PageDown>zz')
-vim.keymap.set('n', 'n', 'nzzzv')
-vim.keymap.set('n', 'N', 'Nzzzv')
--- In vim it can be very anoying to past because you can only paste once as what you replace will overwrite your current regsitry.
--- A solution is to use the following which delets into the `_` registry and then pastes.
--- Source: https://www.youtube.com/watch?v=qZO9A5F6BZs&list=PLm323Lc7iSW_wuxqmKx_xxNtJC_hJbQ7R&index=4
-vim.keymap.set('x', '<leader>p', '"_dP', { desc = "[P]aste text but don't loose your copy register" })
-
--- Error and quickfix navigation. Primegan: noticed he didn' use split and didn't need the C-arrows for split navigation
--- Instead he bound them (originally he used k,j on dvorak) to very useful error and quick fix navigation. First search for something in telescope,
--- then send results to quickfixlist and then navigate it with this binding.
--- He explains it in this video: https://youtu.be/-ybCiHPWKNA?si=nWChMDCoTzSIHF7p&t=2974
-vim.keymap.set('n', '<C-Up>', '<cmd>cnext<CR>zz')
-vim.keymap.set('n', '<C-Down>', '<cmd>cprev<CR>zz')
-vim.keymap.set('n', '<leader>Up', '<cmd>lnext<CR>zz')
-vim.keymap.set('n', '<leader>Down', '<cmd>lprev<CR>zz')
-
--- Quick substitution. Primegan a bit modified.
-vim.keymap.set('n', '<leader>rs', [[:%s/<C-r><C-w>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = 'Quickly [S]ubsitute word under curser in current buffer.' })
-
--- Primegan uses this to open nvim builtin file explorer
--- vim.keymap.set('n', '<leader>pv', vim.cmd.Ex)
-
+require 'custom.keymaps'
 -- ================= END ==============================
 
 -- [[ Basic Autocommands ]]
@@ -1155,6 +1026,7 @@ require('lazy').setup({
         telescope = true,
         treesitter = true,
         which_key = true,
+        headlines = false, -- I prefer my own colors
       },
       custom_highlights = function(colors)
         -- me: find nall nvim builting groups with preview with h: highlight-groups
