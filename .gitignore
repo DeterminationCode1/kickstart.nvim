@@ -3,5 +3,6 @@ test.sh
 .luarc.json
 nvim
 
-spell/
+# Me: Kickstarter actually ignored the spell folder by default. Why?
+# spell/
 lazy-lock.json
