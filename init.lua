@@ -321,7 +321,17 @@ require('lazy').setup({
       -- Kickstarter originally used: `vim.keymap.set('n','<leader>sf',builtin.find_files, {desc = '...')`
       vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
       -- ============ Me: shortcut for seraching files because it's so common ============
-      vim.keymap.set('n', '<leader>f', builtin.find_files, { desc = 'Search [F]iles (Shortcut)' })
+      -- kickstarter telescope normal root dir search.
+      -- vim.keymap.set('n', '<leader>f', builtin.find_files, { desc = 'Search [F]iles (Shortcut)' })
+
+      -- Me: use telescope-frecency plugin for better ranked search results
+      -- You could add theme=ivy as argument to get a different look
+      vim.keymap.set(
+        { 'n', 'v' },
+        '<leader>f',
+        '<cmd>Telescope frecency workspace=CWD<cr>',
+        { desc = 'Search [F]iles (Shortcut)', noremap = true, silent = true }
+      )
       -- ==================== Me: END ====================================================
       vim.keymap.set('n', '<leader>sh', function()
         builtin.find_files { hidden = true }

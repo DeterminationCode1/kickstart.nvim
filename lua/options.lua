@@ -3,6 +3,7 @@
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
 
+local opt = vim.opt
 -- Enable true color support in Neovim
 vim.opt.termguicolors = true
 
@@ -115,16 +116,74 @@ vim.keymap.set('i', '<C-l>', '<Esc>[s1z=`]a', { desc = 'Fix last spelling error'
 -- =========== Me: END ===================
 
 -------------------------------------------------------------------------------
---                           Folding section
+------------------------------ Folding section --------------------------------
 -------------------------------------------------------------------------------
 -- Mostly copied from Linkarzu's dotfiles: https://github.com/linkarzu/dotfiles-latest/blob/main/neovim/neobean/lua/config/keymaps.lua
 
 -- official nvim docs: https://neovim.io/doc/user/fold.html
 -- Tip: all fold commands start with z, z looks like a folded paper.
 -- Useful commands: za toggle fold, zR unfold all, zM fold all
-vim.opt.foldmethod = 'indent'
+--
+-- The following settings were extracted from Linkarzu's config function
+local M = {}
+M.skip_foldexpr = {} ---@type table<number,boolean>
+local skip_check = assert(vim.uv.new_check())
+
+local function set_foldmethod_expr()
+  -- These are lazyvim.org defaults but setting them just in case a file
+  -- doesn't have them set (because he uses LazyVim?)
+  if vim.fn.has 'nvim-0.10' == 1 then
+    vim.opt.foldmethod = 'expr'
+    -- see lazyvim https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/util/ui.lua
+    vim.opt.foldexpr = "v:lua.require'lazyvim.util'.ui.foldexpr()"
+    vim.opt.foldtext = ''
+  else
+    vim.opt.foldmethod = 'indent'
+    vim.opt.foldtext = "v:lua.require'lazyvim.util'.ui.foldtext()"
+  end
+  vim.opt.foldlevel = 99
+end
+
+vim.opt.foldmethod = 'expr'
+opt.foldexpr = 'v:lua.Foldexpr()'
+opt.foldtext = ''
 -- By default nvim folds files you open. Set foldleve to high number to not close them by default.
 vim.opt.foldlevel = 99
+
+function Foldexpr()
+  local buf = vim.api.nvim_get_current_buf()
+
+  -- still in the same tick and no parser
+  if M.skip_foldexpr[buf] then
+    return '0'
+  end
+
+  -- don't use treesitter folds for non-file buffers
+  if vim.bo[buf].buftype ~= '' then
+    return '0'
+  end
+
+  -- as long as we don't have a filetype, don't bother
+  -- checking if treesitter is available (it won't)
+  if vim.bo[buf].filetype == '' then
+    return '0'
+  end
+
+  local ok = pcall(vim.treesitter.get_parser, buf)
+
+  if ok then
+    return vim.treesitter.foldexpr()
+  end
+
+  -- no parser available, so mark it as skip
+  -- in the next tick, all skip marks will be reset
+  M.skip_foldexpr[buf] = true
+  skip_check:start(function()
+    M.skip_foldexpr = {}
+    skip_check:stop()
+  end)
+  return '0'
+end
 
 -- Use <CR> to fold when in normal mode
 -- To see help about folds use `:help fold`
@@ -139,20 +198,6 @@ vim.keymap.set('n', '<CR>', function()
     vim.cmd 'normal! za'
   end
 end, { desc = '[P]Toggle fold' })
-
-local function set_foldmethod_expr()
-  -- These are lazyvim.org defaults but setting them just in case a file
-  -- doesn't have them set
-  if vim.fn.has 'nvim-0.10' == 1 then
-    vim.opt.foldmethod = 'expr'
-    vim.opt.foldexpr = "v:lua.require'lazyvim.util'.ui.foldexpr()"
-    vim.opt.foldtext = ''
-  else
-    vim.opt.foldmethod = 'indent'
-    vim.opt.foldtext = "v:lua.require'lazyvim.util'.ui.foldtext()"
-  end
-  vim.opt.foldlevel = 99
-end
 
 -- Function to fold all headings of a specific level
 local function fold_headings_of_level(level)
@@ -235,5 +280,5 @@ vim.keymap.set('n', '<leader>mf;', function()
 end, { desc = '[P]Fold all headings level 4 or above' })
 
 -------------------------------------------------------------------------------
---                         End Folding section
+------------------------------ END Folding section ----------------------------
 -------------------------------------------------------------------------------
