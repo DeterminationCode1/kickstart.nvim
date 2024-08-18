@@ -129,20 +129,20 @@ local M = {}
 M.skip_foldexpr = {} ---@type table<number,boolean>
 local skip_check = assert(vim.uv.new_check())
 
-local function set_foldmethod_expr()
-  -- These are lazyvim.org defaults but setting them just in case a file
-  -- doesn't have them set (because he uses LazyVim?)
-  if vim.fn.has 'nvim-0.10' == 1 then
-    vim.opt.foldmethod = 'expr'
-    -- see lazyvim https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/util/ui.lua
-    vim.opt.foldexpr = "v:lua.require'lazyvim.util'.ui.foldexpr()"
-    vim.opt.foldtext = ''
-  else
-    vim.opt.foldmethod = 'indent'
-    vim.opt.foldtext = "v:lua.require'lazyvim.util'.ui.foldtext()"
-  end
-  vim.opt.foldlevel = 99
-end
+-- local function set_foldmethod_expr()
+--   -- These are lazyvim.org defaults but setting them just in case a file
+--   -- doesn't have them set (because he uses LazyVim?)
+--   if vim.fn.has 'nvim-0.10' == 1 then
+--     vim.opt.foldmethod = 'expr'
+--     -- see lazyvim https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/util/ui.lua
+--     vim.opt.foldexpr = "v:lua.require'lazyvim.util'.ui.foldexpr()"
+--     vim.opt.foldtext = ''
+--   else
+--     vim.opt.foldmethod = 'indent'
+--     vim.opt.foldtext = "v:lua.require'lazyvim.util'.ui.foldtext()"
+--   end
+--   vim.opt.foldlevel = 99
+-- end
 
 vim.opt.foldmethod = 'expr'
 opt.foldexpr = 'v:lua.Foldexpr()'
@@ -192,12 +192,32 @@ vim.keymap.set('n', '<CR>', function()
   local line = vim.fn.line '.'
   -- Get the fold level of the current line
   local foldlevel = vim.fn.foldlevel(line)
+
+  -- ==========================
+  -- me: check if its' a link instead eg [link](url) or [[link]]
+  -- Then, open the file link in a new buffer
+  -- TODO: make the script more resilient to different link formats
+  if vim.fn.matchstr(vim.fn.getline(line), '\\[\\[.*\\]\\]') ~= '' then
+    -- get the link text
+    local link_text = vim.fn.matchstr(vim.fn.getline(line), '\\[\\[.*\\]\\]')
+    -- remove the brackets and add the file extension
+    link_text = string.sub(link_text, 3, -3) .. '.md'
+    -- open the link
+    vim.cmd('edit ' .. link_text)
+    -- open the link like with gd assuming that an markdown lsp like marksman is
+    -- installed
+    -- vim.cmd 'normal! gd'
+    return
+  end
+  -- ==========================
+
   if foldlevel == 0 then
-    vim.notify('No fold found', vim.log.levels.INFO)
+    -- no fold and no link
+    vim.notify('No fold or link found', vim.log.levels.INFO)
   else
     vim.cmd 'normal! za'
   end
-end, { desc = '[P]Toggle fold' })
+end, { desc = '[P]Toggle fold (or open link)' })
 
 -- Function to fold all headings of a specific level
 local function fold_headings_of_level(level)
@@ -224,7 +244,12 @@ local function fold_headings_of_level(level)
 end
 
 local function fold_markdown_headings(levels)
-  set_foldmethod_expr()
+  -- set_foldmethod_expr()
+  -- NOTE: Linkarzu called set_foldmethod_expr()
+  -- because he wanted to  make sure lazyvim's automatic fold settings
+  -- configuration was indeed set. But because you have full control in
+  -- kickstarter and don't dynamically change fold settings.  You don't need to
+  -- call it.
   -- I save the view to know where to jump back after folding
   local saved_view = vim.fn.winsaveview()
   for _, level in ipairs(levels) do
@@ -243,7 +268,8 @@ vim.keymap.set('n', '<leader>mfu', function()
 end, { desc = '[P]Unfold all headings level 2 or above' })
 
 -- Keymap for folding markdown headings of level 1 or above
-vim.keymap.set('n', '<leader>mfj', function()
+-- Linkarzu keymap: <leader>mfj
+vim.keymap.set('n', '<leader>mfn', function()
   -- Reloads the file to refresh folds, otherwise you have to re-open neovim
   vim.cmd 'edit!'
   -- Unfold everything first or I had issues
@@ -253,7 +279,8 @@ end, { desc = '[P]Fold all headings level 1 or above' })
 
 -- Keymap for folding markdown headings of level 2 or above
 -- I know, it reads like "madafaka" but "k" for me means "2"
-vim.keymap.set('n', '<leader>mfk', function()
+-- Linkarzu keymap: <leader>mfk
+vim.keymap.set('n', '<leader>mfe', function()
   -- Reloads the file to refresh folds, otherwise you have to re-open neovim
   vim.cmd 'edit!'
   -- Unfold everything first or I had issues
@@ -262,7 +289,8 @@ vim.keymap.set('n', '<leader>mfk', function()
 end, { desc = '[P]Fold all headings level 2 or above' })
 
 -- Keymap for folding markdown headings of level 3 or above
-vim.keymap.set('n', '<leader>mfl', function()
+-- Linkarzu keymap: <leader>mfl
+vim.keymap.set('n', '<leader>mfi', function()
   -- Reloads the file to refresh folds, otherwise you have to re-open neovim
   vim.cmd 'edit!'
   -- Unfold everything first or I had issues
@@ -271,7 +299,8 @@ vim.keymap.set('n', '<leader>mfl', function()
 end, { desc = '[P]Fold all headings level 3 or above' })
 
 -- Keymap for folding markdown headings of level 4 or above
-vim.keymap.set('n', '<leader>mf;', function()
+-- Linkarzu keymap: <leader>mfo
+vim.keymap.set('n', '<leader>mfo', function()
   -- Reloads the file to refresh folds, otherwise you have to re-open neovim
   vim.cmd 'edit!'
   -- Unfold everything first or I had issues
