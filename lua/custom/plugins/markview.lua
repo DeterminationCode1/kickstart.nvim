@@ -213,6 +213,8 @@ return {
       -- ses https://github.com/OXY2DEV/markview.nvim/wiki/List-items
       list_items = {
         enable = true,
+        -- FIX: a indent_size of 0 prevents all nesting. Same goes for
+        -- shift_width. But I want to have no default indent for first level list items.
         shift_width = 1, -- Number of spaces to add per indent level of the list item. Default is 4.
         indent_size = 1, -- The number of spaces to add to the left of the list item marker. Default is 2.
 
@@ -353,7 +355,6 @@ return {
             border = '▋',
             border_hl = 'MarkviewBlockQuoteDefault',
           },
-
           {
             match_string = 'NOTE',
             callout_preview = '󰋽 Note',
@@ -365,6 +366,20 @@ return {
             border = '▋',
             border_hl = 'MarkviewBlockQuoteNote',
           },
+          -- --------------------- Added by me ------------------------
+          {
+            match_string = 'INFO',
+            callout_preview = '󰋽 Info',
+            callout_preview_hl = 'MarkviewBlockQuoteNote',
+
+            custom_title = true,
+            custom_icon = ' 󰋽 ',
+
+            border = '▋',
+            border_hl = 'MarkviewBlockQuoteNote',
+          },
+          -- ----------------------- End ------------------------
+
           {
             match_string = 'TIP',
             callout_preview = ' Tip',
