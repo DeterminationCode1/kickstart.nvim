@@ -1,3 +1,6 @@
+-- My utility function collection
+local my_utils = require 'utils'
+
 -- ================= My keybindings rempas ==============y
 -- This fill content was originally in the ~/.config/nvim/init.lua file.
 -- But to make it more readable it was moved to this file.
@@ -308,3 +311,46 @@ vim.keymap.set('n', 'gj', function()
     print(obj.stderr)
   end)
 end, { desc = '[G]o to Intelli[J] - open current file' })
+
+-- ======================== Obsidian ========================
+-- Open current markdown file in Obsidian
+-- See official Obsidian URI documentation:
+-- https://help.obsidian.md/Advanced+topics/Using+obsidian+URI#Examples
+-- NOTE: maybe use 'goo' as keybinding?
+vim.keymap.set('n', '<leader>mo', function()
+  -- Check only .md, .csv .txt, .html files can be opened in Obsidian
+  local file_extension = vim.fn.expand '%:e'
+  if not (file_extension == 'md' or file_extension == 'csv' or file_extension == 'txt' or file_extension == 'html') then
+    vim.notify('Only .md, .csv, .txt or .html files can be opened in Obsidian', vim.log.levels.WARN)
+    return
+  end
+
+  -- URL Encode function
+  local function url_encode(str)
+    -- Replace spaces with %20, then replace other special characters
+    return str
+      :gsub(' ', '%%20') --:gsub('/', '%2F')
+      :gsub('([^%w%-._~])', function(c)
+        return string.format('%%%02X', string.byte(c))
+      end)
+  end
+
+  -- The params  must be encoded. Eg spaces must be %20 and slashes %2F...
+  local currentFilePath = vim.fn.expand '%:p'
+  -- local vault = 'Knowledge_Wiki'
+  local currentFilePathEncoded = url_encode(currentFilePath)
+
+  -- uri must be encoded!
+  -- local obsidian_url = 'obsidian://open?vault=' .. vaultEncoded .. '&file=' .. currentFileEncoded
+  local obsidian_url = 'obsidian://open?path=' .. currentFilePathEncoded
+  --debug
+  vim.notify(obsidian_url)
+
+  vim.system({ 'open', '-a', obsidian_url }, { text = true }, function(obj)
+    vim.notify('Opened in Obsidian', vim.log.levels.INFO)
+
+    if obj.code ~= 0 then
+      vim.notify('Error opening in Obsidian', vim.log.levels.ERROR)
+    end
+  end)
+end, { desc = 'Open current [m]arkdown file in [O]bsidian' })
