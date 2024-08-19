@@ -68,7 +68,7 @@ return {
     vim.keymap.set(
       'n',
       -- INFO: maybe use capital E for safety reasons.
-      '<leader>ge', -- It's capital for making it less typo prone for safety reasons.
+      '<leader>gEx', -- The E is capitalized and has an 'x' for making it less typo prone for safety reasons.
       function()
         -- Stage all changes. Using native git cli
         -- NOTE: :wait is needed to make it synchronous
