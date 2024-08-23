@@ -39,7 +39,7 @@ return {
           --
           -- This fixes an issue I had in which I couldn't close the floating
           -- window because I couldn't focus it
-          db_safe_mode = true, -- Default: true. Linkarzu: false
+          db_safe_mode = false, -- Default: true. Linkarzu: false
           -- If `true`, it removes stale entries count over than db_validate_threshold
           auto_validate = true, -- Default: true
           -- It will remove entries when stale ones exist more than this count

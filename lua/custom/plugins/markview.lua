@@ -24,7 +24,7 @@ return {
       modes = { 'n', 'i', 'no', 'c' },
       -- Hybridmode: render whole file while in selected mode but not the line of
       -- the cursor
-      hybrid_modes = { 'i', 'n' },
+      hybrid_modes = { 'i', 'c' }, -- No longer used: 'n'
       -- This is nice to have
       callbacks = {
         on_enable = function(_, win)
@@ -48,8 +48,16 @@ return {
           value = { fg = '#04d1f9', bg = '#015363', bold = true },
         },
         {
+          group_name = 'Heading3Corner',
+          value = { fg = '#015363' },
+        },
+        {
           group_name = 'Heading4',
           value = { fg = '#f16c75', bg = '#602b2e' },
+        },
+        {
+          group_name = 'Heading4Corner',
+          value = { fg = '#602b2e' },
         },
         {
           group_name = 'Heading5',
@@ -137,7 +145,9 @@ return {
           icon = '󰎪  ',
 
           padding_left = ' ',
-          padding_right = '      ',
+          padding_right = '             ',
+          corner_right = '',
+          corner_right_hl = 'Heading3Corner',
 
           sign = '',
 
@@ -150,6 +160,8 @@ return {
 
           padding_left = ' ',
           padding_right = '     ',
+          corner_right = '',
+          corner_right_hl = 'Heading4Corner',
 
           sign = '',
 
@@ -256,6 +268,17 @@ return {
         -- `DANGER`. that can be rather confusing.
         callouts = {
           --- From `Obsidian`
+          {
+            match_string = 'SUMMARY',
+            callout_preview = '󱉫 Summary',
+            callout_preview_hl = 'MarkviewBlockQuoteNote',
+
+            custom_title = true,
+            custom_icon = '󱉫 ',
+
+            border = '▋',
+            border_hl = 'MarkviewBlockQuoteNote',
+          },
           {
             match_string = 'ABSTRACT',
             callout_preview = '󱉫 Abstract',

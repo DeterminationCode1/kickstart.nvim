@@ -236,7 +236,7 @@ require('lazy').setup({
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
         { '<leader>m', group = '[M]arkdown' }, -- me
-        { '<leader>mf', group = 'Markdown [F]old' }, -- me  
+        { '<leader>mf', group = 'Markdown [F]old' }, -- me
       }
     end,
   },
@@ -580,6 +580,9 @@ require('lazy').setup({
         -- Me: Docker & docker-compose
         dockerls = {},
         docker_compose_language_service = {},
+
+        -- R statistical language
+        r_language_server = {},
 
         -- Me: Setup OCaml
         ocamllsp = {},
@@ -951,6 +954,8 @@ require('lazy').setup({
         vim.api.nvim_set_hl(0, 'GitSignsUntracked', { fg = '#565970' }) -- Me: There are gray0 to 2 from dark to light
 
         return {
+          -- Make bold text
+          ['@markup.strong.markdown_inline'] = { bold = true, fg = colors.white },
           -- ME: find all gitsigns highlight-groups under 'h: gitsigns-highlight-groups'
           GitSignsAdd = { fg = colors.green },
           -- GitSignsChange = { fg = colors.blue },
@@ -1103,7 +1108,11 @@ require('lazy').setup({
         'query',
         'vim',
         'vimdoc',
-        -- My languages
+        -- ------ My languages -------------
+        -- R
+        'r',
+        'rnoweb',
+        -- end
         'python',
         'javascript',
         'typescript',
