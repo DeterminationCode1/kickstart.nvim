@@ -7,6 +7,9 @@ local opt = vim.opt
 -- Enable true color support in Neovim
 vim.opt.termguicolors = true
 
+-- required by the plugin 'jaimecgomezz/here.term'
+vim.opt.hidden = true -- Enable modified buffers in background
+
 -- [[ Setting options ]]
 -- See `:help vim.opt`
 -- NOTE: You can change these options as you wish!
