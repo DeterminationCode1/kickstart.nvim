@@ -142,7 +142,9 @@ vim.keymap.set('n', '<C-up>', '<C-w><C-k>', { desc = 'Move focus to the upper wi
 -- ================= My keybindings rempas ===============
 require 'keymaps'
 -- ================= END ==============================
+--
 
+-- ================= Autocommands =================
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -157,53 +159,9 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
--- =================== Espanso ===================
--- Only activate the Espanso text snippet engine when in insert mode.
---
--- Requirements when using Tmux:
---    Make sure you have `focus-events` turned on in your `tmux.conf`. Otherwise the
---    focus events won't be sent to Neovim and Espanso won't be
---    activated / deactivated based on app focus:
---    `set -g focus-events on`
-
--- deactivate Espanso when leaving insert mode.
--- CmdlineEnter, TermOpen, TermEnter are not needed
-vim.api.nvim_create_autocmd('InsertLeave', {
-  desc = 'Deactivate espanso when leaving insert mode',
-  group = vim.api.nvim_create_augroup('espanso-deactivate', { clear = true }),
-  callback = function()
-    vim.system({ 'espanso', 'cmd', 'disable' }, { text = true }, function(obj)
-      vim.notify('Espanso deactivated', 'debug', { title = 'Espanso' })
-    end)
-  end,
-})
-
--- deactivate Espanso when the nvim application gains focus, but only if it's
--- not in insert mode.
-vim.api.nvim_create_autocmd('FocusGained', {
-  desc = 'Deactivate espanso when neovim gains focus',
-  group = vim.api.nvim_create_augroup('espanso-deactivate-focus', { clear = true }),
-  callback = function()
-    if vim.api.nvim_get_mode().mode ~= 'i' then
-      vim.system({ 'espanso', 'cmd', 'disable' }, { text = true }, function(obj)
-        vim.notify('Espanso deactivated', 'debug', { title = 'Espanso' })
-      end)
-    end
-  end,
-})
-
--- activate Espanso when entering insert mode or when nvim is not the active
--- application (focus lost, i.e. another app is in focus).
-vim.api.nvim_create_autocmd({ 'InsertEnter', 'FocusLost' }, {
-  desc = 'Activate espanso when entering insert mode',
-  group = vim.api.nvim_create_augroup('espanso-activate', { clear = true }),
-  callback = function()
-    vim.system({ 'espanso', 'cmd', 'enable' }, { text = true }, function(obj)
-      vim.notify('Espanso activated', 'debug', { title = 'Espanso' })
-    end)
-  end,
-})
--- =================== END ===================
+-- I move all of my custom autocommands into a separate file
+require 'autocommands'
+-- ================= END: Autocommands ==============================
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
