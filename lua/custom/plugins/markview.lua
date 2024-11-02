@@ -200,7 +200,7 @@ return {
       code_blocks = {
         enable = true,
         style = 'language',
-        icons = true,
+        icons = 'devicons', -- use webdevicons for filetypes
         position = nil,
         min_width = 70,
 

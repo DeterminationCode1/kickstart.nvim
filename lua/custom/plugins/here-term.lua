@@ -1,17 +1,22 @@
--- https://github.com/jaimecgomezz/here.term -- her
--- hee reason C-C- C-C- , , ., , . ., ;;;
---
--- NOTE: why I use this plugin: I no longer use toggleterm.nvim because the lightweigth here.term is
--- enough for my  one-off terminal commands and for persistent commands  that
--- would require multiple terminals, a plugin like 'overseer.nvim' or comparable
--- task manager seems to make more sense.
+-- https://github.com/jaimecgomezz/here.term
 --
 -- Simply toggle a single terminal instance (that acts like a normal
 -- buffer) with a single keybinding
 --
 -- be aware:  Please make sure you have set the hidden option in your config file or the terminal will be discarded when toggled.
 --
+-- NOTE: why I use this plugin: I no longer use toggleterm.nvim because the lightweigth here.term is
+-- enough for my  one-off terminal commands and for persistent commands which
+-- would require multiple terminals running in parallel, a plugin like 'overseer.nvim' or a comparable
+-- task manager seems to make more sense.
 --
+-- Troubleshooting:
+-- - Problem: The 'toggle terminal' keybindings are not created.
+--   Solution: The plugin architecture seems to have been changed so that it
+--   become necessary to always explicitly set the `opts.mappings.enable = true`
+--   entry in the plugin's lua config table. Previously, it had worked without
+--   it being stated explicitly.
+
 return {
   'jaimecgomezz/here.term',
   dependencies = {
@@ -26,8 +31,10 @@ return {
     -- The minimal mappings used to toggle and kill the terminal. Available in
     -- `normal` and `terminal` mode.
     mappings = {
+      enable = true,
       -- In wezterm + tmux, C-/ is received as C-_. See https://www.reddit.com/r/neovim/comments/1bh3wkv/comment/kvm8ith/
       toggle = '<C-_>', -- default: '<C-;>'
+      -- toggle = '<leader>gy', -- default: '<C-;>'
       kill = '<C-S-,>', -- default: '<C-S-;>'
     },
     -- Additional mappings that I consider useful since you won't have to escape (<C-\><C-n>)
@@ -37,14 +44,24 @@ return {
       enable = false, -- Disable them entirely
     },
   },
-  -- setup = function()
-  -- copy paste from here-term.lua
-  --
-  -- -- here.term mappings
-  -- map({ 'n', 't' }, opts.mappings.toggle, M.toggle_terminal, 'Toggle terminal')
-  --
-  -- map({ 'n', 't' }, opts.mappings.kill, M.kill_terminal, 'Kill terminal')
 
-  --[[ vim.keymap.set { 'n', '<leader>o', require('here-term').toggle_terminal(), desc = 'Toggle Terminal' } ]]
+  -- NOTE: the following  config functdon is working and was helpful for
+  -- debugging.
+  --
+  -- config = function(_, opts)
+  --   -- copy paste from here-term.lua
+  --   local term = require 'here-term'
+  --   term.setup(opts)
+
+  --   print 'here-term setup'
+  --   -- here.term mappings
+  --   local function map(mode, combo, mapping, desc)
+  --     if combo then
+  --       vim.keymap.set(mode, combo, mapping, { silent = true, desc = desc })
+  --     end
+  --   end
+  --   -- map({ 'n', 't' }, opts.mappings.toggle, term.toggle_terminal, 'Toggle terminal')
+
+  --   -- map({ 'n', 't' }, opts.mappings.kill, term.kill_terminal, 'Kill terminal')
   -- end,
 }

@@ -2,6 +2,10 @@
 -- legacy repo. WARNING active development has stopped https://github.com/pocco81/auto-save.nvim
 -- rst.. vim.api.nvim_buf_get_name(0))
 -- Auto save files
+--
+-- Update Oct 2024:  the message on save config option was revomed. read the
+-- readme to  find alternatives if you want a   message.
+--
 return {
   -- 'pocco81/auto-save.nvim',
   'okuuva/auto-save.nvim',
@@ -13,19 +17,9 @@ return {
       trigger_events = { -- See :h events
         immediate_save = { 'BufLeave', 'FocusLost' }, -- vim events that trigger an immediate save
         defer_save = { 'InsertLeave', 'TextChanged' }, -- vim events that trigger a deferred save (saves after `debounce_delay`)
-        cancel_defered_save = { 'InsertEnter' }, -- vim events that cancel a pending deferred save
+        cancel_deferred_save = { 'InsertEnter' }, -- vim events that cancel a pending deferred save
       },
 
-      execution_message = {
-        -- Turn off auto-save message by setting it to an empty string
-        message = '',
-        -- function() -- message to print on save
-        --   -- default msg: 'AutoSave: saved at ' .. vim.fn.strftime '%H:%M:%S'
-        --   return ('AutoSave: ' .. vim.fn.strftime '%H:%M:%S')
-        -- end,
-        dim = 0.50, -- dim the color of `message`. Defaults to 0.18
-        cleaning_interval = 500, -- (milliseconds) automatically clean MsgArea after displaying `message`. See :h MsgAsea . Defaults to 1250
-      },
       -- function that detesmines whether to save the current buffer or not
       -- return true: if buffer is ok to be saved
       -- return false: if it's not ok to be saved
