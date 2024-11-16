@@ -10,6 +10,7 @@
 --
 -- By default its enabled on filetypes 'markdown', 'text', 'gitcommit', 'scratch'
 
+-- return {}
 return {
   'bullets-vim/bullets.vim',
 }

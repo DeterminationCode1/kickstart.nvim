@@ -24,7 +24,12 @@ return {
       extra = {
         above = prefix .. 'O', -- Defaul1s to 'gcO'
         below = prefix .. 'o', -- Defaults to 'gco'
-        eol = prefix .. 'a', -- Defaults to 'gcA'
+        -- For a year I used 'qa' for 'gcA' as it was closer to the original
+        -- But many textobject motions like ap am af start with 'a' and thus
+        -- cannot be used if 'qa' defaults to 'comment at end of line'
+        -- Also, the keyboard positio of 'qe' is a bit better than 'qa' on
+        -- the colemak layout.
+        eol = prefix .. 'e', -- Defaults to 'gcA'
       },
       mappings = {
         basic = true,
