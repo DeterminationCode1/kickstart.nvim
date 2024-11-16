@@ -16,7 +16,7 @@ vim.api.nvim_create_autocmd('InsertLeave', {
   group = vim.api.nvim_create_augroup('espanso-deactivate', { clear = true }),
   callback = function()
     vim.system({ 'espanso', 'cmd', 'disable' }, { text = true }, function(obj)
-      vim.notify('Espanso deactivated', 'debug', { title = 'Espanso' })
+      -- vim.notify('Espanso deactivated', vim.log.levels.DEBUG, { title = 'Espanso' })
     end)
   end,
 })
@@ -29,7 +29,7 @@ vim.api.nvim_create_autocmd('FocusGained', {
   callback = function()
     if vim.api.nvim_get_mode().mode ~= 'i' then
       vim.system({ 'espanso', 'cmd', 'disable' }, { text = true }, function(obj)
-        vim.notify('Espanso deactivated', 'debug', { title = 'Espanso' })
+        --vim.notify('Espanso deactivated', vim.log.levels.DEBUG, { title = 'Espanso' })
       end)
     end
   end,
@@ -42,7 +42,7 @@ vim.api.nvim_create_autocmd({ 'InsertEnter', 'FocusLost' }, {
   group = vim.api.nvim_create_augroup('espanso-activate', { clear = true }),
   callback = function()
     vim.system({ 'espanso', 'cmd', 'enable' }, { text = true }, function(obj)
-      vim.notify('Espanso activated', 'debug', { title = 'Espanso' })
+      -- vim.notify('Espanso activated', vim.log.levels.DEBUG, { title = 'Espanso' })
     end)
   end,
 })
@@ -55,8 +55,8 @@ vim.api.nvim_create_autocmd({ 'InsertEnter', 'FocusLost' }, {
 
 vim.api.nvim_create_autocmd('InsertCharPre', {
   group = vim.api.nvim_create_augroup('capitalize-first-char', { clear = true }),
-  pattern = '*', -- Match all filetypes
-  -- pattern = {'*.md', '*.txt', '*.yml', '*.yaml'} -- Match specific filetypes if needed
+  -- pattern = '*', -- Match all filetypes
+  pattern = { '*.md', '*.txt' }, -- Match specific filetypes if needed. '*.yml', '*.yaml'
   callback = function()
     -- Define a list of common abbreviations to exclude
     local abbreviations = { 'e.g.', 'i.e.', 'etc.', 'vs.', 'Dr.' } -- 'Mr.', 'Ms.', 'Mrs.'
@@ -72,10 +72,18 @@ vim.api.nvim_create_autocmd('InsertCharPre', {
         break
       end
     end
+    -- patterns:
+    --
+    -- 1. Start of the line: %^
+    -- 2. After a punctuation mark: [.!?]\_s+
+    -- 3. After a leading dash: \_^\-\s
+    -- 4. After a markdown heading: ^#+\s+
+    -- 5. After a YAML frontmatter title attribute: ^title\:\s
+    -- 6. After two newlines, i.e. a new paragraph: \n\n
 
     -- Continue with capitalization only if not an abbreviation
     if not is_abbreviation then
-      local pos = vim.fn.search([[\v(%^|[.!?]\_s+|\_^\-\s|\_^title\:\s|\n\n)%#]], 'bcnw')
+      local pos = vim.fn.search([[\v(%^|[.!?]\_s+|\_^\-\s|^#+\s+|\_^title\:\s|\n\n)%#]], 'bcnw')
       if pos ~= 0 then
         -- Convert the character to uppercase
         vim.v.char = string.upper(vim.v.char)
@@ -107,7 +115,9 @@ vim.api.nvim_create_autocmd('BufWritePre', {
     -- edge case: code notes in markdown files like `stow .` become `stow.`
     --    workaround: escapee the dot with a backslash. The code will still run
     --    in the terminal, but the space is not removed: `stow \.` -> `stow \.`
-    vim.cmd [[silent! %s/\s\+\([.,!?:;]\)/\1/g]]
+    --  TODO! I excluded `!` from the list because in markdown files with images
+    --  the space before an `![myimage]` was removed. fix td.
+    vim.cmd [[silent! %s/\s\+\([.,?:;]\)/\1/g]] -- maybe add '
 
     -- -- Replace multiple spaces between words with a single space
     -- -- -- NOTE: This is already done by Prettier

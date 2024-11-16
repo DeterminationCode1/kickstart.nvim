@@ -53,7 +53,7 @@ return {
         snip = (
             '\ns({trig="'
             + item["trigger"]
-            + ' ", wordTrig=true, snippetType="autosnippet"}, {t("'
+            + ' ", wordTrig=true, snippetType="autosnippet", priority=100}, {t("'
             + item["rhs"]
             + ' ")} )'
         )
@@ -137,7 +137,7 @@ def write_snippet_file_to_destination_dir(
     with open(file_path, "w") as file:
         file.write(content)
 
-    # print(f"File '{output_file_name}' created in '{output_dir}'.")
+    print(f"Successfully, created snippet file '{output_file_name}' in '{output_dir}'.")
 
 
 # The script should take as input the
@@ -188,22 +188,15 @@ means all words.""",
         default=False,
         help="Generate snippets for both the literal snippet triggers defined in your CSV, as well as their capitalized versions. Defaults to False.",
     )
-
     args = parser.parse_args()
-
     # de-structure the arguments
     csv_path = args.csv_path
     propagate_case = args.propagate_case
-
-    # deduce the output file name from the output path
     output_dir, output_file_name = os.path.split(args.output_path)
 
-    print(f"\noutput_dir: {output_dir}, output_file_name: {output_file_name}")
-
-    # Generate the YAML file from the CSV file
-    print(
-        f'csv_path: "{csv_path}" word_score: "{args.word_score}" practice_score: "{args.practice_score}"'
-    )
+    # Helpful for debugging
+    print("\n========== Arguments: ==========")
+    print("\n".join([f"{k}: {v}" for k, v in vars(args).items()]))
 
     print("\nStarting the generation...")
     data = csv_to_dict(
@@ -218,13 +211,6 @@ means all words.""",
     write_snippet_file_to_destination_dir(
         output_file_name=output_file_name, output_dir=output_dir, content=luasnips
     )
-
-    success_message = f"""
-Successfully saved "{output_file_name}" in the directory "{output_dir}".
-
-Snippets are based on the CSV file: "{csv_path}".
-"""
-    print(success_message)
 
 
 if __name__ == "__main__":
