@@ -15,9 +15,110 @@ vim.keymap.set('n', '<leader>w', '<cmd>w<CR>', { desc = '[W]rite current buffer'
 vim.keymap.set('n', '<leader>W', '<cmd>wa<CR>', { desc = '[W]rite all buffers' })
 vim.keymap.set('n', '<C-6>', '<C-^>', { desc = 'Switch between last two buffers' })
 
+-- Remap vim's ctrl-6 or ctrl-^ to switch between last two buffers to a more
+-- convenient keybinding
+--
+-- Note: the <leader><leader> keybinding is already used by telescope to switch
+-- between buffers.
+vim.keymap.set('n', '<leader><leader>', '<C-6>', { desc = 'Switch between last two buffers' })
+
 -- ===============================================================================================
 -- ============================ Markdown and Writing keybindings =================================
 -- ===============================================================================================
+
+-- extend the native capability of gx to open a link in the line it was called.
+-- official docs on gx: https://neovim.io/doc/user/various.html#gx
+-- TODO: this version cannot open local files. It can only open URLs. fix it
+-- WARN: markview.nvim defines an on_attach buff_render keymap for gx that
+-- overwrites my personal gx mapping in markdown files. Putting my mapping in
+-- the after/ftplugin/markdown.lua file didn't work.
+-- A workaround seems to be to fork the plugin and change the keybinding in
+-- lua/keymaps.lua to my liking. I'm not sure if the extra logic defined in
+-- markdiew.nvim's gx mapping is necessary because of the exmarks it's injecting
+-- into the file.
+vim.keymap.set({ 'n', 'x' }, 'gx', function()
+  -- Get the line and cursor position
+  local line = vim.fn.getline '.'
+  local cursor = vim.fn.getpos '.'
+  local cursor_col = cursor[3]
+
+  -- Get the URLs and file paths in the line.
+  -- Possible resources gx can open:
+  -- - URLs: http, https, ftp, mailto, file, zotero
+  -- - Local files: /, ~, .
+  local pattern = [[\v(http|https|ftp|mailto|file|zotero)://\S+|\v(\w+://)?(\w+[-\w]*\.)*\w+[-\w]*\.\w+(/\S*)*|\v(~|/|\.)(/\S*)*]]
+  vim.notify('Pattern: ' .. pattern)
+  local urls = {}
+
+  -- -- Use :gmatch to get all URLs in the line
+  -- for url in line:gmatch(pattern) do
+  --   table.insert(urls, url)
+  -- end
+
+  -- Use matchstrpos to get all URL and there position in the line
+  local pos = 1
+  while true do
+    local match, start, finish = unpack(vim.fn.matchstrpos(line, pattern, pos))
+    if match == '' then
+      break
+    end
+    table.insert(urls, { match = match, start = start, finish = finish })
+    pos = finish + 1
+  end
+  vim.notify('URLs: ' .. vim.inspect(urls))
+
+  local chosen_url = ''
+
+  -- If no URLs or file paths are found, fall back to word under the cursor
+  if #urls == 0 then
+    local word = vim.fn.expand '<cWORD>'
+    if word == '' then
+      vim.notify('No URL or resource found in the line', vim.log.levels.INFO)
+      return
+    end
+    vim.notify('No resource found in the line. Defaulting to word under cursor', vim.log.levels.INFO)
+    chosen_url = word
+    -- vim.ui.open(word)
+    -- return
+  end
+
+  -- If there's only one URL, open it
+  if #urls == 1 then
+    chosen_url = urls[1].match
+    -- vim.ui.open(urls[1].match)
+    -- return
+  end
+
+  -- Find the URL under the cursor
+  if chosen_url == '' then
+    for _, url_info in ipairs(urls) do
+      if cursor_col >= url_info.start and cursor_col <= url_info.finish then
+        chosen_url = url_info.match
+        break
+      end
+    end
+  end
+
+  -- find URL after cursor
+  if chosen_url == '' then
+    for _, url_info in ipairs(urls) do
+      if cursor_col < url_info.start then
+        chosen_url = url_info.match
+        break
+      end
+    end
+  end
+
+  -- Open the selected URL or path
+  vim.ui.open(chosen_url)
+end, { desc = 'Open (external) URL under cursor' })
+-- See and select markdown "backlinks" in telescope.
+--
+-- warn: this is not needed  because the builtin `gr`  already does that.
+--
+-- Either the marksman or the obsidian-oxide lsp servers should profide the
+-- backreferences  necessary to find backlinks.
+-- vim.keymap.set('n', '<leader>ml', '<cmd>Telescope lsp_reference', { desc = '[M]arkdown back[L]inks' })
 
 -- Count the number of words and characters in the current selected text.
 vim.keymap.set('v', '<leader>c', function() -- use <leader>cc if
@@ -240,7 +341,7 @@ end, { desc = '[P]Convert to link (new tab)' })
 -- See Primegan nvim bindings for inspiration: https://github.com/ThePrimeagen/init.lua/blob/249f3b14cc517202c80c6babd0f9ec548351ec71/lua/theprimeagen/remap.lua
 -- Me: you use Ctr+Command+ right homerow because you use cmd insteas of alt for window management. Also, ctr+shift is the same as ctr+no shift.
 vim.keymap.set(
-  'n',
+  { 'n', 'i' }, -- Me: I prefer to also allow this in insert mode. Primegan used 'n' only
   '<C-f>',
   '<cmd>silent !tmux neww tmux-sessionizer<CR>',
   { desc = 'Fzf through all your projects and open it with tmux. Inspired by Primegan.' }
@@ -317,8 +418,6 @@ end, { desc = '[G]o to Intelli[J] - open current file' })
 -- See official Obsidian URI documentation:
 -- https://help.obsidian.md/Advanced+topics/Using+obsidian+URI#Examples
 -- NOTE: maybe use 'goo' as keybinding?
--- NOTE: it's possible to open a specific heading in the file. Maybe implement
--- that later.
 vim.keymap.set('n', '<leader>mo', function()
   -- Check only .md, .csv .txt, .html files can be opened in Obsidian
   local file_extension = vim.fn.expand '%:e'

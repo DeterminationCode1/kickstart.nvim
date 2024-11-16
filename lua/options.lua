@@ -101,7 +101,8 @@ vim.opt.spell = true
 -- Set the language for spell checking:
 -- See `:help spellang` for more information
 -- en: (all) English, en_uk: English UK, en_us, de: German, ...
-vim.opt.spelllang = { 'en', 'de' } -- (string or list of strings)
+-- vim.opt.spelllang = { 'en', 'de' } -- (string or list of strings)
+vim.opt.spelllang = { 'en' } -- (string or list of strings)
 
 vim.opt.spelloptions = 'camel' -- treat camel case words as separate words
 
@@ -147,9 +148,15 @@ local skip_check = assert(vim.uv.new_check())
 --   vim.opt.foldlevel = 99
 -- end
 
-vim.opt.foldmethod = 'expr'
-opt.foldexpr = 'v:lua.Foldexpr()'
-opt.foldtext = ''
+if vim.fn.has 'nvim-0.10' == 1 then
+  -- if false then
+  vim.opt.foldmethod = 'expr'
+  vim.opt.foldexpr = 'v:lua.Foldexpr()'
+  vim.opt.foldtext = ''
+else
+  vim.opt.foldmethod = 'indent'
+  vim.opt.foldtext = 'folded...'
+end
 -- By default nvim folds files you open. Set foldleve to high number to not close them by default.
 vim.opt.foldlevel = 99
 
@@ -281,7 +288,6 @@ vim.keymap.set('n', '<leader>mfn', function()
 end, { desc = '[P]Fold all headings level 1 or above' })
 
 -- Keymap for folding markdown headings of level 2 or above
--- I know, it reads like "madafaka" but "k" for me means "2"
 -- Linkarzu keymap: <leader>mfk
 vim.keymap.set('n', '<leader>mfe', function()
   -- Reloads the file to refresh folds, otherwise you have to re-open neovim
