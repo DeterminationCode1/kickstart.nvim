@@ -325,20 +325,31 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sH', builtin.help_tags, { desc = '[S]earch [H]elp' }) -- Kick original was <leader>sh` but searching hidden is more common
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
       -- Search Files: defaults to search from current working DIR.
-      -- Kickstarter originally used: `vim.keymap.set('n','<leader>sf',builtin.find_files, {desc = '...')`
+      -- Kickstarter originally used: `vim.keymap.set('n','<leader>sf',builtin.find_files, desc = '...')`
       vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
       -- ============ Me: shortcut for seraching files because it's so common ============
       -- kickstarter telescope normal root dir search.
       -- vim.keymap.set('n', '<leader>f', builtin.find_files, { desc = 'Search [F]iles (Shortcut)' })
 
+      -- WARNING: switched to "smart-open.nvim" instead
+      --
       -- Me: use telescope-frecency plugin for better ranked search results
       -- You could add theme=ivy as argument to get a different look
-      vim.keymap.set(
-        { 'n', 'v' },
-        '<leader>f',
-        '<cmd>Telescope frecency workspace=CWD<cr>',
-        { desc = 'Search [F]iles (Shortcut)', noremap = true, silent = true }
-      )
+      -- vim.keymap.set(
+      --   { 'n', 'v' },
+      --   '<leader>f',
+      --   '<cmd>Telescope frecency workspace=CWD<cr>',
+      --   { desc = 'Search [F]iles (Shortcut)', noremap = true, silent = true }
+      -- )
+
+      -- Me: switched from telescope-frecency to the telescope plugin
+      -- "smart-open" for better search results
+      vim.keymap.set('n', '<leader>f', function()
+        require('telescope').extensions.smart_open.smart_open {
+          -- show_scores = true, -- NOTE: this worked!!
+          cwd_only = true,
+        }
+      end, { noremap = true, silent = true })
       -- ==================== Me: END ====================================================
       vim.keymap.set('n', '<leader>sh', function()
         builtin.find_files { hidden = true }
