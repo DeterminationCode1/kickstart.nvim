@@ -9,11 +9,15 @@ from typing import Any, Dict, List
 # Example usage:
 # quick copy this with the vim-motion: yi'  or yiq
 
+# WARNING: don't use that following.
+#
 # Markdown only shorthand
 # copy_me = "~/dotfiles/nvim/.config/nvim/LuaSnip/markdown/generate_shorthand.py \
 # ~/dotfiles/espanso/Library/Application\ Support/espanso/MyScripts/shorthand/shorthand_en.csv \
 # -w 0 -p 60 --propagate-case -o ~/dotfiles/nvim/.config/nvim/LuaSnip/markdown/shorthand_en.lua"
 
+# NOTE: this is currently used as of Dec. 2024
+#
 # All files shorthand
 copy_me = "~/dotfiles/nvim/.config/nvim/LuaSnip/markdown/generate_shorthand.py \
 ~/dotfiles/espanso/Library/Application\ Support/espanso/MyScripts/shorthand/shorthand_en.csv \

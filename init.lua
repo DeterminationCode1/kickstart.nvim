@@ -357,7 +357,7 @@ require('lazy').setup({
 
       -- Me: search through all todos. Copied from 'Omerxx':
       -- https://github.com/omerxx/dotfiles/blob/fffac07f46987fbb6b3dfef9113fae5875a1332d/nvim/lua/plugins/tele.lua
-      vim.api.nvim_set_keymap('n', 'st', ':TodoTelescope<CR>', { noremap = true }) -- WARN: not sure if working?
+      vim.api.nvim_set_keymap('n', '<space>st', ':TodoTelescope<CR>', { noremap = true }) -- WARN: not sure if working?
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()

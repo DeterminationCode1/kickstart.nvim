@@ -93,6 +93,11 @@ vim.opt.scrolloff = 10
 -- after white space to get this width. A zero value disables this.
 -- Recommended by Linkarzu: https://github.com/linkarzu/dotfiles-latest/blob/main/neovim/neobean/lua/config/options.lua
 vim.opt.textwidth = 80
+vim.opt.wrap = true -- wrap lines that are longer than textwidth
+-- vim.opt.columns = 100 -- set the width of the editor to 100 columns -- WARN: not working
+-- NOTE: you can use `set columns=100` to make nvim think it's in a 100 column
+-- wide terminal. this will wrap text at column 100, but the statusline will be
+-- smaller too...
 
 -- =========== Me: spell checking ===========
 -- See `:help spell` for detailed information

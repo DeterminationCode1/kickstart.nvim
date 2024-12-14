@@ -8,11 +8,17 @@ local i = ls.insert_node
 local fmta = require('luasnip.extras.fmt').fmta
 
 return {
+  s({ trig = 'Eg ', snippetType = 'autosnippet' }, {
+    t 'E.g. ',
+  }),
   s({ trig = 'eg ', snippetType = 'autosnippet' }, {
     t 'e.g. ',
   }),
   s({ trig = 'ie ', snippetType = 'autosnippet' }, {
     t 'i.e. ',
+  }),
+  s({ trig = 'Ie ', snippetType = 'autosnippet' }, {
+    t 'I.e. ',
   }),
   s({ trig = 'etc ', snippetType = 'autosnippet' }, {
     t 'etc. ',

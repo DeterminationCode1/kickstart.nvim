@@ -96,7 +96,7 @@ return {
           print(obj.stderr)
         end)
       end,
-      { noremap = true, desc = 'gGit: [E]asy Commit all changes and push' }
+      { noremap = true, desc = 'Git: [E]asy Commit all changes and push' }
     )
 
     vim.keymap.set('n', '<leader>gP', '<cmd>Neogit pull<CR>', { silent = true, noremap = true, desc = 'Git: open "Pull Menu"' })
