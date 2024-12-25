@@ -424,6 +424,24 @@ require('lazy').setup({
 
       -- Allows extra capabilities provided by nvim-cmp
       'hrsh7th/cmp-nvim-lsp',
+
+      -- Me: required by "markdown_oxide"?
+      -- TODO: uninstall if markdown_oxide is removed
+      {
+        'nvimdev/lspsaga.nvim',
+        config = function()
+          require('lspsaga').setup {
+            -- no breadcumbs at top of buffer
+            symbol_in_winbar = {
+              enable = false,
+            },
+          }
+        end,
+        dependencies = {
+          'nvim-treesitter/nvim-treesitter', -- optional
+          'nvim-tree/nvim-web-devicons', -- optional
+        },
+      },
     },
     config = function()
       -- Brief aside: **What is LSP?**
@@ -591,6 +609,28 @@ require('lazy').setup({
         -- Shell scripts: bash sh . to some extend zsh?
         bashls = {},
 
+        -- Markdown
+        marksman = {}, -- General markdown sup: reference, linking,
+        -- Special function for Personal Knowledge Management (PKM) in  markdown files
+        -- Me: markdown oxide is a special LSP for markdown files that is used for
+        -- Personal Knowledge Management (PKM) see: https://github.com/Feel-ix-343/markdown-oxide?tab=readme-ov-file#neovim
+        markdown_oxide = {
+          -- Ensure that dynamicRegistration is enabled! This allows the LS to take into account actions like the
+          -- Create Unresolved File code action, resolving completions for unindexed code blocks, ...
+          capabilities = vim.tbl_deep_extend(
+            'force',
+            capabilities,
+            {
+              workspace = {
+                didChangeWatchedFiles = {
+                  dynamicRegistration = true,
+                },
+              },
+            }
+            -- on_attach = on_attach,
+          ),
+        },
+
         -- Toml
         taplo = {},
 
@@ -733,8 +773,8 @@ require('lazy').setup({
         json = { 'prettier' },
         yaml = { 'prettier' },
         markdown = { 'prettier' },
-        -- c = { 'clang-format' },
-        -- cpp = { 'clang-format' },
+        c = { 'clang-format' },
+        cpp = { 'clang-format' },
         sh = { 'shfmt' },
         bash = { 'shfmt' },
         zsh = { 'shfmt' },
@@ -961,7 +1001,15 @@ require('lazy').setup({
             -- set group index to 0 to skip loading LuaLS completions as lazydev recommends it
             group_index = 0,
           },
-          { name = 'nvim_lsp' },
+          {
+            name = 'nvim_lsp',
+            -- ========= Me: config for markdown oxide =========
+            -- see https://github.com/Feel-ix-343/markdown-oxide?tab=readme-ov-file#neovim
+            option = {
+              markdown_oxide = { keyword_pattern = [[\(\k\| \|\/\|#\)\+]] },
+            },
+            -- ========= END =========
+          },
           { name = 'luasnip' },
           { name = 'path' },
           { name = 'buffer' }, -- Suggestions based on content of current buffer
