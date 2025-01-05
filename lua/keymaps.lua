@@ -395,7 +395,7 @@ vim.keymap.set('n', '<leader>Up', '<cmd>lnext<CR>zz')
 vim.keymap.set('n', '<leader>Down', '<cmd>lprev<CR>zz')
 
 -- Quick substitution. Primegan a bit modified.
-vim.keymap.set('n', '<leader>rs', [[:%s/<C-r><C-w>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = 'Quickly [S]ubsitute word under curser in current buffer.' })
+-- vim.keymap.set('n', '<leader>rs', [[:%s/<C-r><C-w>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = 'Quickly [S]ubsitute word under curser in current buffer.' })
 
 -- Primegan uses this to open nvim builtin file explorer
 -- vim.keymap.set('n', '<leader>pv', vim.cmd.Ex)
