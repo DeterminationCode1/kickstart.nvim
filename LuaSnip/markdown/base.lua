@@ -49,12 +49,24 @@ return {
   ),
 
   -- Headings ========================================================================================================
+  -- Colemak-DH keyboard layout
   s({ trig = 'xn', snippetType = 'autosnippet' }, { t '## ' }, { condition = line_begin }),
   s({ trig = 'Xn', snippetType = 'autosnippet' }, { t '## ' }, { condition = line_begin }),
   s({ trig = 'xe', snippetType = 'autosnippet' }, { t '### ' }, { condition = line_begin }),
   s({ trig = 'Xe', snippetType = 'autosnippet' }, { t '### ' }, { condition = line_begin }),
   s({ trig = 'xi', snippetType = 'autosnippet' }, { t '#### ' }, { condition = line_begin }),
   s({ trig = 'Xi', snippetType = 'autosnippet' }, { t '#### ' }, { condition = line_begin }),
+  s({ trig = 'xo', snippetType = 'autosnippet' }, { t '##### ' }, { condition = line_begin }),
+  s({ trig = 'Xo', snippetType = 'autosnippet' }, { t '##### ' }, { condition = line_begin }),
+  -- QWERTY keyboard layout
+  s({ trig = 'xj', snippetType = 'autosnippet' }, { t '## ' }, { condition = line_begin }),
+  s({ trig = 'Xj', snippetType = 'autosnippet' }, { t '## ' }, { condition = line_begin }),
+  s({ trig = 'xk', snippetType = 'autosnippet' }, { t '### ' }, { condition = line_begin }),
+  s({ trig = 'Xk', snippetType = 'autosnippet' }, { t '### ' }, { condition = line_begin }),
+  s({ trig = 'xl', snippetType = 'autosnippet' }, { t '#### ' }, { condition = line_begin }),
+  s({ trig = 'Xl', snippetType = 'autosnippet' }, { t '#### ' }, { condition = line_begin }),
+  s({ trig = 'x;', snippetType = 'autosnippet' }, { t '##### ' }, { condition = line_begin }),
+  s({ trig = 'X;', snippetType = 'autosnippet' }, { t '##### ' }, { condition = line_begin }),
 
   -- Special headings
   -- One-pager. o + xn (level 2 heading)
@@ -80,29 +92,31 @@ return {
   ),
 
   -- links
-  s({ trig = 'xl', snippetType = 'autosnippet', wordTrig = true }, fmta([[[<>](<>) ]], { i(1, 'link'), d(2, get_visual) })),
+  -- s({ trig = 'xl', snippetType = 'autosnippet', wordTrig = true }, fmta([[[<>](<>) ]], { i(1, 'link'), d(2, get_visual) })),
 
   -- page break =====================================================================================================
-  s(
-    { trig = 'br', snippetType = 'autosnippet' },
-    fmta(
-      [[---
+  -- WARNING: the snippet `br` didn't work out because too many words start with
+  -- `br` and triggered the snippet accidentally. e.g. Break, Brew etc.
+  --   s(
+  --     { trig = 'br', snippetType = 'autosnippet' },
+  --     fmta(
+  --       [[---
 
-<>]],
-      i(0)
-    ),
-    { condition = line_begin }
-  ),
-  s(
-    { trig = 'Br', snippetType = 'autosnippet' },
-    fmta(
-      [[---
+  -- <>]],
+  --       i(0)
+  --     ),
+  --     { condition = line_begin }
+  --   ),
+  --   s(
+  --     { trig = 'Br', snippetType = 'autosnippet' },
+  --     fmta(
+  --       [[---
 
-<>]],
-      i(0)
-    ),
-    { condition = line_begin }
-  ),
+  -- <>]],
+  --       i(0)
+  --     ),
+  --     { condition = line_begin }
+  --   ),
 
   -- code blocks =====================================================================================================
   s(
