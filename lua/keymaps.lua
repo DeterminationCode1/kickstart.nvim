@@ -11,9 +11,11 @@ local my_utils = require 'utils'
 -- Remap  q 'record macro' to 'gq' as 'q' is used as comment prefix for 'gc'
 -- vim.keymap.set('n', 'gq', '', { desc = 'Record macro w nvim-record' })
 -- vim.keymap.set('n', 'gq', 'qq', { desc = 'End record macro' })
-vim.keymap.set('n', '<leader>w', '<cmd>w<CR>', { desc = '[W]rite current buffer' })
-vim.keymap.set('n', '<leader>W', '<cmd>wa<CR>', { desc = '[W]rite all buffers' })
+
+-- vim.keymap.set('n', '<leader>w', '<cmd>w<CR>', { desc = '[W]rite current buffer' })
+-- vim.keymap.set('n', '<leader>W', '<cmd>wa<CR>', { desc = '[W]rite all buffers' })
 vim.keymap.set('n', '<C-6>', '<C-^>', { desc = 'Switch between last two buffers' })
+vim.keymap.set('n', '<leader>c', '<cmd>q<CR>', { desc = '([C]lose) Quite current buffer' })
 
 -- Remap vim's ctrl-6 or ctrl-^ to switch between last two buffers to a more
 -- convenient keybinding
@@ -21,6 +23,9 @@ vim.keymap.set('n', '<C-6>', '<C-^>', { desc = 'Switch between last two buffers'
 -- Note: the <leader><leader> keybinding is already used by telescope to switch
 -- between buffers.
 vim.keymap.set('n', '<leader><leader>', '<C-6>', { desc = 'Switch between last two buffers' })
+
+-- Copy paste from clipboard with the familiar "ctrl+v" command:
+vim.keymap.set({ 'i', 'n' }, '<C-v>', '"+p', { desc = 'Paste from clipboard' })
 
 -- ===============================================================================================
 -- ============================ Markdown and Writing keybindings =================================
