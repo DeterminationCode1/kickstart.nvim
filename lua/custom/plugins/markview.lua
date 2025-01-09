@@ -108,13 +108,15 @@ return {
       --
       -- Favorite heading symbols
       --  bullets = { '󰎤 ', '󰎧', '󰎪', '󰎭', '󰎱', '󰎳' },
+      --  me, default icons: '󰼏  ', '󰎨  ', '󰼑  ', '󰎲  ', '󰼓  '
+      --  me, other icons: '① ', '②', '③', '④', '⑤', '⑥'
       headings = {
         enable = true,
         -- Number of shift_char to add per level. Or nil.
         shift_width = 1,
 
         heading_1 = {
-          icon = '󰼏  ',
+          icon = '  ', -- icon = '󰼏  ',
           style = 'icon', -- Either 'simple', 'label', 'icon'
           -- concatenate string lua '[[]]'
           -- icon = '󰎤',
@@ -130,7 +132,7 @@ return {
         heading_2 = {
           style = 'icon', -- Either 'simple', 'label', 'icon'
 
-          -- icon = '② ',
+          icon = '󰼏  ',
 
           -- padding_left = ' ',
           -- padding_right = '    ',
@@ -142,7 +144,7 @@ return {
         heading_3 = {
           style = 'label',
 
-          icon = '󰎪  ',
+          icon = '󰎧  ', -- icon = '󰎨  ', -- icon = '󰎪  ',
 
           padding_left = ' ',
           padding_right = '             ',
@@ -156,7 +158,7 @@ return {
         heading_4 = {
           style = 'label',
 
-          icon = '󰎭  ',
+          icon = '󰎪  ', -- icon = '󰎭  ',
 
           padding_left = ' ',
           padding_right = '     ',
@@ -170,7 +172,7 @@ return {
         heading_5 = {
           style = 'label',
 
-          icon = '󰎱 ',
+          icon = '󰎭  ', -- icon = '󰎱 ',
 
           padding_left = ' ',
           padding_right = ' ',
@@ -181,8 +183,7 @@ return {
         },
         heading_6 = {
           style = 'label',
-
-          icon = '󰎳',
+          icon = '󰎱  ', -- icon = '󰎳',
 
           padding_left = ' ',
           padding_right = ' ',
