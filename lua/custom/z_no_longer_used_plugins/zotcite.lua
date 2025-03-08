@@ -1,0 +1,52 @@
+-- -- https://github.com/jalvesaq/zotcite
+-- --
+-- -- Plugin to integrate zotero with neovim so you can cite by opening square
+-- -- brackets and typing the citekey.
+-- -- WARN: didn't work... also Alfred's `supercharged citation picker` is quite
+-- -- good and works seemlessly with zotero, neovim and pandoc and even other
+-- -- applications like Microsoft Word or WhatsApp.
+-- --
+-- -- compile document:
+-- -- pandoc file_name.md -s -o file_name.html -F zotref.py --citeproc
+
+-- return {
+--   'jalvesaq/zotcite',
+--   dependencies = {
+--     'nvim-treesitter/nvim-treesitter',
+--     'nvim-telescope/telescope.nvim',
+--   },
+--   config = function()
+--     require('zotcite').setup {
+--       -- your options here (see doc/zotcite.txt)
+--     }
+--   end,
+-- }
+
+-- -- NOTE:  the official installation guide included the following to configure
+-- -- treesitter:
+-- --
+-- -- {
+-- --     "nvim-treesitter/nvim-treesitter",
+-- --     run = ":TSUpdate",
+-- --     config = function ()
+-- --         require("nvim-treesitter.configs").setup({
+-- --             sync_install = true,
+-- --             ensure_installed = {
+-- --                 "html",
+-- --                 "latex",
+-- --                 "markdown",
+-- --                 "markdown_inline",
+-- --                 "yaml",
+-- --             },
+-- --             highlight = {
+-- --                 enable = true,
+-- --             },
+-- --             indent = {
+-- --                 enable = true,
+-- --             },
+-- --         })
+-- --         vim.o.foldmethod = "expr"
+-- --         vim.o.foldexpr = "nvim_treesitter#foldexpr()"
+-- --         vim.o.foldenable = false
+-- --     end
+-- -- },

@@ -23,9 +23,24 @@ vim.keymap.set('n', '<leader>c', '<cmd>q<CR>', { desc = '([C]lose) Quite current
 -- Note: the <leader><leader> keybinding is already used by telescope to switch
 -- between buffers.
 vim.keymap.set('n', '<leader><leader>', '<C-6>', { desc = 'Switch between last two buffers' })
+-- use HL to move to the start or end of a line because 0 and $ are somewhat
+-- difficult to reach, especially, shift+4 = $...
+vim.keymap.set({ 'n', 'v' }, 'H', '0', { desc = 'Move to the start of the line' })
+vim.keymap.set({ 'n', 'v' }, 'L', '$', { desc = 'Move to the end of the line' })
 
+-- ======================== remap colemak hjkl to neio ========================
+-- n is not a big problem. but eio are common keys in vim...
+--
+-- remap n to the worst of the hjkl colemak positions: j
+-- map ei
+
+-- ----------------------- Small utilities for "Insert mode" -----------------------
 -- Copy paste from clipboard with the familiar "ctrl+v" command:
 vim.keymap.set({ 'i', 'n' }, '<C-v>', '"+p', { desc = 'Paste from clipboard' })
+
+-- Use the familiar `ctr+b` command in insert mode to make the following text
+-- bold in markdown. This command also work in .md files.
+-- vim.api.nvim_create_autocmd('File', opts)
 
 -- ===============================================================================================
 -- ============================ Markdown and Writing keybindings =================================
@@ -194,6 +209,11 @@ vim.keymap.set({ 'n', 'v' }, 'g<up>', function()
   -- Clear the search highlight
   vim.cmd 'nohlsearch'
 end, { desc = '[P]Go to previous markdown header' })
+-- same for query layout: gk
+vim.keymap.set('n', 'gk', function()
+  vim.cmd 'silent ?^##\\+\\s.*$'
+  vim.cmd 'nohlsearch'
+end, { desc = '[P]Go to previous markdown header' })
 
 -- Search DOWN for a markdown header
 -- Make sure to follow proper markdown convention, and you have a single H1
@@ -210,6 +230,11 @@ vim.keymap.set({ 'n', 'v' }, 'g<down>', function()
   -- `$` - Match extends to end of line
   vim.cmd 'silent! /^##\\+\\s.*$'
   -- Clear the search highlight
+  vim.cmd 'nohlsearch'
+end, { desc = '[P]Go to next markdown header' })
+-- same for query layout: gj
+vim.keymap.set('n', 'gj', function()
+  vim.cmd 'silent /^##\\+\\s.*$'
   vim.cmd 'nohlsearch'
 end, { desc = '[P]Go to next markdown header' })
 
@@ -378,7 +403,8 @@ vim.keymap.set(
   { desc = 'Quick switch to a different project' }
 )
 
--- Primegan recommends using zz after ctr-D/U to keep curor at same position no screen easier for eyes. Source: https://youtu.be/KfENDDEpCsI?si=ClLf3MUgszp1c6op&t=242
+-- Primegan recommends using zz after ctr-D/U to keep cursor at same position no screen easier for eyes.
+-- Source: https://youtu.be/KfENDDEpCsI?si=ClLf3MUgszp1c6op&t=242
 vim.keymap.set('n', '<C-d>', '<C-d>zz')
 vim.keymap.set('n', '<C-u>', '<C-u>zz')
 vim.keymap.set('n', '<PageUp>', '<PageUp>zz')
@@ -408,7 +434,12 @@ vim.keymap.set('n', '<leader>Down', '<cmd>lprev<CR>zz')
 -- ================= END ==============================
 
 -- IntelliJ
-vim.keymap.set('n', 'gj', function()
+-- I changed the keymap from `gj` to `gzj` because I use `gj` on a querty layout
+-- to go down to the next markdown heading.
+-- TODO: adjust the markdown and this command in a way that both coexist and
+-- only in markdown files the `next heading` command overwrites this command.
+-- to move the cursor down.
+vim.keymap.set('n', 'gzj', function()
   local currentFile = vim.fn.expand '%:p'
   -- local command = 'open -a "IntelliJ IDEA" ' .. currentFile -- This actually works...
   vim.system({ 'idea', currentFile }, { text = true }, function(obj)
@@ -465,3 +496,39 @@ vim.keymap.set('n', '<leader>mo', function()
     end
   end)
 end, { desc = 'Open current [m]arkdown file in [O]bsidian' })
+
+-- ======================== Zotero ========================
+-- Open current citkey under cursor in zotero
+--
+-- NOTE: at the moment,  your cursor has to be on the citkey directly i.e. `wangInfluencePoliticalIdeology2022` or
+-- `@` but not the rest of the citation block like `p. 43` or `pp. 43-45`.
+vim.keymap.set('n', '<leader>mz', function()
+  -- Get the word under the cursor
+  local word = vim.fn.expand '<cWORD>'
+  -- TODO: check if its a cite key. Rather complex, currently not working for
+  -- edge cases... Overkill.
+  --
+  -- Check if the word is a citkey. Allowed formats:
+  -- - [@wangInfluencePoliticalIdeology2022]
+  -- - [@wangInfluencePoliticalIdeology2022, p. 43]
+  -- - [@wangInfluencePoliticalIdeology2022, pp. 43-45]
+  -- - [see @wangInfluencePoliticalIdeology2022, pp. 43 demin]
+  -- - also allow citkyes like [@wangInfluencePoliticalIdeology2022, p. 43]
+  --
+  -- if not word:match '^%[[@%w+[%w%s%-]*%d+[%w%s%-]*%d*%]?$' then
+  --   vim.notify('No citkey found under cursor', vim.log.levels.INFO)
+  --   return
+  -- end
+
+  -- Extract the citkey
+  local citkey = word:sub(2, -2)
+  -- print out citkey for debugging
+  vim.notify('Extracted Citkey: ' .. citkey, vim.log.levels.INFO)
+  -- Open the citkey in Zotero
+  local zotero_url = 'zotero://select/items/' .. citkey
+  vim.system({ 'open', zotero_url }, { text = true }, function(obj)
+    if obj.code ~= 0 then
+      vim.notify('Error opening in Zotero', vim.log.levels.ERROR)
+    end
+  end)
+end, { desc = 'Open [M]arkdown citkey in [Z]otero' })
