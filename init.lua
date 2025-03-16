@@ -630,6 +630,33 @@ require('lazy').setup({
             -- on_attach = on_attach,
           ),
         },
+        -- grammar checker lsp for markdown
+        -- homepage: https://writewithharper.com/docs/integrations/neovim
+        -- Linkarzu video: https://youtu.be/3p2n2-eiuZw?si=RNLeXRypaNdIpea7&t=1098
+        --
+        -- NOTE: to quickly turn harper on and off, set `enabled = false` in the
+        -- config below and restart the lsp with `:LspRestart harper_ls`.
+        harper_ls = {
+          enabled = false,
+          filetypes = { 'markdown' },
+          settings = {
+
+            ['harper-ls'] = {
+
+              -- userDictPath = '~/dotfiles/nvim/.config/harper/global_dict.txt', -- path to your global dictionary
+              userDictPath = '~/dotfiles/nvim/.config/nvim/spell/en.utf-8.add', -- path to your global dictionary
+              -- fileDictPath = '~/dotfiles/nvim/.config/harper/', -- path to your file-specific dictionary
+              linters = {
+                SpellCheck = true,
+                SentenceCapitalization = false, -- set to false to avoid a lot of false positives
+              },
+              isolateEnglish = true,
+              markdown = {
+                IgnoreLinkTitle = true, -- [ignore this part]() [[and-also-this-part]]
+              },
+            },
+          },
+        },
 
         -- Toml
         taplo = {},
@@ -681,6 +708,7 @@ require('lazy').setup({
 
         -- =========== JavaScript etc ===========
         'prettier', -- formatter
+        'prettierd', -- formatter. Like prettier by demonizes it to make it faster.
         'eslint_d', -- linter. Eslint but in deamonized verson for better performance
 
         -- =========== CSS ===========
@@ -708,6 +736,7 @@ require('lazy').setup({
         -- Powerful speling checker for your editor. Codespell would be a ligthway alternative.
         'cspell',
         'markdownlint',
+        'harper_ls', -- grammar checker lsp for markdown
         -- 'texlab', -- LaTeX language server
 
         -- ============ OCaml ==========
@@ -754,7 +783,7 @@ require('lazy').setup({
         -- languages here or re-enable it for the disabled ones.
         local disable_filetypes = { c = true, cpp = true }
         return {
-          timeout_ms = 500,
+          timeout_ms = 500, -- defaults to 500ms
           lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
         }
       end,
@@ -764,15 +793,15 @@ require('lazy').setup({
         python = { 'isort', 'black' },
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
-        javascript = { 'prettier' },
-        typescript = { 'prettier' },
-        javascriptreact = { 'prettier' },
-        typescriptreact = { 'prettier' },
-        css = { 'prettier' },
-        html = { 'prettier' },
-        json = { 'prettier' },
-        yaml = { 'prettier' },
-        markdown = { 'prettier' },
+        javascript = { 'prettierd', 'prettier', stop_after_first = true },
+        typescript = { 'prettierd', 'prettier', stop_after_first = true },
+        javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+        typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+        css = { 'prettierd' },
+        html = { 'prettierd' },
+        json = { 'prettierd' },
+        yaml = { 'prettierd' },
+        markdown = { 'prettierd' },
         c = { 'clang-format' },
         cpp = { 'clang-format' },
         sh = { 'shfmt' },
