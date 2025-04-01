@@ -242,6 +242,10 @@ require('lazy').setup({
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
         { '<leader>m', group = '[M]arkdown' }, -- me
         { '<leader>mf', group = 'Markdown [F]old' }, -- me
+        { '<leader>tn', group = '[N]otifications' }, -- me
+        { '<leader>n', group = 'Next item' }, -- me
+        { '<leader>o', group = 'Overseer' }, -- me
+        { '<leader>g', group = 'Git tools' }, -- me
       }
     end,
   },
