@@ -38,6 +38,11 @@ vim.keymap.set({ 'n', 'v' }, 'L', '$', { desc = 'Move to the end of the line' })
 -- Copy paste from clipboard with the familiar "ctrl+v" command:
 vim.keymap.set({ 'i', 'n' }, '<C-v>', '"+p', { desc = 'Paste from clipboard' })
 
+-- VS-Code: ctrl+enter to move cursor down one line -- WARN: for some reason not working
+--
+-- vim.keymap.set('i', '<C-Enter>', '<esc>o', { desc = 'VS-Code keymap to go to the next line in insert mode (same as <Esc>o)' })
+-- vim.api.nvim_set_keymap('i', '<C-CR>', '<Esc>o', { noremap = true, silent = true }) -- VS-Code: shift+tab to unindent
+
 -- Use the familiar `ctr+b` command in insert mode to make the following text
 -- bold in markdown. This command also work in .md files.
 -- vim.api.nvim_create_autocmd('File', opts)
@@ -45,93 +50,11 @@ vim.keymap.set({ 'i', 'n' }, '<C-v>', '"+p', { desc = 'Paste from clipboard' })
 -- ===============================================================================================
 -- ============================ Markdown and Writing keybindings =================================
 -- ===============================================================================================
+--
+-- NOTE: the remapping for the `gx` command in markdown files is defined in
+-- `markview.nvim` because that plugin also patched gx and overwrote the changes
+-- I declared in this file.
 
--- extend the native capability of gx to open a link in the line it was called.
--- official docs on gx: https://neovim.io/doc/user/various.html#gx
--- TODO: this version cannot open local files. It can only open URLs. fix it
--- WARN: markview.nvim defines an on_attach buff_render keymap for gx that
--- overwrites my personal gx mapping in markdown files. Putting my mapping in
--- the after/ftplugin/markdown.lua file didn't work.
--- A workaround seems to be to fork the plugin and change the keybinding in
--- lua/keymaps.lua to my liking. I'm not sure if the extra logic defined in
--- markdiew.nvim's gx mapping is necessary because of the exmarks it's injecting
--- into the file.
-vim.keymap.set({ 'n', 'x' }, 'gx', function()
-  -- Get the line and cursor position
-  local line = vim.fn.getline '.'
-  local cursor = vim.fn.getpos '.'
-  local cursor_col = cursor[3]
-
-  -- Get the URLs and file paths in the line.
-  -- Possible resources gx can open:
-  -- - URLs: http, https, ftp, mailto, file, zotero
-  -- - Local files: /, ~, .
-  local pattern = [[\v(http|https|ftp|mailto|file|zotero)://\S+|\v(\w+://)?(\w+[-\w]*\.)*\w+[-\w]*\.\w+(/\S*)*|\v(~|/|\.)(/\S*)*]]
-  vim.notify('Pattern: ' .. pattern)
-  local urls = {}
-
-  -- -- Use :gmatch to get all URLs in the line
-  -- for url in line:gmatch(pattern) do
-  --   table.insert(urls, url)
-  -- end
-
-  -- Use matchstrpos to get all URL and there position in the line
-  local pos = 1
-  while true do
-    local match, start, finish = unpack(vim.fn.matchstrpos(line, pattern, pos))
-    if match == '' then
-      break
-    end
-    table.insert(urls, { match = match, start = start, finish = finish })
-    pos = finish + 1
-  end
-  vim.notify('URLs: ' .. vim.inspect(urls))
-
-  local chosen_url = ''
-
-  -- If no URLs or file paths are found, fall back to word under the cursor
-  if #urls == 0 then
-    local word = vim.fn.expand '<cWORD>'
-    if word == '' then
-      vim.notify('No URL or resource found in the line', vim.log.levels.INFO)
-      return
-    end
-    vim.notify('No resource found in the line. Defaulting to word under cursor', vim.log.levels.INFO)
-    chosen_url = word
-    -- vim.ui.open(word)
-    -- return
-  end
-
-  -- If there's only one URL, open it
-  if #urls == 1 then
-    chosen_url = urls[1].match
-    -- vim.ui.open(urls[1].match)
-    -- return
-  end
-
-  -- Find the URL under the cursor
-  if chosen_url == '' then
-    for _, url_info in ipairs(urls) do
-      if cursor_col >= url_info.start and cursor_col <= url_info.finish then
-        chosen_url = url_info.match
-        break
-      end
-    end
-  end
-
-  -- find URL after cursor
-  if chosen_url == '' then
-    for _, url_info in ipairs(urls) do
-      if cursor_col < url_info.start then
-        chosen_url = url_info.match
-        break
-      end
-    end
-  end
-
-  -- Open the selected URL or path
-  vim.ui.open(chosen_url)
-end, { desc = 'Open (external) URL under cursor' })
 -- See and select markdown "backlinks" in telescope.
 --
 -- warn: this is not needed  because the builtin `gr`  already does that.
@@ -197,18 +120,18 @@ end, { desc = '[C]ount characters and words' })
 -- heading at the very top of the file
 -- This will only search for H2 headings and above
 -- Linkarzu used `gk` on querty as keybinding.
-vim.keymap.set({ 'n', 'v' }, 'g<up>', function()
-  -- `?` - Start a search backwards from the current cursor position.
-  -- `^` - Match the beginning of a line.
-  -- `##` - Match 2 ## symbols
-  -- `\\+` - Match one or more occurrences of prev element (#)
-  -- `\\s` - Match exactly one whitespace character following the hashes
-  -- `.*` - Match any characters (except newline) following the space
-  -- `$` - Match extends to end of line
-  vim.cmd 'silent! ?^##\\+\\s.*$'
-  -- Clear the search highlight
-  vim.cmd 'nohlsearch'
-end, { desc = '[P]Go to previous markdown header' })
+-- vim.keymap.set({ 'n', 'v' }, 'g<up>', function()
+--   -- `?` - Start a search backwards from the current cursor position.
+--   -- `^` - Match the beginning of a line.
+--   -- `##` - Match 2 ## symbols
+--   -- `\\+` - Match one or more occurrences of prev element (#)
+--   -- `\\s` - Match exactly one whitespace character following the hashes
+--   -- `.*` - Match any characters (except newline) following the space
+--   -- `$` - Match extends to end of line
+--   vim.cmd 'silent! ?^##\\+\\s.*$'
+--   -- Clear the search highlight
+--   vim.cmd 'nohlsearch'
+-- end, { desc = '[P]Go to previous markdown header' })
 -- same for query layout: gk
 vim.keymap.set('n', 'gk', function()
   vim.cmd 'silent ?^##\\+\\s.*$'
@@ -370,6 +293,11 @@ end, { desc = '[P]Convert to link (new tab)' })
 -- ====================================================================================================
 -- See Primegan nvim bindings for inspiration: https://github.com/ThePrimeagen/init.lua/blob/249f3b14cc517202c80c6babd0f9ec548351ec71/lua/theprimeagen/remap.lua
 -- Me: you use Ctr+Command+ right homerow because you use cmd insteas of alt for window management. Also, ctr+shift is the same as ctr+no shift.
+
+-- unmap the default vim keybinding for `ctrl+f` to open fzf as defined in tmux.
+-- vim.keymap.del('n', '<C-f>')
+
+-- NOTE: I added theses keybindings to my .zshrc file (or alternatively in tmux.conf) so I can use them outside of nvim as well.
 vim.keymap.set(
   { 'n', 'i' }, -- Me: I prefer to also allow this in insert mode. Primegan used 'n' only
   '<C-f>',
@@ -377,31 +305,31 @@ vim.keymap.set(
   { desc = 'Fzf through all your projects and open it with tmux. Inspired by Primegan.' }
 )
 
--- PROBLEM: alt-shift is already maped to 'assing-node-to-workspace' in window manager.
-vim.keymap.set(
-  'n',
-  '<M-n>',
-  '<cmd>silent !tmux neww tmux-sessionizer ~/cUni/240527_FPV_functional_programming_TUM<CR>',
-  { desc = 'Quick switch to a different project' }
-)
-vim.keymap.set(
-  'n',
-  '<M-e>',
-  "<cmd>silent !tmux neww tmux-sessionizer '~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Knowledge_Wiki'<CR>",
-  { desc = 'Quick switch to a different project' }
-)
-vim.keymap.set(
-  'n',
-  '<M-i>',
-  '<cmd>silent !tmux neww tmux-sessionizer ~/cUni/240510_EIST_software_engineering_TUM<CR>',
-  { desc = 'Quick switch to a different project' }
-)
-vim.keymap.set(
-  'n',
-  '<A-o>',
-  '<cmd>silent !tmux neww tmux-sessionizer ~/cUni/240425_ADS_algorithm_data_structures_TUM<CR>',
-  { desc = 'Quick switch to a different project' }
-)
+-- -- PROBLEM: alt-shift is already maped to 'assing-node-to-workspace' in window manager.
+-- vim.keymap.set(
+--   'n',
+--   '<M-n>',
+--   '<cmd>silent !tmux neww tmux-sessionizer ~/cUni/240527_FPV_functional_programming_TUM<CR>',
+--   { desc = 'Quick switch to a different project' }
+-- )
+-- vim.keymap.set(
+--   'n',
+--   '<M-e>',
+--   "<cmd>silent !tmux neww tmux-sessionizer '~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Knowledge_Wiki'<CR>",
+--   { desc = 'Quick switch to a different project' }
+-- )
+-- vim.keymap.set(
+--   'n',
+--   '<M-i>',
+--   '<cmd>silent !tmux neww tmux-sessionizer ~/cUni/240510_EIST_software_engineering_TUM<CR>',
+--   { desc = 'Quick switch to a different project' }
+-- )
+-- vim.keymap.set(
+--   'n',
+--   '<A-o>',
+--   '<cmd>silent !tmux neww tmux-sessionizer ~/cUni/240425_ADS_algorithm_data_structures_TUM<CR>',
+--   { desc = 'Quick switch to a different project' }
+-- )
 
 -- Primegan recommends using zz after ctr-D/U to keep cursor at same position no screen easier for eyes.
 -- Source: https://youtu.be/KfENDDEpCsI?si=ClLf3MUgszp1c6op&t=242
@@ -433,69 +361,7 @@ vim.keymap.set('n', '<leader>Down', '<cmd>lprev<CR>zz')
 
 -- ================= END ==============================
 
--- IntelliJ
--- I changed the keymap from `gj` to `gzj` because I use `gj` on a querty layout
--- to go down to the next markdown heading.
--- TODO: adjust the markdown and this command in a way that both coexist and
--- only in markdown files the `next heading` command overwrites this command.
--- to move the cursor down.
-vim.keymap.set('n', 'gzj', function()
-  local currentFile = vim.fn.expand '%:p'
-  -- local command = 'open -a "IntelliJ IDEA" ' .. currentFile -- This actually works...
-  vim.system({ 'idea', currentFile }, { text = true }, function(obj)
-    print(obj.code)
-    print(obj.stdout)
-    print(obj.stderr)
-  end)
-end, { desc = '[G]o to Intelli[J] - open current file' })
-
--- ======================== Obsidian ========================
--- Open current markdown file in Obsidian
--- See official Obsidian URI documentation:
--- https://help.obsidian.md/Advanced+topics/Using+obsidian+URI#Examples
--- NOTE: maybe use 'goo' as keybinding?
-vim.keymap.set('n', '<leader>mo', function()
-  -- Check only .md, .csv .txt, .html files can be opened in Obsidian
-  local file_extension = vim.fn.expand '%:e'
-  if not (file_extension == 'md' or file_extension == 'csv' or file_extension == 'txt' or file_extension == 'html') then
-    vim.notify('Only .md, .csv, .txt or .html files can be opened in Obsidian', vim.log.levels.WARN)
-    return
-  end
-
-  -- URL Encode function
-  -- WARN: In Lua `%` signs in the replacement string must be escaped with
-  -- another `%` sign.
-  local function obsidian_uri_encode(str)
-    return str:gsub(' ', '%%20'):gsub('/', '%%2F')
-  end
-
-  -- The params  must be encoded. Eg spaces must be %20 and slashes %2F...
-  local currentFile = vim.fn.expand '%:t'
-  local vault = 'Knowledge_Wiki'
-  local vaultEncoded = obsidian_uri_encode(vault)
-  -- local currentFileEncoded = obsidian_uri_encode(currentFile)
-  local currentFileEncoded = obsidian_uri_encode(currentFile)
-
-  local obsidian_url = 'obsidian://open?vault=' .. vaultEncoded .. '&file=' .. currentFileEncoded
-
-  -- local currentFilePath = vim.fn.expand '%:p'
-  -- local currentFilePathEncoded = url_encode(currentFilePath)
-  -- local obsidian_url = 'obsidian://open?path=' .. currentFilePathEncoded --
-  -- FIX: obsidian couldn't find the vault from the path... Maybe because it is
-  -- in iCloud?
-
-  -- BE AWARE: The format must be: `open "obsidian://open?vault=VaultName&file=FileName"`
-  -- Last time it only worked when the URL was in double quotes.
-  vim.system({ 'open', obsidian_url }, { text = true }, function(obj)
-    vim.notify('Opened in Obsidian', vim.log.levels.INFO)
-
-    if obj.code ~= 0 then
-      vim.notify('Error opening in Obsidian', vim.log.levels.ERROR)
-      -- debug
-      vim.notify('Debug obsidian url:\n\n' .. obsidian_url, vim.log.levels.INFO)
-    end
-  end)
-end, { desc = 'Open current [m]arkdown file in [O]bsidian' })
+-- NOTE: open .md in Obsidian was moved to `after/ftplugin/markdown.lua`
 
 -- ======================== Zotero ========================
 -- Open current citkey under cursor in zotero
@@ -526,9 +392,44 @@ vim.keymap.set('n', '<leader>mz', function()
   vim.notify('Extracted Citkey: ' .. citkey, vim.log.levels.INFO)
   -- Open the citkey in Zotero
   local zotero_url = 'zotero://select/items/' .. citkey
+  -- open zotero://seleck/items/lippert-rasmussenRawlsLuckEgalitarianism
   vim.system({ 'open', zotero_url }, { text = true }, function(obj)
     if obj.code ~= 0 then
       vim.notify('Error opening in Zotero', vim.log.levels.ERROR)
     end
   end)
 end, { desc = 'Open [M]arkdown citkey in [Z]otero' })
+
+-- ========================= VS-Code ==================================================
+-- Open current file in VS-Code (with the same cursor position!)
+-- Keymap is only added for the file types listed below.
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'typescript', 'typescriptreact', 'javascript', 'javascriptreact', 'css', 'html' },
+  callback = function()
+    vim.keymap.set('n', 'go', function()
+      local file_path = vim.fn.expand '%:p' -- Get absolute file path
+      local line_number = vim.fn.line '.' -- Get current cursor line
+      local column_number = vim.fn.col '.' -- Get current cursor column
+
+      -- Get the project root directory
+      local root_dir = vim.fn.systemlist('git rev-parse --show-toplevel')[1]
+
+      if vim.v.shell_error ~= 0 or root_dir == nil or root_dir == '' then
+        root_dir = vim.fn.getcwd() -- Fallback to current working directory if no git repo found
+      end
+
+      -- IMPORTANT: you must open the root project folder in VS-Code first
+      -- before opening the specific file, otherwise extensions, plugins or
+      -- vs-code tools might not work.
+      if file_path ~= '' then
+        -- Open VS Code in the project root first
+        vim.cmd('silent !code ' .. root_dir)
+
+        -- Then open the file at the correct position
+        vim.cmd('silent !code -g ' .. file_path .. ':' .. line_number .. ':' .. column_number)
+      else
+        vim.notify('No file path found', vim.log.levels.ERROR)
+      end
+    end, { noremap = true, silent = true, buffer = true, desc = 'Open project in VS Code and navigate to file' })
+  end,
+})

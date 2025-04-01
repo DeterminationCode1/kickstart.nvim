@@ -6,6 +6,8 @@
 --
 --  markdown-preview.nvim
 
+local custom_gx = require('utils.custom-gx').my_gx
+
 return {
   'OXY2DEV/markview.nvim',
   lazy = false, -- Recommended
@@ -280,6 +282,35 @@ return {
     -- vim.api.nvim_set_hl(0, 'markdownBold', { bold = true, fg = '#ffffff' })
     -- vim.api.nvim_set_hl(0, 'markdownBold', { bold = true, fg = '#ffffff' })
     -- vim.api.nvim_set_hl(0, '@markdown.strong.markdown_inline', { bold = true, fg = '#ffffff' })
+
+    -- ============================= fix gx ====================================
+    -- delete the gx mapping in markview.nvim
+    --
+    -- Create an autocmd that removes the keymap set by nvim_buf_set_keymap and
+    -- sets my own instead
+    vim.api.nvim_create_autocmd('User', {
+      pattern = 'MarkviewAttach',
+      callback = function(event)
+        --- This will have all the data you need.
+        local data = event.data
+
+        -- vim.notify("say 'MarkviewAttach' event fired", vim.log.levels.INFO)
+
+        -- delet gx keymap for buffer set by markview.nvim
+        -- NOTE: this is necessary, otherwise your gx mapping will not be used
+        vim.api.nvim_buf_del_keymap(0, 'n', 'gx')
+
+        -- set gx keymap for buffer
+        vim.keymap.set({ 'n', 'x' }, 'gx', function()
+          vim.notify('having gx', vim.log.levels.INFO)
+          custom_gx()
+        end, {
+          desc = 'X Open (external) URL under cursor',
+        })
+
+        vim.print(data)
+      end,
+    })
 
     -- =========================================================================
     -- This is to prevent needing to manually refresh the view.

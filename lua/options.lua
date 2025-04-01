@@ -99,6 +99,13 @@ vim.opt.wrap = true -- wrap lines that are longer than textwidth
 -- wide terminal. this will wrap text at column 100, but the statusline will be
 -- smaller too...
 
+-- =========== My Dignostic settings ===========
+-- My current config will show the diganostic message only on the cursor line.
+vim.diagnostic.config {
+  virtual_lines = false, -- show diagnostic messages in the line below the line with the error. Default false.
+  virtual_text = { current_line = true }, -- show diagnostic messages in the line with the error. Default false.
+}
+
 -- =========== Me: spell checking ===========
 -- See `:help spell` for detailed information
 -- Enable spell checking
