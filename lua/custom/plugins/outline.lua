@@ -18,7 +18,7 @@ return {
     -- Yes,  decided to use  <leader>o for opening toggleterm instead. ME: now I
     -- am using ctrl-/ for toggeling the terminal and <leader>o for outline
     -- again.
-    { '<leader>o', '<cmd>Outline<CR>', desc = 'Toggle outline' },
+    { '<leader>to', '<cmd>Outline<CR>', desc = 'Toggle outline' },
   },
   opts = {
     -- Your setup opts here

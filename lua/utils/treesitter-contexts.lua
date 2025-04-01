@@ -88,4 +88,18 @@ function M.in_text()
   return not M.in_mathzone() --[[ and not M.in_comment() ]]
 end
 
+-- Detect if cursor is in a code block or not in e.g. markdown or .rmd files
+function M.in_code_block()
+  if has_treesitter then
+    local node = get_node_at_cursor()
+    while node do
+      if node:type() == 'fenced_code_block' then
+        return true
+      end
+      node = node:parent()
+    end
+    return false
+  end
+end
+
 return M
