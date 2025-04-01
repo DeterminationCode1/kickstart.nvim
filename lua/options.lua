@@ -3,7 +3,7 @@
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
 
-local opt = vim.opt
+-- local opt = vim.opt
 -- Enable true color support in Neovim
 vim.opt.termguicolors = true
 

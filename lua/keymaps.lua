@@ -1,7 +1,57 @@
 -- My utility function collection
 local my_utils = require 'utils'
 
--- ================= My keybindings rempas ==============y
+-- =============================================================================
+-- ====================== Kickstarter.nvim keymaps =============================
+-- =============================================================================
+
+-- Clear highlights on search when pressing <Esc> in normal mode
+--  See `:help hlsearch`
+vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+
+-- Diagnostic keymaps
+vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+
+-- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
+-- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
+-- is not what someone will guess without a bit more experience.
+--
+-- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
+-- or just use <C-\><C-n> to exit terminal mode
+-- NOTE:  The kickstarter default was '<Esc><Esc>'.
+vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+
+-- TIP: Disable arrow keys in normal mode
+-- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
+-- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
+-- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
+-- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+
+-- Keybinds to make split navigation easier.
+--  Use CTRL+<hjkl> to switch between windows
+--
+--  See `:help wincmd` for a list of all window commands
+vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
+vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
+vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+
+-- Keybinds to make split navigation easier.
+-- WARN: If you are on MacOS you must deactivate the default Mission Control shortcuts that override ctrl + arrows.
+-- You can find all of them in the System Preferences > Keyboard > Shortcuts > Mission Control
+--
+-- reddit: https://www.reddit.com/r/tmux/comments/s2x8pe/ctrlarrow_key_bindings_not_working_on_mac_works/
+--
+-- see https://superuser.com/questions/1829146/issue-with-ctrl-arrow-keys-in-neovim-using-putty
+vim.keymap.set('n', '<C-left>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
+vim.keymap.set('n', '<C-right>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
+vim.keymap.set('n', '<C-down>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+vim.keymap.set('n', '<C-up>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+-- =================================================================================
+-- ====================== End Kickstart.nvim keymaps ===============================
+-- =================================================================================
+
+-- =========================== My keybindings rempas ==============================
 -- This fill content was originally in the ~/.config/nvim/init.lua file.
 -- But to make it more readable it was moved to this file.
 -- This keymap file contains general purpose keymaps, keymaps closely related to plugins are in the plugin config files.
