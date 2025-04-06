@@ -127,6 +127,9 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 require 'autocommands'
 -- ================= END: Autocommands ==============================
 
+-- Me: make LazyVim utils available in your whole codebase
+_G.LazyVim = require 'utils.init'
+
 -- Install `lazy.nvim` plugin manager and
 -- Configure and install plugins
 require 'kickstart.lazy-plugins'

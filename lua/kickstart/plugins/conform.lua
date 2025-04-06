@@ -1,8 +1,14 @@
+-- LazyVim https://github.com/LazyVim/LazyVim/blob/ec5981dfb1222c3bf246d9bcaa713d5cfa486fbd/lua/lazyvim/plugins/formatting.lua
+-- kickstart https://github.com/dam9000/kickstart-modular.nvim/blob/master/lua/kickstart/plugins/conform.lua
+
+-- Autoformat
 return {
-  { -- Autoformat
+  {
     'stevearc/conform.nvim',
+    dependencies = { 'mason.nvim', 'WhoIsSethDaniel/mason-tool-installer.nvim' },
     event = { 'BufWritePre' },
     cmd = { 'ConformInfo' },
+    lazy = true,
     -- NOTES: The "<leader>f" keybinding for formatting was removed because I use "format on save"
     -- instead and <leader>f is a valuable well positioned keybinding that's now used for 'search files' in telescope.
     -- keys = {
@@ -15,39 +21,48 @@ return {
     --     desc = '[F]ormat buffer',
     --   },
     -- },
+
+    -- WARNING: adding `opts_extend` for some reasons causes confirm.nvim to break
+    -- allow extending options in other files https://github.com/folke/lazy.nvim/blob/main/CHANGELOG.md#features-19
+    -- opts_extend = { 'formatters_by_ft', 'formatters' },
     opts = {
       notify_on_error = false,
+      default_format_opts = {
+        timeout_ms = 3000, -- defaults to 500ms
+        async = false, -- not recommended to change
+        lsp_format = 'fallback', -- not recommended to change
+      },
+      -- IMPORTANT: you must add the `format_on_save` option to turn on
+      -- automatic formatting on save. Defaults to `nil`.
       format_on_save = function(bufnr)
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
         local disable_filetypes = { c = true, cpp = true }
-        return {
-          timeout_ms = 500, -- defaults to 500ms
-          lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
-        }
+        if disable_filetypes[vim.bo[bufnr].filetype] then
+          return nil
+        else
+          return {
+            timeout_ms = 3000, -- kickstart default is 500ms
+            lsp_format = 'fallback',
+          }
+        end
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
-        python = { 'isort', 'black', 'flake8', 'mypy' },
-        -- You can use 'stop_after_first' to run the first available formatter from the list
-        -- javascript = { "prettierd", "prettier", stop_after_first = true },
-        javascript = { 'prettierd', 'prettier', stop_after_first = true },
-        typescript = { 'prettierd', 'prettier', stop_after_first = true },
-        javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
-        typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+        -- python = { 'isort', 'black', 'flake8', 'mypy' }, -- NOTE: moved to language/python.lua
         css = { 'prettierd' },
-        html = { 'prettierd' },
-        json = { 'prettierd' },
+        -- json = { 'prettierd' },
+        -- jsonc = { 'prettierd' },
         yaml = { 'prettierd' },
-        markdown = { 'prettierd' },
+        -- markdown = { 'prettierd' },
         c = { 'clang-format' },
         cpp = { 'clang-format' },
         sh = { 'shfmt' },
         bash = { 'shfmt' },
         zsh = { 'shfmt' },
-        ocaml = { 'ocamlformat' }, -- OCaml uses .ml extension
+        -- ocaml = { 'ocamlformat' }, -- OCaml uses .ml extension
 
         -- Use the "*" filetype to run formatters on all filetypes.
         -- ['*'] = { 'codespell' }, -- FIX: Not working, causing error.FIX: Not working, causing error.

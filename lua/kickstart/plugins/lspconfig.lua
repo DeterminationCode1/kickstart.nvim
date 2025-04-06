@@ -1,6 +1,8 @@
 -- kickstarter https://github.com/dam9000/kickstart-modular.nvim/blob/master/lua/kickstart/plugins/lspconfig.lua
+-- LazyVim https://www.lazyvim.org/plugins/lsp
 --
 -- LSP Plugins
+
 return {
 
   {
@@ -16,9 +18,11 @@ return {
     },
   },
   { 'Bilal2453/luvit-meta', lazy = true },
+
   {
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
+    -- event = 'lazyFile',
     dependencies = {
       -- Automatically install LSPs and related tools to stdpath for Neovim
       { 'williamboman/mason.nvim', config = true }, -- NOTE: Must be loaded before dependants
@@ -30,27 +34,82 @@ return {
       { 'j-hui/fidget.nvim', opts = {} },
 
       -- Allows extra capabilities provided by nvim-cmp
-      'hrsh7th/cmp-nvim-lsp',
+      -- NOTE:I migrated to blink.cmp
+      -- 'hrsh7th/cmp-nvim-lsp',
+    },
+    -- for some reason LazyVim did not add extend_opts even though they change the
+    -- LSPs in other files... https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/plugins/lsp/init.lua
+    -- and https://github.com/folke/lazy.nvim/blob/main/CHANGELOG.md#features-19
+    -- opts_extend = { 'servers', 'setup' },
+    opts = {
+      -- add any global capabilities here
+      capabilities = {
+        workspace = {
+          fileOperations = {
+            didRename = true,
+            willRename = true,
+          },
+        },
+      },
+      -- Language servers
+      servers = {
+        clangd = {}, -- For C. Was listed by kickstarter
+        -- gopls = {},
+        -- rust_analyzer = {},
+        -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
+        --
+        -- Some languages (like typescript) have entire language plugins that can be useful:
+        --    https://github.com/pmizio/typescript-tools.nvim
+        --
+        -- But for many setups, the LSP (`tsserver`) will work just fine
+        -- tsserver = {},
+        -- NOTE: I decided to install the typescript-tools.nvim plugin as I work a lot with ts and speed of lsp is important. It's in a separate file
 
-      -- Me: required by "markdown_oxide"?
-      -- TODO: uninstall if markdown_oxide is removed
-      {
-        'nvimdev/lspsaga.nvim',
-        config = function()
-          require('lspsaga').setup {
-            -- no breadcumbs at top of buffer
-            symbol_in_winbar = {
-              enable = false,
+        -- ====================== CSS =========================
+        -- CSS lsp
+        cssls = {},
+        -- CSS modules i.e. go to definition of a css class
+        -- cssmodules_ls = {},
+
+        -- Tailwind CSS
+        tailwindcss = {},
+
+        -- Shell scripts: bash sh . to some extend zsh?
+        bashls = {},
+
+        -- ===================== Config languages =========================
+        -- Toml
+        taplo = {},
+
+        -- Me: Docker & docker-compose
+        dockerls = {},
+        docker_compose_language_service = {},
+
+        -- R statistical language
+        -- r_language_server = {}, -- moved to `languages/r.lua`
+
+        -- Me: Setup OCaml
+        ocamllsp = {},
+
+        -- ====================== Lua =========================
+        lua_ls = {
+          -- cmd = {...},
+          -- filetypes = { ...},
+          -- capabilities = {},
+          settings = {
+            Lua = {
+              completion = {
+                callSnippet = 'Replace',
+              },
+              -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
+              -- diagnostics = { disable = { 'missing-fields' } },
             },
-          }
-        end,
-        dependencies = {
-          'nvim-treesitter/nvim-treesitter', -- optional
-          'nvim-tree/nvim-web-devicons', -- optional
+          },
         },
       },
     },
-    config = function()
+
+    config = function(_, opts)
       -- Brief aside: **What is LSP?**
       --
       -- LSP is an initialism you've probably heard, but might not understand what it is.
@@ -167,14 +226,6 @@ return {
               vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
             end, '[T]oggle Inlay [H]ints')
           end
-
-          -- Me: change the lsp gutter symbols
-          -- see official docs: https://github.com/neovim/nvim-lspconfig/wiki/UI-Customization#change-diagnostic-symbols-in-the-sign-column-gutter
-          local signs = { Error = '󰅚 ', Warn = '󰀪 ', Hint = '󰌶 ', Info = ' ' }
-          for type, icon in pairs(signs) do
-            local hl = 'DiagnosticSign' .. type
-            vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-          end
         end,
       })
 
@@ -182,8 +233,21 @@ return {
       --  By default, Neovim doesn't support everything that is in the LSP specification.
       --  When you add nvim-cmp, luasnip, etc. Neovim now has *more* capabilities.
       --  So, we create new capabilities with nvim cmp, and then broadcast that to the servers.
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
-      capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
+      local vim_capabilities = vim.lsp.protocol.make_client_capabilities()
+      -- capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
+
+      -- Me: LazyVim way of integrating blink.cmp instead of nvim-cmp
+      -- https://www.lazyvim.org/plugins/lsp
+      local has_cmp, cmp_nvim_lsp = pcall(require, 'cmp_nvim_lsp')
+      local has_blink, blink = pcall(require, 'blink.cmp')
+      local capabilities = vim.tbl_deep_extend(
+        'force',
+        {},
+        vim_capabilities,
+        has_cmp and cmp_nvim_lsp.default_capabilities() or {},
+        has_blink and blink.get_lsp_capabilities() or {},
+        opts.capabilities or {}
+      )
 
       -- Enable the following language servers
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
@@ -194,193 +258,15 @@ return {
       --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
-      local servers = {
-        -- For C. Was listed by kickstarter
-        clangd = {},
-        -- gopls = {},
-        -- Python. Pyright was included by Kickstarter. has a lot more stars than pylsp.
-        pyright = {},
-        -- rust_analyzer = {},
-        -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
-        --
-        -- Some languages (like typescript) have entire language plugins that can be useful:
-        --    https://github.com/pmizio/typescript-tools.nvim
-        --
-        -- But for many setups, the LSP (`tsserver`) will work just fine
-        -- tsserver = {},
-        -- NOTE: I decided to install the typescript-tools.nvim plugin as I work a lot with ts and speed of lsp is important. It's in a separate file
-        --
+      -- local servers = {} -- NOTE: me moved to `opts`
 
-        -- ===================== HTML =========================
-        -- html
-        html = {
-          filetypes = { 'html', 'javascript', 'javascriptreact', 'javascript.jsx', 'typescript', 'typescriptreact', 'typescript.tsx' },
-        },
-        -- Emmet:
-        -- enables html snippets expansion like `div>div>ul>li*3` or `p.bg-red-500 -> <p class="bg-red-500"></p>`
-        emmet_ls = {
-          init_options = {
-            html = {
-              options = {
-                -- For possible options, see: https://github.com/emmetio/emmet/blob/master/src/config.ts#L79-L267
-                ['bem.enabled'] = true,
-              },
-            },
-          },
-        },
-        -- ====================== CSS =========================
-        -- CSS lsp
-        cssls = {},
-        -- CSS modules i.e. go to definition of a css class
-        -- cssmodules_ls = {},
+      -- NOTE: Mason tool installer. In the original kickstarter.nvim the
+      -- mason-tool-installer was defined here.
 
-        -- Tailwind CSS
-        tailwindcss = {},
+      local servers = opts.servers
 
-        -- Shell scripts: bash sh . to some extend zsh?
-        bashls = {},
-
-        -- ======================= Markdown =====================
-        -- Markdown LSP
-        marksman = {}, -- General markdown sup: reference, linking,
-        -- Special function for Personal Knowledge Management (PKM) in  markdown files
-        -- Me: markdown oxide is a special LSP for markdown files that is used for
-        -- Personal Knowledge Management (PKM) see: https://github.com/Feel-ix-343/markdown-oxide?tab=readme-ov-file#neovim
-        --
-        -- markdown_oxide = {
-        --   -- Ensure that dynamicRegistration is enabled! This allows the LS to take into account actions like the
-        --   -- Create Unresolved File code action, resolving completions for unindexed code blocks, ...
-        --   capabilities = vim.tbl_deep_extend(
-        --     'force',
-        --     capabilities,
-        --     {
-        --       workspace = {
-        --         didChangeWatchedFiles = {
-        --           dynamicRegistration = true,
-        --         },
-        --       },
-        --     }
-        --     -- on_attach = on_attach,
-        --   ),
-        -- },
-
-        -- grammar checker lsp for markdown
-        -- homepage: https://writewithharper.com/docs/integrations/neovim
-        -- Linkarzu video: https://youtu.be/3p2n2-eiuZw?si=RNLeXRypaNdIpea7&t=1098
-        --
-        -- NOTE: to quickly turn harper on and off, set `enabled = false` in the
-        -- config below and restart the lsp with `:LspRestart harper_ls`.
-        harper_ls = {
-          enabled = false,
-          filetypes = { 'markdown' },
-          settings = {
-
-            ['harper-ls'] = {
-
-              -- userDictPath = '~/dotfiles/nvim/.config/harper/global_dict.txt', -- path to your global dictionary
-              userDictPath = '~/dotfiles/nvim/.config/nvim/spell/en.utf-8.add', -- path to your global dictionary
-              -- fileDictPath = '~/dotfiles/nvim/.config/harper/', -- path to your file-specific dictionary
-              linters = {
-                SpellCheck = true,
-                SentenceCapitalization = false, -- set to false to avoid a lot of false positives
-              },
-              isolateEnglish = true,
-              markdown = {
-                IgnoreLinkTitle = true, -- [ignore this part]() [[and-also-this-part]]
-              },
-            },
-          },
-        },
-
-        -- ===================== Config languages =========================
-        -- Toml
-        taplo = {},
-
-        -- Me: Docker & docker-compose
-        dockerls = {},
-        docker_compose_language_service = {},
-
-        -- R statistical language
-        -- r_language_server = {}, -- moved to `languages/r.lua`
-
-        -- Me: Setup OCaml
-        ocamllsp = {},
-
-        lua_ls = {
-          -- cmd = {...},
-          -- filetypes = { ...},
-          -- capabilities = {},
-          settings = {
-            Lua = {
-              completion = {
-                callSnippet = 'Replace',
-              },
-              -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-              -- diagnostics = { disable = { 'missing-fields' } },
-            },
-          },
-        },
-      }
-
-      -- Ensure the servers and tools above are installed
-      --  To check the current status of installed tools and/or manually install
-      --  other tools, you can run
-      --    :Mason
-      --
-      --  You can press `g?` for help in this menu.
-      require('mason').setup()
-
-      -- You can add other tools here that you want Mason to install
-      -- for you, so that they are available from within Neovim.
-      local ensure_installed = vim.tbl_keys(servers or {})
-      vim.list_extend(ensure_installed, {
-        -- The way kickstarter is setup will install all LSP listed automatically. You don't have to include them here again.
-        -- =========== Python ===========
-        'black', -- formater
-        'isort', -- sort imports
-        'flake8', -- Linter
-        'mypy', -- Type checker
-
-        -- =========== JavaScript etc ===========
-        'prettier', -- formatter
-        'prettierd', -- formatter. Like prettier by demonizes it to make it faster.
-        'eslint_d', -- linter. Eslint but in deamonized verson for better performance
-
-        -- ============ HTML ===========
-
-        -- =========== CSS ===========
-        -- 'tailwindcss', -- Tailwind CSS IntelliSense
-        'stylelint', -- Linter
-
-        -- =========== C ===========
-        -- Some of these might also apply to cpp
-        'clang-format', -- Formatter
-
-        -- =========== Lua ===========
-        'stylua', -- Formatter
-        'luacheck', -- Linter
-
-        -- ========== Docker ===========
-        'hadolint', -- Linter
-        -- ========== Kubernetes ===========
-        -- 'kube-lint', -- Linter. -- FIX: kube-lint doesn't exist in Mason.
-
-        -- ========== Shell  ===========
-        'shfmt', -- Formater
-        'shellcheck', -- Linter. only for bash, posix-shell. Doesn't work for zsh.
-
-        -- =========== General Text ===========
-        -- Powerful speling checker for your editor. Codespell would be a ligthway alternative.
-        'cspell',
-        'markdownlint',
-        -- 'marksman', -- me: marksman seemed to be automatically install even before adding it here
-        -- 'harper_ls', -- grammar checker lsp for markdown
-        -- 'texlab', -- LaTeX language server
-
-        -- ============ OCaml ==========
-        'ocamlformat', -- Formatter
-      })
-      require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+      -- Debug: print out the servers
+      vim.notify('LSP servers: ' .. vim.inspect(servers), vim.log.levels.DEBUG, { title = 'LSP servers' })
 
       require('mason-lspconfig').setup {
         handlers = {

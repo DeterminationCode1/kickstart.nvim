@@ -45,6 +45,8 @@ return {
       --  Me: Important aliases to know!
       --  - b - block: { }, [ ], ( ), < >, etc.
       --  - q - quote: ', ", `, etc.
+
+      -- See LazyVim https://www.lazyvim.org/plugins/coding#miniai
       require('mini.ai').setup {
         n_lines = 500,
         custom_textobjects = {
@@ -58,6 +60,8 @@ return {
             }
             return { from = from, to = to }
           end,
+          t = { '<([%p%w]-)%f[^<%w][^<>]->.-</%1>', '^<.->().*()</[^/]->$' }, -- tags
+          -- d = { '%f[%d]%d+' }, -- digits
         },
       }
 

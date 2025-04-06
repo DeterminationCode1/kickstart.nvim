@@ -1,8 +1,8 @@
+-- kickstarter https://github.com/dam9000/kickstart-modular.nvim/blob/master/lua/kickstart/plugins/treesitter.lua
+-- Lazyvim https://www.lazyvim.org/plugins/treesitter
+
 -- Treesitter to create a syntax tree for better code understanding and
 -- manipulation.
---
--- kickstarter https://github.com/dam9000/kickstart-modular.nvim/blob/master/lua/kickstart/plugins/treesitter.lua
-
 return {
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
@@ -11,6 +11,11 @@ return {
       -- Treesitter textobjects module. Laod this when treesitter is loaded.
       'nvim-treesitter/nvim-treesitter-textobjects',
     },
+    -- configure lazy to combine values for `ensure_installed` rather than merge
+    -- and overwrite them.
+    -- see https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/plugins/treesitter.lua
+    -- and https://github.com/folke/lazy.nvim/blob/main/CHANGELOG.md#features-19
+    opts_extend = { 'ensure_installed' },
     opts = {
       ensure_installed = {
         -- Kickstarter default
@@ -26,25 +31,17 @@ return {
         'query',
         'vim',
         'vimdoc',
-        -- ------ My languages -------------
-        -- R -- NOTE: moved to languages/r.lua
         -- 'r',
-        -- 'rnoweb',
-        -- end
-        -- --------- Python -------------
-        'python',
-        'ninja', -- LazyVim recommended to add 'ninja' and 'rst'
-        'rst', --  see https://www.lazyvim.org/extras/lang/python
-        -- ---------- end -------------
-        'javascript',
-        'typescript',
+        -- 'python',
+        -- 'javascript',
+        -- 'typescript',
         'css',
-        'html',
+        -- 'html',
         'json',
         'yaml',
         'toml',
-        'dockerfile',
-        'gitignore',
+        -- 'dockerfile',
+        -- 'gitignore',
         'java',
       },
       -- Autoinstall languages that are not installed

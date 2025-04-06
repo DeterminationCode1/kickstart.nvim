@@ -4,26 +4,39 @@ return {
     -- Official docs > Usage https://github.com/mfussenegger/nvim-lint?tab=readme-ov-file#usage
     'mfussenegger/nvim-lint',
     event = { 'BufReadPre', 'BufNewFile' },
-    config = function()
-      local lint = require 'lint'
+    -- me: I prefer defining the linters in the options and not in the seput
+    -- call. It seems cleaner and I have the suspicion that it make merging the
+    -- opts here with opts for this plugin defined in other files like
+    -- `languages/python.lua` easier.
+    --
+    -- NOTE: I prefer to define the linters for specific filetypes in a filetype
+    -- specific config file like `languages/python.lua` or
+    -- `languages/javascript.lua` so it's easy to see all configs for a language.
 
+    -- WARNING: adding `opts_extend` for some reasons causes nvim-lint to break
+    -- Allow extending options in other files https://github.com/folke/lazy.nvim/blob/main/CHANGELOG.md#features-19
+    -- opts_extend = { 'linters_by_ft' },
+    opts = {
       -- Define which linter you want for which fileformat.
-      lint.linters_by_ft = {
-        markdown = { 'markdownlint' },
-        python = { 'flake8' }, -- 'mypy'. ? Is Mypy or pyright better
-        typescriptreact = { 'eslint_d' },
-        javascriptreact = { 'eslint_d' },
-        typescript = { 'eslint_d' },
-        javascript = { 'eslint_d' },
+      --
+      -- TIP, check linters are working: comment in/out the `markdownlint`
+      -- formatter. You should no longer get an error for having multiple level one
+      -- headings.
+      linters_by_ft = {
         css = { 'stylelint' },
-        docker = { 'hadolint' },
+        -- docker = { 'hadolint' },
         -- NOTE: I deactivated luacheck because I only use it for Neovim configs and in
         -- these files it was throwing a lot of errors like "undefined global variable vim"
         -- lua = { 'luacheck' },
         sh = { 'shellcheck' },
         bash = { 'shellcheck' },
         zsh = { 'shellcheck' },
-      }
+      },
+    },
+    config = function(_, opts)
+      local lint = require 'lint'
+
+      lint.linters_by_ft = opts.linters_by_ft
 
       -- To allow other plugins to add linters to require('lint').linters_by_ft,
       -- instead set linters_by_ft like this:
@@ -63,9 +76,12 @@ return {
       vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'InsertLeave' }, {
         group = lint_augroup,
         callback = function()
-          -- try_lint without arguments runs the linters defined in `linters_by_ft`
-          -- for the current filetype
-          lint.try_lint()
+          -- Only run the linter in buffers that you can modify in order to
+          -- avoid superfluous noise, notably within the handy LSP pop-ups that
+          -- describe the hovered symbol using Markdown.
+          if vim.opt_local.modifiable:get() then
+            lint.try_lint()
+          end
 
           -- You can call `try_lint` with a linter name or a list of names to always
           -- run specific linters, independent of the `linters_by_ft` configuration
