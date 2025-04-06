@@ -2,18 +2,23 @@
 
 -- Remove buffer source from markdown files in nvim-cmp because it made it
 -- difficult to find file suggestions when hitting [[]] in markdown files.
-local cmp = require 'cmp'
-local sources = cmp.get_config().sources
-if not sources then
-  return
-end
 
-for i = #sources, 1, -1 do
-  if sources[i].name == 'buffer' then
-    table.remove(sources, i)
-  end
-end
-cmp.setup.buffer { sources = sources }
+-- -- nvim-cmp
+-- local cmp = require 'cmp'
+-- local sources = cmp.get_config().sources
+-- if not sources then
+--   return
+-- end
+
+-- for i = #sources, 1, -1 do
+--   if sources[i].name == 'buffer' then
+--     table.remove(sources, i)
+--   end
+-- end
+-- cmp.setup.buffer { sources = sources }
+
+-- blink.cmp - deactivate buffer source can be do not in the blink.cmp config
+-- function see
 
 -- ============================ Markdown Keybindings ============================
 -- The here listed keybindings only exist in .md files. they can override

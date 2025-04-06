@@ -1,5 +1,8 @@
--- tailwind-tools.lua
 -- https://github.com/luckasRanarison/tailwind-tools.nvim?tab=readme-ov-file
+--
+-- An unofficial Tailwind CSS integration and tooling for Neovim written in Lua
+-- and JavaScript, leveraging the built-in LSP client, Treesitter, and the NodeJS
+-- plugin host. It is inspired by the official Visual Studio Code extension.
 return {
   'luckasRanarison/tailwind-tools.nvim',
   dependencies = { 'nvim-treesitter/nvim-treesitter' },

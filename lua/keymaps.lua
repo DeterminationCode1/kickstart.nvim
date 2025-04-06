@@ -88,6 +88,10 @@ vim.keymap.set({ 'n', 'v' }, 'L', '$', { desc = 'Move to the end of the line' })
 -- Copy paste from clipboard with the familiar "ctrl+v" command:
 vim.keymap.set({ 'i', 'n' }, '<C-v>', '"+p', { desc = 'Paste from clipboard' })
 
+-- VS-Code: ctrl+backspace to delete the whole line
+-- the native Neovim keybinding is <C-u>
+vim.keymap.set('i', '<C-BS>', '<C-u>', { desc = 'VS-Code keymap to delete the whole line' })
+
 -- VS-Code: ctrl+enter to move cursor down one line -- WARN: for some reason not working
 --
 -- vim.keymap.set('i', '<C-Enter>', '<esc>o', { desc = 'VS-Code keymap to go to the next line in insert mode (same as <Esc>o)' })
@@ -170,18 +174,18 @@ end, { desc = '[C]ount characters and words' })
 -- heading at the very top of the file
 -- This will only search for H2 headings and above
 -- Linkarzu used `gk` on querty as keybinding.
--- vim.keymap.set({ 'n', 'v' }, 'g<up>', function()
---   -- `?` - Start a search backwards from the current cursor position.
---   -- `^` - Match the beginning of a line.
---   -- `##` - Match 2 ## symbols
---   -- `\\+` - Match one or more occurrences of prev element (#)
---   -- `\\s` - Match exactly one whitespace character following the hashes
---   -- `.*` - Match any characters (except newline) following the space
---   -- `$` - Match extends to end of line
---   vim.cmd 'silent! ?^##\\+\\s.*$'
---   -- Clear the search highlight
---   vim.cmd 'nohlsearch'
--- end, { desc = '[P]Go to previous markdown header' })
+vim.keymap.set({ 'n', 'v' }, 'g<up>', function()
+  -- `?` - Start a search backwards from the current cursor position.
+  -- `^` - Match the beginning of a line.
+  -- `##` - Match 2 ## symbols
+  -- `\\+` - Match one or more occurrences of prev element (#)
+  -- `\\s` - Match exactly one whitespace character following the hashes
+  -- `.*` - Match any characters (except newline) following the space
+  -- `$` - Match extends to end of line
+  vim.cmd 'silent! ?^##\\+\\s.*$'
+  -- Clear the search highlight
+  vim.cmd 'nohlsearch'
+end, { desc = '[P]Go to previous markdown header' })
 -- same for query layout: gk
 vim.keymap.set('n', 'gk', function()
   vim.cmd 'silent ?^##\\+\\s.*$'

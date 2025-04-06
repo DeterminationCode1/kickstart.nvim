@@ -17,10 +17,10 @@ local d = ls.dynamic_node
 -- Example: expanding a snippet on a new line only.
 -- In a snippet file, first require the line_begin condition...
 local line_begin = require('luasnip.extras.expand_conditions').line_begin
-local top_of_file = require('utils.luasnip-helper-funcs').top_of_file
-local is_line = require('utils.luasnip-helper-funcs').is_line
+local top_of_file = require('utils.my-utils.luasnip-helper-funcs').top_of_file
+local is_line = require('utils.my-utils.luasnip-helper-funcs').is_line
 
-local get_visual = require('utils.luasnip-helper-funcs').get_visual
+local get_visual = require('utils.my-utils.luasnip-helper-funcs').get_visual
 
 return {
   -- s(

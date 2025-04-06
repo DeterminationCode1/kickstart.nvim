@@ -87,6 +87,7 @@ return {
             ['@class.outer'] = 'V', -- linewise
             -- ['@my-section'] = 'V', -- linewise
             -- ['@class.outer'] = '<c-v>', -- blockwise
+            ['@conditional.outer'] = 'V', -- linewise
           },
           -- If you set this to `true` (default is `false`) then any textobject is
           -- extended to include preceding or succeeding whitespace. Succeeding

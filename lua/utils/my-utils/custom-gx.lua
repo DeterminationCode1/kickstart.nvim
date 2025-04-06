@@ -72,7 +72,7 @@ M.my_gx = function()
   local pattern = [[\v(http|https|ftp|mailto|file|zotero)://\S+|\v(\w+://)?(\w+[-\w]*\.)*\w+[-\w]*\.\w+(/\S*)*|\v(~|/|\.)(/\S*)*]]
   -- another pattern that looks for zotero cite keys in markdown files. i.e. @rawlsTheoryJustice1971
   local pattern_zotero = [[\@[\w\d]+]]
-  vim.notify('Pattern: ' .. pattern)
+  -- vim.notify('Pattern: ' .. pattern)
 
   -- -- Use :gmatch to get all URLs in the line
   -- for url in line:gmatch(pattern) do

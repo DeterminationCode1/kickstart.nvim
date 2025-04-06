@@ -19,6 +19,7 @@ return {
     'sindrets/diffview.nvim', -- optional - Diff integration
     'nvim-telescope/telescope.nvim', -- optional
   },
+  event = 'VeryLazy', -- load after initial UI render
   config = function(_, opts)
     -- This contains mainly Neogit but also a bunch of Git settings
     -- like fetching branches with telescope or blaming with fugitive

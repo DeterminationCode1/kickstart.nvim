@@ -3,13 +3,13 @@
 -- - defining  the 'a/b' snippet in all.lua it works in all files but not in
 -- markdown. e.g. in this lua file it will work but in markdown its not working
 -- even though the snippet is listded by the 'snipetlist' command
-local utils = require 'utils.luasnip-helper-funcs'
+local utils = require 'utils.my-utils.luasnip-helper-funcs'
 local merge = utils.merge_tables
 local pipe = utils.pipe
 local no_backslash = utils.no_backslash
-local in_mathzone = require('utils.treesitter-contexts').in_mathzone
+local in_mathzone = require('utils.my-utils.treesitter-contexts').in_mathzone
 
-local in_text = require('utils.treesitter-contexts').in_text
+local in_text = require('utils.my-utils.treesitter-contexts').in_text
 local line_begin = require('luasnip.extras.expand_conditions').line_begin
 local ls = require 'luasnip'
 local i = ls.insert_node
