@@ -39,6 +39,14 @@ return {
       pre_hook = prehook,
       post_hook = nil,
     }
+
+    -- Keybindings for insert mode
+    -- because starting comments is so common, I decided to basically use a
+    -- snippet for a letter that was comfortable on the homerow in colemak.
+    -- alternative: prefix .. 'q'
+    -- NOTE: I had to use a modifier in the keybinding otherwise `whick-key`
+    -- caused a wait for command completion when typing a letter in insert mode
+    vim.api.nvim_set_keymap('i', '<C-q>', '<esc>qe', { desc = 'Start code comment in insert mode', silent = true })
   end,
 
   event = 'BufReadPre',
