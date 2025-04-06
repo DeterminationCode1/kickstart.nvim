@@ -99,11 +99,33 @@ vim.opt.wrap = true -- wrap lines that are longer than textwidth
 -- wide terminal. this will wrap text at column 100, but the statusline will be
 -- smaller too...
 
--- =========== My Dignostic settings ===========
--- My current config will show the diganostic message only on the cursor line.
+-- =========== My Diagnostic settings ===========
+-- My current config will show the diagnostic message only on the cursor line.
 vim.diagnostic.config {
   virtual_lines = false, -- show diagnostic messages in the line below the line with the error. Default false.
   virtual_text = { current_line = true }, -- show diagnostic messages in the line with the error. Default false.
+  -- configure diagnostic appearance. Official docs https://neovim.io/doc/user/diagnostic.html#diagnostic-signs
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = '󰅚 ',
+      [vim.diagnostic.severity.WARN] = '󰀪 ',
+      [vim.diagnostic.severity.INFO] = ' ',
+      [vim.diagnostic.severity.HINT] = '󰌶 ',
+    },
+    linehl = { -- whole line color highlight
+      -- [vim.diagnostic.severity.ERROR] = 'DiagnosticError',
+      -- [vim.diagnostic.severity.WARN] = 'DiagnosticWarn',
+      -- [vim.diagnostic.severity.INFO] = 'DiagnosticInfo',
+      -- [vim.diagnostic.severity.HINT] = 'DiagnosticHint',
+    },
+    -- color of the line number (i.e. 3,  5,  13) of the line with the diagnostic
+    numhl = {
+      [vim.diagnostic.severity.ERROR] = 'DiagnosticError',
+      [vim.diagnostic.severity.WARN] = 'DiagnosticWarn',
+      [vim.diagnostic.severity.INFO] = 'DiagnosticInfo',
+      [vim.diagnostic.severity.HINT] = 'DiagnosticHint',
+    },
+  },
 }
 
 -- =========== Me: spell checking ===========
