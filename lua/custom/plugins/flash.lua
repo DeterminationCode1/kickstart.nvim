@@ -5,7 +5,7 @@
 
 return {
   'folke/flash.nvim',
-  event = 'VeryLazy',
+  event = 'VeryLazy', -- will be laoded after UI has rendered
   ---@type Flash.Config
   opts = {},
   -- stylua: ignore
