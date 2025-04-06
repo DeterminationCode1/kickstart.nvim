@@ -1,0 +1,21 @@
+-- -- official getting started https://github.com/nvim-neorg/neorg/wiki/Tutorial
+-- return {
+
+--   {
+--     'nvim-neorg/neorg',
+--     lazy = false, -- Disable lazy loading as some `lazy.nvim` distributions set `lazy = true` by default
+--     dependencies = { 'nvim-lua/plenary.nvim' },
+--     version = '*', -- Pin Neorg to the latest stable release
+--     config = true,
+--   },
+--   -- treesitter parsers
+--   {
+--     'nvim-treesitter/nvim-treesitter',
+--     opts = {
+--       -- ensure_installed = { 'norg', 'norg2', 'org' },
+--       ensure_installed = { 'norg' },
+--     },
+--   },
+-- }
+--
+return {}
