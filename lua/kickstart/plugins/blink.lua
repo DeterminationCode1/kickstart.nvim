@@ -97,6 +97,8 @@ return {
         -- official docs https://cmp.saghen.dev/recipes.html#dynamically-picking-providers-by-treesitter-node-filetype
         -- Hint: `enabled` are the `opts.default.sources`
 
+        -- WARN: even though this is copied from the official recopy docs,  it
+        -- breaks blink.cmp completions in markdown files completely.
         -- default = function(ctx)
         --   local node = vim.treesitter.get_node()
         --   if vim.bo.filetype == 'markdown' then
@@ -118,7 +120,7 @@ return {
 
         per_filetype = {
           -- sql = { 'dadbod', 'buffer' },
-          markdown = { 'lsp', 'path' },
+          -- markdown = { 'lsp', 'path' },
         },
 
         providers = {
@@ -135,7 +137,7 @@ return {
             enabled = true,
             max_items = 3,
             module = 'blink.cmp.sources.buffer',
-            min_keyword_length = 2,
+            min_keyword_length = 3,
             score_offset = 30, -- the higher the number, the higher the priority
           },
           snippets = {
@@ -274,68 +276,70 @@ return {
     end,
   },
 
-  -- add dictionary
-  -- see Linkarzu https://github.com/linkarzu/dotfiles-latest/blob/main/neovim/neobean/lua/plugins/blink-cmp.lua
-  {
-    'saghen/blink.cmp',
-    dependencies = {
-      { 'Kaiser-Yang/blink-cmp-dictionary', dependencies = { 'nvim-lua/plenary.nvim' } },
-    },
-    opts = {
-      sources = {
-        default = { 'dictionary' },
-        providers = {
-          dictionary = {
-            -- https://github.com/Kaiser-Yang/blink-cmp-dictionary
-            -- In macOS to get started with a dictionary:
-            -- cp /usr/share/dict/words ~/dotfiles/nvim/.config/dictionaries/words.txt
-            --
-            -- NOTE: For the word definitions make sure "wn" is installed
-            -- brew install wordnet
-            module = 'blink-cmp-dictionary',
-            name = 'Dict',
-            score_offset = 20, -- the higher the number, the higher the priority
-            -- https://github.com/Kaiser-Yang/blink-cmp-dictionary/issues/2
-            enabled = true,
-            max_items = 8,
-            min_keyword_length = 3,
-            opts = {
-              -- -- The dictionary by default now uses fzf, make sure to have it
-              -- -- installed
-              -- -- https://github.com/Kaiser-Yang/blink-cmp-dictionary/issues/2
-              --
-              -- Do not specify a file, just the path, and in the path you need to
-              -- have your .txt files
-              dictionary_directories = { vim.fn.expand '~/dotfiles/nvim/.config/dictionaries/' }, -- default Linkarzu ~/github/dotfiles-latest/dictionaries
-              -- Notice I'm also adding the words I add to the spell dictionary
-              dictionary_files = {
-                vim.fn.expand '~/dotfiles/nvim/.config/nvim/spell/en.utf-8.add',
-                vim.fn.expand '~/dotfiles/nvim/.config/nvim/spell/de.utf-8.add',
-                -- vim.fn.expand '~/github/dotfiles-latest/neovim/neobean/spell/en.utf-8.add',
-                -- vim.fn.expand '~/github/dotfiles-latest/neovim/neobean/spell/es.utf-8.add',
-              },
-              -- NOTE.see official docs on how to use different dictionaries based on filetype:
-              -- https://github.com/Kaiser-Yang/blink-cmp-dictionary?tab=readme-ov-file#how-to-use-different-dictionaries-for-different-filetypes
+  -- -- add dictionary
+  -- -- see Linkarzu https://github.com/linkarzu/dotfiles-latest/blob/main/neovim/neobean/lua/plugins/blink-cmp.lua
+  --
+  -- -- NOTE: I was getting annoyed but the constant popup of the dictionary
+  -- {
+  --   'saghen/blink.cmp',
+  --   dependencies = {
+  --     { 'Kaiser-Yang/blink-cmp-dictionary', dependencies = { 'nvim-lua/plenary.nvim' } },
+  --   },
+  --   opts = {
+  --     sources = {
+  --       default = { 'dictionary' },
+  --       providers = {
+  --         dictionary = {
+  --           -- https://github.com/Kaiser-Yang/blink-cmp-dictionary
+  --           -- In macOS to get started with a dictionary:
+  --           -- cp /usr/share/dict/words ~/dotfiles/nvim/.config/dictionaries/words.txt
+  --           --
+  --           -- NOTE: For the word definitions make sure "wn" is installed
+  --           -- brew install wordnet
+  --           module = 'blink-cmp-dictionary',
+  --           name = 'Dict',
+  --           score_offset = 20, -- the higher the number, the higher the priority
+  --           -- https://github.com/Kaiser-Yang/blink-cmp-dictionary/issues/2
+  --           enabled = true,
+  --           max_items = 8,
+  --           min_keyword_length = 3,
+  --           opts = {
+  --             -- -- The dictionary by default now uses fzf, make sure to have it
+  --             -- -- installed
+  --             -- -- https://github.com/Kaiser-Yang/blink-cmp-dictionary/issues/2
+  --             --
+  --             -- Do not specify a file, just the path, and in the path you need to
+  --             -- have your .txt files
+  --             dictionary_directories = { vim.fn.expand '~/dotfiles/nvim/.config/dictionaries/' }, -- default Linkarzu ~/github/dotfiles-latest/dictionaries
+  --             -- Notice I'm also adding the words I add to the spell dictionary
+  --             dictionary_files = {
+  --               vim.fn.expand '~/dotfiles/nvim/.config/nvim/spell/en.utf-8.add',
+  --               vim.fn.expand '~/dotfiles/nvim/.config/nvim/spell/de.utf-8.add',
+  --               -- vim.fn.expand '~/github/dotfiles-latest/neovim/neobean/spell/en.utf-8.add',
+  --               -- vim.fn.expand '~/github/dotfiles-latest/neovim/neobean/spell/es.utf-8.add',
+  --             },
+  --             -- NOTE.see official docs on how to use different dictionaries based on filetype:
+  --             -- https://github.com/Kaiser-Yang/blink-cmp-dictionary?tab=readme-ov-file#how-to-use-different-dictionaries-for-different-filetypes
 
-              -- --  NOTE: To disable the definitions uncomment this section below
-              --
-              -- separate_output = function(output)
-              --   local items = {}
-              --   for line in output:gmatch("[^\r\n]+") do
-              --     table.insert(items, {
-              --       label = line,
-              --       insert_text = line,
-              --       documentation = nil,
-              --     })
-              --   end
-              --   return items
-              -- end,
-            },
-          },
-        },
-      },
-    },
-  },
+  --             -- --  NOTE: To disable the definitions uncomment this section below
+  --             --
+  --             -- separate_output = function(output)
+  --             --   local items = {}
+  --             --   for line in output:gmatch("[^\r\n]+") do
+  --             --     table.insert(items, {
+  --             --       label = line,
+  --             --       insert_text = line,
+  --             --       documentation = nil,
+  --             --     })
+  --             --   end
+  --             --   return items
+  --             -- end,
+  --           },
+  --         },
+  --       },
+  --     },
+  --   },
+  -- },
 
   -- lazydev
   {

@@ -71,9 +71,6 @@ return {
         -- CSS modules i.e. go to definition of a css class
         -- cssmodules_ls = {},
 
-        -- Tailwind CSS
-        tailwindcss = {},
-
         -- Shell scripts: bash sh . to some extend zsh?
         bashls = {},
 

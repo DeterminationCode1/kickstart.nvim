@@ -103,6 +103,9 @@ return {
   -- In normal mode, TailwindNextClass and TailwindPrevClass can be used with a count to jump through multiple classes at once.
   {
     'luckasRanarison/tailwind-tools.nvim',
+    -- LSP nvim-lsp dependency is optional. By my understanding, you can
+    -- optionally setup the tailwindcss LSP manually in lspconfig or the alternatively,
+    -- the `tailwind-tools` plugin will auto start the default configured LSP itself
     dependencies = { 'nvim-treesitter/nvim-treesitter' },
     -- -@type TailwindTools.Option
     opts = {

@@ -10,6 +10,7 @@
 return {
   {
     'lewis6991/gitsigns.nvim',
+    -- event = 'LazyFile', -- used by LazyVim
     opts = {
       -- signs = { -- gitsigns defaults
       --   add = { text = '│' },

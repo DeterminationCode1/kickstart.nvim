@@ -33,8 +33,8 @@ return {
   opts = { headerMaxWidth = 80 },
   cmd = 'GrugFar',
   keys = {
-    {
-      '<leader>rs', -- LazyVim uses <leader>rs  (but that is already "resume search" in telescope)
+    { -- I previously used <leader>rs
+      '<leader>sr', -- LazyVim uses <leader>sr  (but that is already "resume search" in telescope)
       function()
         local grug = require 'grug-far'
         local ext = vim.bo.buftype == '' and vim.fn.expand '%:e'
@@ -49,9 +49,29 @@ return {
         }
       end,
       mode = { 'n', 'v' },
-      desc = 'Search and Replace ([R]eplace [S]earch with Grug-far)',
+      desc = 'Search and Replace (Grug-far)',
+    },
+
+    -- Launch grug-far with search/replace limited to the  current file
+    --
+    -- official recipes copy pasted: https://github.com/MagicDuck/grug-far.nvim?tab=readme-ov-file#launch-limiting-searchreplace-to-current-file
+    --
+    -- INFO: the default recipe didn't work because I use filename with `spaces`
+    -- in my markdown files that were not automatically escaped correctly and
+    -- cause ripgrep to not find the file.
+    {
+      '<leader>sR', -- because `sr` is already the default replace, sR is for rare case replaces
+      -- sR was also used by LazyVim for `picker search resume` but I never used it
+      function()
+        local file_path = vim.fn.expand '%'
+        -- NOTE: my fix to escape spaces in filenames. Replace spaces with '\ '
+        file_path = file_path:gsub(' ', '\\ ')
+        require('grug-far').open { prefills = { paths = file_path } }
+      end,
+      desc = 'Search and Replace in current file ([R]replace in current [F]ile)',
     },
   },
+
   config = function()
     -- set up grug-far.nvim
     require('grug-far').setup {}
@@ -82,11 +102,11 @@ return {
     -- INFO: the default recipe didn't work because I use filename with `spaces`
     -- in my markdown files that were not automatically escaped correctly and
     -- cause ripgrep to not find the file.
-    vim.keymap.set('n', '<leader>rf', function()
-      local file_path = vim.fn.expand '%'
-      -- NOTE: my fix to escape spaces in filenames. Replace spaces with '\ '
-      file_path = file_path:gsub(' ', '\\ ')
-      require('grug-far').open { prefills = { paths = file_path } }
-    end, { desc = 'Search and Replace in current file ([R]replace in current [F]ile)' })
+    -- vim.keymap.set('n', '<leader>rf', function()
+    --   local file_path = vim.fn.expand '%'
+    --   -- NOTE: my fix to escape spaces in filenames. Replace spaces with '\ '
+    --   file_path = file_path:gsub(' ', '\\ ')
+    --   require('grug-far').open { prefills = { paths = file_path } }
+    -- end, { desc = 'Search and Replace in current file ([R]replace in current [F]ile)' })
   end,
 }

@@ -18,12 +18,18 @@ return {
         { '<leader>w', group = '[W]orkspace' },
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+        -- -------------- my groups ==================
         { '<leader>m', group = '[M]arkdown' }, -- me
         { '<leader>mf', group = 'Markdown [F]old' }, -- me
         { '<leader>tn', group = '[N]otifications' }, -- me
         { '<leader>n', group = 'Next item' }, -- me
         { '<leader>o', group = 'Overseer' }, -- me
         { '<leader>g', group = 'Git tools' }, -- me
+        { '<leader>ts', group = 'Spelling' },
+        -- ------------- LazyVim -----------------
+        { '[', group = 'prev' },
+        { ']', group = 'next' },
+        { 'g', group = 'goto' },
       }
     end,
   },

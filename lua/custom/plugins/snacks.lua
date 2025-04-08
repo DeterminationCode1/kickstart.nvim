@@ -13,7 +13,7 @@ return {
     priority = 1000,
     lazy = false,
     keys = {
-      -- ======================= Picker ==============================
+      -- ======================= Explorer ==============================
       -- Top pickers and explorer_focus
       {
         '<leader>te',
