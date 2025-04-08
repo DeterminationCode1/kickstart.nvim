@@ -19,7 +19,7 @@ vim.opt.hidden = true -- Enable modified buffers in background
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
-vim.opt.relativenumber = true -- deafault: commented out.
+vim.opt.relativenumber = true -- default: commented out.
 
 -- Me: set default tab/shift width and policies
 -- NOTE: kickstart uses the vim-sleuth plugin to automatically detect tabstop and shiftwidth
@@ -30,7 +30,7 @@ vim.opt.tabstop = 4 -- number of spaces that a <Tab> in the file counts for
 vim.opt.shiftwidth = 4 -- size of each indent level
 vim.opt.expandtab = true -- convert tabs to spaces
 
--- ME: Concela level automatically renders/hides text in e.g. markdown, latex, json files. Some find it very anoying, but the obsidian.nvim plugin requires it at level 1 or 2 for obsidian like pre-rendering of markdown to work.
+-- ME: Conceal level automatically renders/hides text in e.g. markdown, latex, json files. Some find it very annoying, but the obsidian.vim plugin requires it at level 1 or 2 for obsidian like pre-rendering of markdown to work.
 vim.opt.conceallevel = 2
 
 -- Enable mouse mode, can be useful for resizing splits for example!
@@ -40,7 +40,7 @@ vim.opt.mouse = 'a'
 vim.opt.showmode = false
 
 -- Sync clipboard between OS and Neovim.
---  Schedule the setting after `UiEnter` because it can increase startup-time.
+--  Schedule the setting after `UI` because it can increase startup-time.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
 vim.schedule(function()
@@ -64,7 +64,7 @@ vim.opt.signcolumn = 'yes'
 vim.opt.updatetime = 250
 
 -- Decrease mapped sequence wait time. See nvim docs https://neovim.io/doc/user/options.html#'timeoutlen'
--- Displays which-key popup sooner
+-- Displays which-key pop-up sooner
 -- Me: I think these low values cause sequences like 'gcO' to fail because gc are quick but
 -- O then takes more than 300ms. Then the cursor becomes a small bottom line indicating
 -- that an invalid sequence was entered.
@@ -74,7 +74,7 @@ vim.opt.timeoutlen = 800 -- Kickstarter default: 300 (to open which-key early). 
 vim.opt.splitright = true
 vim.opt.splitbelow = true
 
--- Sets how neovim will display certain whitespace characters in the editor.
+-- Sets how Neovim will display certain whitespace characters in the editor.
 --  See `:help 'list'`
 --  and `:help 'listchars'`
 vim.opt.list = true
@@ -95,16 +95,16 @@ vim.opt.scrolloff = 10
 vim.opt.textwidth = 80
 vim.opt.wrap = true -- wrap lines that are longer than textwidth
 -- vim.opt.columns = 100 -- set the width of the editor to 100 columns -- WARN: not working
--- NOTE: you can use `set columns=100` to make nvim think it's in a 100 column
--- wide terminal. this will wrap text at column 100, but the statusline will be
+-- NOTE: you can use `set columns=100` to make vim think it's in a 100 column
+-- wide terminal. This will wrap text at column 100, but the status line will be
 -- smaller too...
 
 -- =========== My Diagnostic settings ===========
--- My current config will show the diagnostic message only on the cursor line.
+-- My current con fig will show the diagnostic message only on the cursor line.
 vim.diagnostic.config {
   virtual_lines = false, -- show diagnostic messages in the line below the line with the error. Default false.
   virtual_text = { current_line = true }, -- show diagnostic messages in the line with the error. Default false.
-  -- configure diagnostic appearance. Official docs https://neovim.io/doc/user/diagnostic.html#diagnostic-signs
+  -- configure diagnostic appearance. Official docs https://Neovim.Io/doc/user/diagnostic.html#diagnostic-signs
   signs = {
     text = {
       [vim.diagnostic.severity.ERROR] = '󰅚 ',
@@ -128,30 +128,8 @@ vim.diagnostic.config {
   },
 }
 
--- =========== Me: spell checking ===========
--- See `:help spell` for detailed information
--- Enable spell checking
-vim.opt.spell = true
--- Set the language for spell checking:
--- See `:help spellang` for more information
--- en: (all) English, en_uk: English UK, en_us, de: German, ...
--- vim.opt.spelllang = { 'en', 'de' } -- (string or list of strings)
-vim.opt.spelllang = { 'en' } -- (string or list of strings)
-
-vim.opt.spelloptions = 'camel' -- treat camel case words as separate words
-
--- Toggle spell checking with leader>ts
-vim.keymap.set('n', '<leader>ts', ':set spell!<CR>', { desc = '[T]oggle [S]pell checking' })
-
--- Shortcut to accept the first suggestion for the word under the cursor
--- `ga` was free. It defaults to 'print ascii val under cursor' but I don't use that.
--- NOTE: Maybe extend the above command to also jump back to the last spelling error with `]s` so
--- your cursors doesn't have to be on the exact word?
-vim.keymap.set('n', 'ga', '1z=', { desc = '[G]o spelling: [A]ccept the first suggestion for the word under the cursor' })
--- "DevOps Toolbox" Youtuber used the following handy mapping to quickly fix the
--- last spelling error from insert mode: https://youtu.be/oLpGahrsSGQ?si=eyhGVtNq7O0MrPHp&t=360
-vim.keymap.set('i', '<C-l>', '<Esc>[s1z=`]a', { desc = 'Fix last spelling error' }) -- FIX: doesn't work?
--- =========== Me: END ===================
+-- My spell checking config
+require 'options_spell'
 
 -------------------------------------------------------------------------------
 ------------------------------ Folding section --------------------------------
@@ -344,7 +322,7 @@ end, { desc = '[P]Fold all headings level 3 or above' })
 -- Keymap for folding markdown headings of level 4 or above
 -- Linkarzu keymap: <leader>mfo
 vim.keymap.set('n', '<leader>mfo', function()
-  -- Reloads the file to refresh folds, otherwise you have to re-open neovim
+  -- Reloads the file to refresh folds, otherwise you have to re-open Neovim
   vim.cmd 'edit!'
   -- Unfold everything first or I had issues
   vim.cmd 'normal! zR'
