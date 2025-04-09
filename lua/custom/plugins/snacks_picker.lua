@@ -1,3 +1,5 @@
+-- https://github.com/folke/snacks.nvim/blob/main/docs/picker.md
+--
 -- find files,  words, keymaps etc. in neovim.
 --
 -- partly copy pasted from `..editor/snacks_picker.lua` from LazyVim
@@ -11,7 +13,6 @@ return {
     'folke/snacks.nvim',
     opts = {
       -- Picker: Telescope replacement
-      -- https://github.com/folke/snacks.nvim/blob/main/docs/picker.md
       picker = {
         enabled = true,
         matcher = {
@@ -108,9 +109,9 @@ return {
           -- }
         end,
         desc = 'Find Files',
-        }, 
-     {
-        "<leader>ff", 
+      }, 
+      {
+        "<leader>ff",
         function()
           -- Snacks.picker.smart {}
 
@@ -148,6 +149,10 @@ return {
       -- Useful Debugging ------------------------------
       { "<leader>sk", function() Snacks.picker.keymaps() end, desc = "Keymaps" },
       { "<leader>sh", function() Snacks.picker.help() end, desc = "Help Pages" },
+
+      -- Git ----------------------------------------------
+      { "<leader>gb", function() Snacks.picker.git_branches() end, desc = "Git Branches" },
+      { "<leader>gS", function() Snacks.picker.git_stash() end, desc = "Git Stash" },
 
       -- New search commands I might integrate into my workflow 
       { "<leader>fr", function () Snacks.picker.recent() end, desc = "Recent" },
