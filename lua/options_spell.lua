@@ -145,6 +145,13 @@ local function interactive_spellcheck()
     vim.cmd 'normal! ]s'
     local badword = vim.fn.spellbadword()[1]
 
+    -- FIX: at the moment, the function runs infinitely if only "ignored" words
+    -- are remaining because the "badword" is not empty but always the
+    -- nex_error() is called because the word is ignored.
+    --
+    -- possible solutions: parse all spelling error of the whole file first and
+    -- track when only ignored words are left. That would also be a foundation
+    -- for building a "accept all corrections for similar words" feature.
     if badword == '' then
       vim.notify('✅ Spellcheck complete. No more errors.', vim.log.levels.INFO)
       return
@@ -182,7 +189,7 @@ local function interactive_spellcheck()
 
     local Snacks = require 'snacks'
     Snacks.input.input({
-      prompt = 'Accept suggestion (enter), edit manually, "i" to ignore, or leave blank to skip:',
+      prompt = 'Accept suggestion (enter), edit manually, "" to ignore, or leave blank to skip:',
       default = top_suggestion,
     }, function(input)
       vim.api.nvim_buf_clear_namespace(0, ns_id, 0, -1)
