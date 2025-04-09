@@ -54,9 +54,9 @@ return {
       dashboard = {
         enabled = true,
         preset = {
-          -- Me: deactivate special shortcut mappings on the dashbaord buffer
+          -- Me: deactivate special shortcut mappings on the dashboard buffer
           -- because it overwrote my default mappings and was annoying
-          keys = nil,
+          keys = false,
         },
       },
       -- sections = { section = 'terminal', cmd = 'fortune -s | cowsay', hl = 'header', padding = 1, indent = 8 } },
