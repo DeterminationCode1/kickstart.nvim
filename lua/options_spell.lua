@@ -1,8 +1,12 @@
 -- Also read official Neovim docs:  https://neovim.io/doc/user/spell.html
--- See `:help spell` for detailed information
+-- See `:help spell` for detailed information.
 --
--- supersstmnusttrsffd
---
+-- NOTE: some additional plugins in your `lua/languages/markdown/` folder
+-- install additional language dictionaries for e.g. "Programming technical terms":
+-- - vim-dirtytalk
+-- - academic.nvim https://github.com/ficcdaf/academic.nvim/tree/main could be
+--   interesting in the future too
+
 -- Enable spell checking
 vim.opt.spell = true
 -- Set the language for spell checking:
@@ -13,11 +17,35 @@ vim.opt.spelllang = { 'en' } -- (string or list of strings)
 
 vim.opt.spelloptions = 'camel' -- treat camel case words as separate words
 
--- Toggle spell checking with leader>ts
--- BE aware: you cannot add whickey in the options file because lazy-plugins are
+-- key code prefix for all spelling related keybindings
+local prefix = '<leader>ts'
+
+-- =====================================================================
+-- ==================== Basic functionality key maps ====================
+-- ===================================================================
+
+-- Toggle spell checking
+-- BE aware: you cannot add which-key in the options file because lazy-plugins are
 -- not loaded yet? Instead, define the group directly in which-key
 -- vimk.keymap.set('n', '<leader>ts', '', { desc = '+ spell checking' }) -- for which-key
-vim.keymap.set('n', '<leader>tss', ':set spell!<CR>', { desc = '[T]oggle [S]pell checking' })
+vim.keymap.set('n', prefix .. 's', ':set spell!<CR>', { desc = '[T]oggle [S]pell checking' })
+
+-- Add word to the spelling dictionary
+-- Neovim's built-in keybinding is `zg`. Now, the word will no longer be marked as wrong
+vim.keymap.set('n', prefix .. 'a', 'zg', { desc = '[A]dd good word to dictionary', noremap = true })
+-- Add word to the spelling dictionary
+-- Neovim's built-in keybinding is `zw`. Now, the word will be marked as incorrect.
+vim.keymap.set('n', prefix .. 'b', 'zw', { desc = 'Add [B]ad word to dictionary', noremap = true })
+-- Remove word from the spelling dictionary
+-- Neovim's built-in keybinding is `zug`. Now, the word will be marked as incorrect.
+vim.keymap.set('n', prefix .. 'ua', 'zug', { desc = 'Remove (good) word from dictionary. (Undo the last "add good woord `zg`")', noremap = true })
+-- Remove word from the spelling dictionary
+-- Neovim's built-in keybinding is `zuw`. Now, the word will be marked as correct.
+vim.keymap.set('n', prefix .. 'ub', 'zuw', { desc = 'Delete (bad) word from dictionary. (Undo the last "add bad word `zw`")', noremap = true })
+
+-- ================================================================
+-- =================== Fix spelling errors ========================
+-- ================================================================
 
 local fix_last_spelling_error = function()
   -- official nvim docs:  returns bad words in the current line or sentence and move the cursor to
@@ -228,10 +256,109 @@ local function interactive_spellcheck()
 end
 
 -- Keymap
-vim.keymap.set('n', '<leader>tsa', interactive_spellcheck, {
-  desc = 'Spell Checker (interactive)',
+vim.keymap.set('n', prefix .. 'c', interactive_spellcheck, {
+  desc = 'Spell [C]hecker (interactive)',
 })
 
 -- Highlight groups
 vim.cmd [[highlight SpellGhostText guifg=#01ff00 gui=bold]]
 vim.cmd [[highlight SpellBadWord guifg=#cf1d6a gui=bold]]
+
+-- =========================================================
+-- ============== Switch between languages ================
+-- ========================================================
+
+---@param lang 'en'|'de' supported ISO-2-letter country codes
+local sawp_language_snippets_cli = function(lang)
+  -- Set snippets to the new language by calling my custom CLI
+  --
+  -- `:wait()` is needed to make it synchronous
+  local result = vim
+    .system({
+      'snippets_swap_languages',
+      lang,
+    }, { text = true }, function(result)
+      -- print stdout, shows the CLI debug messages. Very helpful.
+      -- vim.notify('Snippets language set to ' .. lang .. ': ' .. result.stdout, vim.log.levels.INFO)
+    end)
+    :wait()
+
+  if result.code ~= 0 then
+    vim.notify('Error setting snippets to ' .. lang .. ': ' .. result.stderr, vim.log.levels.ERROR)
+    return
+  end
+end
+
+-- reload my custom Lua snippets
+local reload_snippets = function()
+  require('luasnip.loaders.from_lua').load { paths = { '~/.config/nvim/LuaSnip/' } }
+end
+
+local ALL_MY_LANGUAGES = { 'en', 'de' }
+
+---@param lang 'en'|'de'
+local add_spell_language = function(lang)
+  -- Add the language to the list of languages
+  local current_languages = vim.opt.spelllang:get()
+  if not vim.tbl_contains(current_languages, lang) then
+    table.insert(current_languages, lang)
+    vim.opt.spelllang = current_languages
+  end
+end
+
+---@param lang 'en'|'de'
+local remove_spell_language = function(lang)
+  -- Remove the language from the list of languages
+  local current_languages = vim.opt.spelllang:get()
+  if vim.tbl_contains(current_languages, lang) then
+    table.remove(current_languages, vim.fn.index(current_languages, lang))
+    vim.opt.spelllang = current_languages
+  end
+end
+
+-- remove all ALL_MY_LANGUAGES `ALL_MY_LANGUAGES` list.
+-- because some special languages like `programming` should always remain
+---@param lang 'en'|'de'
+local remove_all_spell_languages_besides = function(lang)
+  -- Remove all languages from the list of languages
+  local current_languages = vim.opt.spelllang:get()
+
+  for _, l in ipairs(ALL_MY_LANGUAGES) do
+    if l ~= lang then
+      remove_spell_language(l)
+    end
+  end
+
+  -- Add the language to the list of languages
+  add_spell_language(lang)
+end
+
+-- Set spelling and snippets to English
+vim.keymap.set('n', prefix .. 'e', function()
+  -- Set spelling language to English
+  -- add_spell_language 'en'
+  remove_all_spell_languages_besides 'en'
+
+  -- Set snippets to English by calling my custom CLI
+  sawp_language_snippets_cli 'en'
+
+  -- reload my custom Lua snippets
+  reload_snippets()
+
+  vim.notify('Snippets language set to English', vim.log.levels.INFO)
+end, { desc = 'Set spelling and snippets to [E]nglish' })
+
+-- Set spelling and snippets to German
+vim.keymap.set('n', prefix .. 'd', function()
+  -- Set spelling language to German
+  -- vim.opt.spelllang = { 'de' }
+  remove_all_spell_languages_besides 'de'
+
+  -- Set snippets to German by calling my custom CLI
+  sawp_language_snippets_cli 'de'
+
+  -- reload my custom Lua snippets
+  reload_snippets()
+
+  vim.notify('Snippets language set to German', vim.log.levels.INFO)
+end, { desc = 'Set spelling and snippets to [E]nglish' })

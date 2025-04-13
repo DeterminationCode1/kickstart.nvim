@@ -61,7 +61,8 @@ return {
       --     images to a different format, if I wanted to.
       -- src: https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types
       extension = 'avif', ---@type string -- Linkarzu's setting
-      process_cmd = 'magick - -quality 75 avif:-', ---@type string
+      -- Me: I used -quality 75, but it seemed a but low?
+      process_cmd = 'magick - -quality 85 avif:-', ---@type string
 
       -- extension = "webp", ---@type string
       -- process_cmd = "convert - -quality 75 webp:-", ---@type string
