@@ -361,4 +361,4 @@ vim.keymap.set('n', prefix .. 'd', function()
   reload_snippets()
 
   vim.notify('Snippets language set to German', vim.log.levels.INFO)
-end, { desc = 'Set spelling and snippets to [E]nglish' })
+end, { desc = 'Set spelling and snippets to [D]eutsch' })
