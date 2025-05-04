@@ -56,10 +56,11 @@ return {
     'WhoIsSethDaniel/mason-tool-installer.nvim',
     opts = {
       ensure_installed = {
-        -- 'ocamllsp', -- LSP -- WARNING: even though it's the right lsp, Mason
+        'ocamllsp', -- LSP -- WARNING: even though it's the right lsp, Mason
         -- fails to install it. It seems like I have to install it via opam in
         -- the mean time
         'ocamlformat', -- formatter
+        -- 'ocamlearlybird' -- debugger
       },
     },
     -- opts = function(_, opts)

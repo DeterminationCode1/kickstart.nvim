@@ -51,7 +51,7 @@ vim.api.nvim_create_autocmd({ 'InsertEnter', 'FocusLost' }, {
 -- ================ Capitalize first letter of a sentence ================
 -- Capitalize the first letter of a sentence.
 --
--- The script was inspired by the David Moody's vim script:  https://davidxmoody.com/2015/vim-auto-capitalisation/
+-- The script was inspired by David Moody's vim script:  https://davidxmoody.com/2015/vim-auto-capitalisation/
 
 vim.api.nvim_create_autocmd('InsertCharPre', {
   group = vim.api.nvim_create_augroup('capitalize-first-char', { clear = true }),
@@ -98,10 +98,22 @@ vim.api.nvim_create_autocmd('InsertCharPre', {
 -- edge caught are and are removed by this autocmd instead.
 
 -- Custom whitespace cleanup rules that are not handled by the prettier formatter for markdown files
+--
+-- Turn off formatter for specific files:
+--   Anywhere in the file add: <!-- my-whitespace-ignore -->
 vim.api.nvim_create_autocmd('BufWritePre', {
   group = vim.api.nvim_create_augroup('cleanup-whitespace', { clear = true }),
-  pattern = { '*.md', '*.txt' }, -- Match specific filetypes
+  pattern = { '*.md' }, -- Match specific filetypes. { '*.txt'}
   callback = function()
+    local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+
+    for _, line in ipairs(lines) do
+      if line:match '^%s*<!%-%-%s*my%-whitespace%-ignore%s*%-%->' then
+        vim.notify("Whitespace cleanup skipped: 'my-whitespace-ignore' found", vim.log.levels.DEBUG)
+        return
+      end
+    end
+
     -- Save the current cursor position
     local row, col = unpack(vim.api.nvim_win_get_cursor(0))
 

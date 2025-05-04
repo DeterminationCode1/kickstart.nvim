@@ -34,11 +34,11 @@ return {
     { trig = 'Fm', snippetType = 'autosnippet' },
     fmta(
       [[---
-<>: <>
----
 
-<>]],
-      { i(1, 'key'), i(2, 'val'), i(3) }
+---]],
+      -- { i(1, 'key'), i(2, 'val') } -- snippet expansion was unpleasant... so
+      -- in the end, I often just had to delete the `Kei: val` default manually.
+      {}
     ),
 
     {
@@ -129,10 +129,8 @@ return {
     fmta(
       [[```<>
 <>
-```
-
-<>]],
-      { i(1, 'lang'), i(2), i(0) }
+```]],
+      { i(1, 'lang'), i(2) }
     ),
     { condition = line_begin }
   ),
@@ -141,10 +139,8 @@ return {
     fmta(
       [[```<>
 <>
-```
-
-<>]],
-      { i(1, 'lang'), i(2), i(3) }
+```]],
+      { i(1, 'lang'), i(2) }
     ),
     { condition = line_begin }
   ),

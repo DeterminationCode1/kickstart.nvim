@@ -33,22 +33,23 @@ return {
         -- Me: markdown oxide is a special LSP for markdown files that is used for
         -- Personal Knowledge Management (PKM) see: https://github.com/Feel-ix-343/markdown-oxide?tab=readme-ov-file#neovim
         --
-        -- markdown_oxide = {
-        --   -- Ensure that dynamicRegistration is enabled! This allows the LS to take into account actions like the
-        --   -- Create Unresolved File code action, resolving completions for unindexed code blocks, ...
-        --   capabilities = vim.tbl_deep_extend(
-        --     'force',
-        --     capabilities,
-        --     {
-        --       workspace = {
-        --         didChangeWatchedFiles = {
-        --           dynamicRegistration = true,
-        --         },
-        --       },
-        --     }
-        --     -- on_attach = on_attach,
-        --   ),
-        -- },
+        markdown_oxide = {
+          -- Ensure that dynamicRegistration is enabled! This allows the LS to take into account actions like the
+          -- Create Unresolved File code action, resolving completions for unindexed code blocks, ...
+          -- capabilities = vim.tbl_deep_extend(
+          --   'force',
+          --   vim.lsp.protocol.make_client_capabilities(),
+          --   {
+          --     workspace = {
+          --       didChangeWatchedFiles = {
+          --         dynamicRegistration = true,
+          --       },
+          --     },
+          --   }
+          --   -- on_attach = on_attach,
+          -- ),
+        },
+        -- markdown_oxide = {},
 
         -- grammar checker lsp for markdown
         -- homepage: https://writewithharper.com/docs/integrations/neovim
@@ -109,7 +110,53 @@ return {
       },
     },
   },
-  -- ============================= Plugin:  preview markdown ===============
+  -- ============================= Foot notes - Plugin ==========================
+  -- repo https://github.com/chenxin-yan/footnote.nvim
+  --
+  -- alpha version plugin written in lua for managing footnotes in markdown files.
+  -- Only 30 stars, but the whole plugin is one file in the `lua` folder, so I
+  -- could read and understand everything it does.
+  {
+    'chenxin-yan/footnote.nvim',
+    config = function()
+      require('footnote').setup {
+        -- add any configuration here
+        keys = {
+          new_footnote = '', -- Default <C-f>. Me:  <C-d>
+          organize_footnotes = '<leader>mo', -- Markdown [O]rganize footnotes
+          next_footnote = '', -- Default ']f',
+          prev_footnote = '', -- Default '[f',
+        },
+        organize_on_save = true,
+        organize_on_new = true,
+      }
+
+      -- Set my own keymaps
+      vim.api.nvim_create_autocmd('FileType', {
+        desc = 'footnote.nvim keymaps',
+        pattern = { 'markdown' },
+        callback = function()
+          vim.keymap.set({ 'i' }, '<C-f>', "<cmd>lua require('footnote').new_footnote()<cr>", { desc = 'Create markdown footnote', buffer = 0 })
+
+          -- if Opts.keys.organize_footnotes ~= '' then
+          --   vim.keymap.set(
+          --     'n',
+          --     Opts.keys.organize_footnotes,
+          --     "<cmd>lua require('footnote').organize_footnotes()<cr>",
+          --     { desc = 'Organize footnote', buffer = 0 }
+          --   )
+          -- end
+          -- if Opts.keys.next_footnote ~= '' then
+          --   vim.keymap.set('n', Opts.keys.next_footnote, "<cmd>lua require('footnote').next_footnote()<cr>", { desc = 'Next footnote', buffer = 0 })
+          -- end
+          -- if Opts.keys.prev_footnote ~= '' then
+          --   vim.keymap.set('n', Opts.keys.prev_footnote, "<cmd>lua require('footnote').prev_footnote()<cr>", { desc = 'Previous footnote', buffer = 0 })
+          -- end
+        end,
+      })
+    end,
+  },
+  -- ============================= preview markdown - Plugin ===============
   -- repo https://github.com/iamcco/markdown-preview.nvim
   -- Preview markdown files from nvim in the browser
   -- Funfact: The auto-generated website of the markdown file seems to be done with Next.js
@@ -128,8 +175,7 @@ return {
     config = function()
       -- Toggle the markdown preview (<leader>mp would also be okay -> more space for other mappings on `m`)
       -- NOTE: maybe `<leader>m` would be better
-      vim.keymap.set('n', '<leader>mp', '<CMD>MarkdownPreviewToggle<CR>',
-        { noremap = true, silent = true, desc = 'Markdown Preview: Toggle' })
+      vim.keymap.set('n', '<leader>mp', '<CMD>MarkdownPreviewToggle<CR>', { noremap = true, silent = true, desc = 'Markdown Preview: Toggle' })
 
       vim.cmd [[do FileType]]
     end,
@@ -139,11 +185,11 @@ return {
     'WhoIsSethDaniel/mason-tool-installer.nvim',
     opts = {
       ensure_installed = {
-        'marksman',          -- lsp
-        'harper_ls',         -- lsp for grammar checking
-        -- 'markdown_oxide', -- lsp
-        'prettierd',         -- formatter
-        'markdownlint',      -- linter
+        'marksman', -- lsp
+        'harper_ls', -- lsp for grammar checking
+        'markdown_oxide', -- lsp
+        'prettierd', -- formatter
+        'markdownlint', -- linter
         'markdownlint-cli2', -- linter
         'markdown-toc',
       },

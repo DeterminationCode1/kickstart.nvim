@@ -27,14 +27,77 @@ return {
     opts = { ensure_installed = { 'c', 'cpp' } },
   },
 
+  -- ======================== formatter =========================
+  -- C code seems to be less standardized in how symblols are formatted
+  -- than other languages like python. For that reason, kickstart.nvim disabled
+  -- formatting (conform.nvim) for C/C++ by default.
+  --
+  -- WARNING: so check if C/C++ formatting is disabled in your `lua/kickstart/plugins/conform.lua` "on_save" function.
+  {
+    'stevearc/conform.nvim',
+    opts = {
+      formatters_by_ft = {
+        c = { 'clang-format' },
+        cpp = { 'clang-format' },
+        objc = { 'clang-format' },
+        objcpp = { 'clang-format' },
+        cuda = { 'clang-format' },
+        proto = { 'clang-format' },
+      },
+      formatters = {
+        -- Change formatting style to put braces on the same line as the function. Chatgpt suggestion.
+        ['clang-format'] = {
+          prepend_args = {
+            '-style={BasedOnStyle: LLVM, BraceWrapping: { AfterFunction: false, AfterControlStatement: false, AfterEnum: false, AfterStruct: false, AfterClass: false }}',
+          },
+        },
+      },
+      -- formatters = {
+      --   clang_format = {
+      --     args = {
+      --       '--style=llvm',
+      --       '--fallback-style=none',
+      --       '--assume-filename=${INPUT}',
+      --     },
+      --     -- args = { '--style=llvm', '--fallback-style=none', '--assume-filename=${INPUT}' },
+      --   },
+      -- },
+    },
+  },
+
+  -- ============================== Linting ============================
+  -- Me UPDATE: it seems look `clangd` LSP already uses `clang-tidy` for live linting
+  -- automatically. If you want more strict `clang-tidy` linging in your code,
+  -- make sure you have turned on all `clang-tidy` checks in your config:
+  -- - List of clang-tidy checks: https://clang.llvm.org/extra/clang-tidy/checks/list.html
+  -- - Reddit post that explained clang-tidy for Neovim: https://www.reddit.com/r/neovim/comments/pxd2og/clangtidy_for_neovim/
+  --
+  -- Me (Outdated): LazyVim as of May 2025 did not provide a linter recommendation for C/C++.
+  -- But this Reddit thread from 2025 suggests clang-tidy is the go to linter to
+  -- statically check for "Undefined behavior" in C/C++ code
+  -- (https://www.reddit.com/r/C_Programming/comments/1k383vt/what_linters_or_off_the_shelf_coding_standards_to/).
+  -- {
+  --   'mfussenegger/nvim-lint',
+  --   opts = {
+  --     linters_by_ft = {
+  --       c = { 'clang-tidy' },
+  --       cpp = { 'clang-tidy' },
+  --       objc = { 'clang-tidy' },
+  --       objcpp = { 'clang-tidy' },
+  --       cuda = { 'clang-tidy' },
+  --       proto = { 'clang-tidy' },
+  --     },
+  --   },
+  -- },
+
   -- ======================== Install cli tools ========================
   {
     'WhoIsSethDaniel/mason-tool-installer.nvim',
     opts = {
       ensure_installed = {
         'clangd', -- LSP
-        -- 'clang-format', -- formatter
-        -- 'clang-tidy', -- linter
+        'clang-format', -- formatter
+        -- 'clang-tidy', -- linter (catch "undefined behavior" in C/C++ code)
         -- 'clang-check', -- linter
         -- 'clang-analyzer', -- linter
         'codelldb', -- debugger

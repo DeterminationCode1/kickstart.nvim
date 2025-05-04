@@ -30,6 +30,10 @@ local prefix = '<leader>ts'
 -- vimk.keymap.set('n', '<leader>ts', '', { desc = '+ spell checking' }) -- for which-key
 vim.keymap.set('n', prefix .. 's', ':set spell!<CR>', { desc = '[T]oggle [S]pell checking' })
 
+-- Show spelling suggestions
+-- Neovim's built-in keybinding is `z=`.
+vim.keymap.set('n', prefix .. '=', 'z=', { desc = '[S]how [S]pelling suggestions', noremap = true })
+
 -- Add word to the spelling dictionary
 -- Neovim's built-in keybinding is `zg`. Now, the word will no longer be marked as wrong
 vim.keymap.set('n', prefix .. 'a', 'zg', { desc = '[A]dd good word to dictionary', noremap = true })

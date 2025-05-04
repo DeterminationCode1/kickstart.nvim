@@ -5,7 +5,6 @@
 -- I do not write much assembly at the moment.
 
 return {
-
   -- Treesitter
   {
     'nvim-treesitter/nvim-treesitter',
@@ -20,6 +19,12 @@ return {
     'neovim/nvim-lspconfig',
     opts = {
       -- Me: I found this server by running `:Mason` and filtering for `Assembly`. It was the only LSP
+      --
+      -- WARNING: fixing installation issue: `cargo is not executable`.
+      -- Mason seems to use Rust's package manager `cargo` to install the LSP,
+      -- so you need to have Rust and `cargo` installed on your system for the
+      -- installation to work. See my docs on "Rust - programming language" for
+      -- installing it with `rustup`
       servers = {
         -- Me: Assembly language server
         asm_lsp = {},
@@ -58,7 +63,7 @@ return {
     'WhoIsSethDaniel/mason-tool-installer.nvim',
     opts = {
       ensure_installed = {
-        'asmfmt', -- lsp
+        'asm_lsp', -- lsp
         'asmfmt', -- formatter
       },
     },
