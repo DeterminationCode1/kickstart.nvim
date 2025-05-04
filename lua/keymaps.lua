@@ -86,7 +86,9 @@ vim.keymap.set({ 'n', 'v' }, 'L', '$', { desc = 'Move to the end of the line' })
 
 -- ----------------------- Small utilities for "Insert mode" -----------------------
 -- Copy paste from clipboard with the familiar "ctrl+v" command:
-vim.keymap.set({ 'i', 'n' }, '<C-v>', '"+p', { desc = 'Paste from clipboard' })
+-- NOTE: insert mode and normal mode require different keymaps
+vim.keymap.set('i', '<C-v>', '<C-r>+', { noremap = true, silent = true, desc = 'Paste from system clipboard' })
+vim.keymap.set('n', '<C-v>', '"*p', { noremap = true, silent = true, desc = 'Paste from system clipboard' })
 
 -- VS-Code: ctrl+backspace to delete the whole line
 -- the native Neovim keybinding is <C-u>

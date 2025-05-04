@@ -112,7 +112,8 @@ return {
         --   end
         -- end,
 
-        default = { 'lsp', 'path', 'snippets', 'buffer' }, -- original LazyVim
+        -- default = { 'lsp', 'path', 'snippets', 'buffer' }, -- original LazyVim
+        default = { 'lsp', 'path' }, -- original LazyVim
         -- NOTE: this is a workaround for turning off blink.cmp in markdown...
         -- min_keyword_length = function()
         --   return vim.bo.filetype == 'markdown' and 3 or 0
@@ -120,7 +121,7 @@ return {
 
         per_filetype = {
           -- sql = { 'dadbod', 'buffer' },
-          -- markdown = { 'lsp', 'path' },
+          markdown = { 'lsp', 'path' },
         },
 
         providers = {

@@ -43,6 +43,7 @@ return {
         -- 'dockerfile',
         -- 'gitignore',
         'java',
+        -- 'asm', -- assembly
       },
       -- Autoinstall languages that are not installed
       auto_install = true,

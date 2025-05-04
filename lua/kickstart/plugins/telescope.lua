@@ -110,18 +110,23 @@ return {
       --   { desc = 'Search [F]iles (Shortcut)', noremap = true, silent = true }
       -- )
 
-      -- =========================== most important keymap ==========================
-      -- Me: switched from telescope-frecency to the telescope plugin
+      -- ============================================================================
+      -- =========================== MOST IMPORTANT KEYMAP ==========================
+      -- ============================================================================
+      -- NOTE: switched from telescope-frecency to the telescope plugin
       -- "smart-open" for better search results
 
-      -- vim.keymap.set('n', '<leader>i', function()
-      --   require('telescope').extensions.smart_open.smart_open {
-      --     -- show_scores = true, -- NOTE: this worked!!
-      --     cwd_only = true,
-      --   }
-      -- end, { noremap = true, silent = true })
+      vim.keymap.set('n', '<leader>i', function()
+        require('telescope').extensions.smart_open.smart_open {
+          -- show_scores = true, -- NOTE: this worked!!
+          cwd_only = true,
+        }
+      end, { noremap = true, silent = true })
 
+      -- ============================================================================
       -- ==================== Me: END ====================================================
+      -- ============================================================================
+
       -- vim.keymap.set('n', '<leader>sh', function()
       --   builtin.find_files { hidden = true }
       -- end, { desc = '[S]earch [H]idden Files' })
