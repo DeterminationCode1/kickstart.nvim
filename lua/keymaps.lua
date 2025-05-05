@@ -52,15 +52,17 @@ vim.keymap.set('n', '<C-up>', '<C-w><C-k>', { desc = 'Move focus to the upper wi
 -- =================================================================================
 
 -- =========================== My keybindings rempas ==============================
--- This fill content was originally in the ~/.config/nvim/init.lua file.
--- But to make it more readable it was moved to this file.
 -- This keymap file contains general purpose keymaps, keymaps closely related to plugins are in the plugin config files.
 -- or the init.lua file.
 
--- WARN using 'nvim-recorder' plugin is not working
--- Remap  q 'record macro' to 'gq' as 'q' is used as comment prefix for 'gc'
--- vim.keymap.set('n', 'gq', '', { desc = 'Record macro w nvim-record' })
--- vim.keymap.set('n', 'gq', 'qq', { desc = 'End record macro' })
+-- map macro recording `q` to `Q` instead because macros are rarely used
+-- NOTE: this actually works! Record a macro with `<S-q>` + `register letter` the macro
+-- is stored in + then type your macro motions + end the macro recording with
+-- `<S-q>` again. call your macro with `@` + `register letter` or `@@` to repeat the last macro.
+vim.keymap.set('n', 'Q', 'q', { desc = 'Record macro', noremap = true })
+
+-- Redo convenience
+vim.keymap.set('n', 'U', '<C-r>', { desc = 'Redo last change', noremap = true })
 
 -- vim.keymap.set('n', '<leader>w', '<cmd>w<CR>', { desc = '[W]rite current buffer' })
 -- vim.keymap.set('n', '<leader>W', '<cmd>wa<CR>', { desc = '[W]rite all buffers' })
@@ -354,8 +356,10 @@ end, { desc = '[P]Convert to link (new tab)' })
 -- vim.keymap.del('n', '<C-f>')
 
 -- NOTE: I added theses keybindings to my .zshrc file (or alternatively in tmux.conf) so I can use them outside of nvim as well.
+-- TODO: Maybe I will add it for `insert mode` ('i') too. but `C-f` is also nice
+-- for inserting footnotes in markdown... Let's see.
 vim.keymap.set(
-  { 'n', 'i' }, -- Me: I prefer to also allow this in insert mode. Primegan used 'n' only
+  { 'n', 'i' },
   '<C-f>',
   '<cmd>silent !tmux neww tmux-sessionizer<CR>',
   { desc = 'Fzf through all your projects and open it with tmux. Inspired by Primegan.' }
@@ -456,12 +460,47 @@ vim.keymap.set('n', '<leader>mz', function()
   end)
 end, { desc = 'Open [M]arkdown citkey in [Z]otero' })
 
+-- ======================== Execute script file ========================
+-- If this is a script, make it executable, and execute it in a split pane on the right
+-- Had to include quotes around "%" because there are some apple dirs that contain spaces, like iCloud
+vim.keymap.set('n', '<leader>f.', function()
+  local file = vim.fn.expand '%' -- Get the current file name
+  local first_line = vim.fn.getline(1) -- Get the first line of the file
+  if string.match(first_line, '^#!/') then -- If first line contains shebang
+    local escaped_file = vim.fn.shellescape(file) -- Properly escape the file name for shell commands
+    vim.cmd('!chmod +x ' .. escaped_file) -- Make the file executable
+    vim.cmd 'vsplit' -- Split the window vertically
+    vim.cmd('terminal ' .. './' .. escaped_file) -- Open terminal and execute the file
+    vim.cmd 'startinsert' -- Enter insert mode, recommended by echasnovski on Reddit
+  else
+    vim.cmd "echo 'Not a script. Shebang line not found.'"
+  end
+end, { desc = "Execute current file in terminal (if it's a script)" })
+
 -- ========================= VS-Code ==================================================
 -- Open current file in VS-Code (with the same cursor position!)
 -- Keymap is only added for the file types listed below.
+--
+-- Source: Linkarzu and other Reddit users who suggested improvements:
+-- https://www.reddit.com/r/neovim/comments/1ai19ux/execute_current_file_script_using_a_keymap_i_use/
 vim.api.nvim_create_autocmd('FileType', {
-  pattern = { 'typescript', 'typescriptreact', 'javascript', 'javascriptreact', 'css', 'html' },
+  pattern = { 'typescript', 'typescriptreact', 'javascript', 'javascriptreact', 'css', 'html', 'c', 'cpp' },
   callback = function()
+    ---@param root_dir string The root directory of the project
+    ---@param file_path string The absolute path of the file to open
+    ---@param line_number string|integer The line number to open the file at
+    ---@param column_number string|integer The column number to open the file at
+    local open_in_vscode = function(root_dir, file_path, line_number, column_number)
+      -- IMPORTANT: you must open the root project folder in VS-Code first
+      -- before opening the specific file, otherwise extensions, plugins or
+      -- vs-code tools might not work.
+      -- Open VS Code in the project root first
+      vim.cmd('silent !code ' .. root_dir)
+
+      -- Then open the file at the correct position
+      vim.cmd('silent !code -g ' .. file_path .. ':' .. line_number .. ':' .. column_number)
+    end
+
     vim.keymap.set('n', 'go', function()
       local file_path = vim.fn.expand '%:p' -- Get absolute file path
       local line_number = vim.fn.line '.' -- Get current cursor line
@@ -471,21 +510,18 @@ vim.api.nvim_create_autocmd('FileType', {
       local root_dir = vim.fn.systemlist('git rev-parse --show-toplevel')[1]
 
       if vim.v.shell_error ~= 0 or root_dir == nil or root_dir == '' then
+        vim.notify('No root directory (git repository) found.\n Using CWD.', vim.log.levels.WARN)
         root_dir = vim.fn.getcwd() -- Fallback to current working directory if no git repo found
       end
 
-      -- IMPORTANT: you must open the root project folder in VS-Code first
-      -- before opening the specific file, otherwise extensions, plugins or
-      -- vs-code tools might not work.
-      if file_path ~= '' then
-        -- Open VS Code in the project root first
-        vim.cmd('silent !code ' .. root_dir)
-
-        -- Then open the file at the correct position
-        vim.cmd('silent !code -g ' .. file_path .. ':' .. line_number .. ':' .. column_number)
-      else
+      -- Check if the file path is not empty
+      if file_path == '' then
         vim.notify('No file path found', vim.log.levels.ERROR)
+        return
       end
+
+      -- Open in VS Code
+      open_in_vscode(root_dir, file_path, line_number, column_number)
     end, { noremap = true, silent = true, buffer = true, desc = 'Open project in VS Code and navigate to file' })
   end,
 })
