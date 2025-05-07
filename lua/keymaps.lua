@@ -1,6 +1,8 @@
 -- My utility function collection
 local my_utils = require 'utils'
 
+-- Find root directory vim:  	root_dir = vim.fs.dirname(vim.fs.find({ ".gradlew", ".git", "mvnw" }, { upward = true })[1]),
+
 -- =============================================================================
 -- ====================== Kickstarter.nvim keymaps =============================
 -- =============================================================================

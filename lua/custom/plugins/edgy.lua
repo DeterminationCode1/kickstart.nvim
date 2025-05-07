@@ -13,8 +13,8 @@ return {
         end,
         desc = 'Edgy Toggle',
       },
-      -- stylua: ignore
-      { "<leader>uE", function() require("edgy").select() end, desc = "Edgy Select Window [U]i" },
+      -- stylua: ignore    Me: comment off because made `<leader>u` undotree lag
+      -- { "<leader>uE", function() require("edgy").select() end, desc = "Edgy Select Window [U]i" },
     },
     opts = function()
       local opts = {

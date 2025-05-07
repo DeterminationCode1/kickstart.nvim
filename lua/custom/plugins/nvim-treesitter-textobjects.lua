@@ -23,14 +23,19 @@ return {
             -- You can optionally set descriptions to the mappings (used in the desc parameter of
             -- nvim_buf_set_keymap) which plugins like which-key display. You could also exclude desc.
             -- You can use the capture groups defined in textobjects.scm
-            ['a='] = { query = '@assignment.outer', desc = 'Select outer part of an assignment' },
-            ['i='] = { query = '@assignment.inner', desc = 'Select inner part of an assignment' },
-            ['aa'] = { query = '@assignment.outer', desc = 'Select outer part of an assignment' },
-            ['ia'] = { query = '@assignment.inner', desc = 'Select inner/left part of an assignment' },
+            --
+            -- TIP: use @assignment.outer if you want to select the whole assignment, but often you just use `dd` or `cc`
+            -- anyways as most assignments are one line.
+            -- ['aa'] = { query = '@assignment.outer', desc = 'Select outer part of an assignment' },
+            -- ['ia'] = { query = '@assignment.inner', desc = 'Select inner/left part of an assignment' },
+            ['aa'] = { query = '@assignment.lhs', desc = 'Select left hand side of an assignment' },
+            ['ia'] = { query = '@assignment.rhs', desc = 'Select right hand side of an assignment' },
             -- originally l=, r=, but conflicted with built-in mappings
             -- Me: seems like @assignment.lhs is similar to @assignment.inner
             -- ['p='] = { query = '@assignment.lhs', desc = 'Select left hand side of an assignment' },
             -- ['r='] = { query = '@assignment.rhs', desc = 'Select right hand side of an assignment' },
+            ['a='] = { query = '@assignment.lhs', desc = 'Select left hand side of an assignment' },
+            ['i='] = { query = '@assignment.rhs', desc = 'Select right hand side of an assignment' },
 
             -- previously I used 'aa, ia' but I needed that mapping for '@assignment'
             -- 'heading with children' in markdown
@@ -62,8 +67,13 @@ return {
             ['ac'] = { query = '@class.outer', desc = 'Select outer part of a class' },
             ['ic'] = { query = '@class.inner', desc = 'Select inner part of a class' },
 
-            ['ae'] = { query = '@comment.outer', desc = 'Select inner part of a comment' },
-            ['ie'] = { query = '@comment.inner', desc = 'Select inner part of a comment' },
+            -- WARNING: treesitte comment textobjects tend to behave not as
+            -- expected because comments have different types in different
+            -- languages and inline vs block comments are not compatible too
+            -- sometimes... so I switched to using the much more reliable
+            -- `mini.comment` built-in comment textobjects `gc` renamed to `q`.
+            -- ['ae'] = { query = '@comment.outer', desc = 'Select inner part of a comment' },
+            -- ['ie'] = { query = '@comment.inner', desc = 'Select inner part of a comment' },
 
             -- markdown Chunk markdown heading sections
             -- ['ac'] = { query = '@my-section', desc = 'Section in markdown' },

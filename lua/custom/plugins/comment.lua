@@ -2,13 +2,17 @@
 --
 -- Maybe you need to disable autocammnd? Not sure:   { 'JoosepAlviste/nvim-ts-context-commentstring', opts = { enable_autocmd = false } },
 
+-- Line comment motion prefix
+local prefix = 'q' -- defaults to 'gc'
+local block_prefix = 'gb' -- defaults to 'gb'
+
 return {
   'numToStr/Comment.nvim',
   config = function()
     local prehook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook()
-    -- Line comment motion prefix
-    local prefix = 'q' -- defaults to 'gc'
-    local block_prefix = 'gb' -- defaults to 'gb'
+    -- -- Line comment motion prefix
+    -- local prefix = 'q' -- defaults to 'gc'
+    -- local block_prefix = 'gb' -- defaults to 'gb'
 
     require('Comment').setup {
       padding = true,

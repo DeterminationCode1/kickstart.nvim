@@ -42,8 +42,9 @@ return {
         'toml',
         -- 'dockerfile',
         -- 'gitignore',
-        'java',
+        -- 'java',
         -- 'asm', -- assembly
+        'xml',
       },
       -- Autoinstall languages that are not installed
       auto_install = true,

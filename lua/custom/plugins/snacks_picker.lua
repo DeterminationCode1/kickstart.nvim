@@ -86,30 +86,31 @@ return {
     keys = {
 
       -- Most important ---------------------------------------------
-    {
-        "<leader>i", 
-        function()
-          Snacks.picker.smart {
-            matcher = {
-              history_bonus = true, -- use history bonus for frecency
-            }, 
-            filter = {
-              cwd = true -- only show files from current working directory
-            }
-          }
+    -- {
+      --   "<leader>i", 
+      --   function()
+      --     Snacks.picker.smart {
+      --       matcher = {
+      --         history_bonus = true, -- use history bonus for frecency
+      --       }, 
+      --       filter = {
+      --         cwd = true -- only show files from current working directory
+      --       }
+      --     }
 
-          -- Snacks.picker.files {
-          --   finder = 'files',
-          --   format = 'file',
-          --   show_empty = true,
-          --   hidden = true, -- search hidden dotfiles
-          --   supports_live = true,
-          --   -- In case you want to override the layout for this keymap
-          --   layout = 'vscode',
-          -- }
-        end,
-        desc = 'Find Files',
-      }, 
+      --     -- Snacks.picker.files {
+      --     --   finder = 'files',
+      --     --   format = 'file',
+      --     --   show_empty = true,
+      --     --   hidden = true, -- search hidden dotfiles
+      --     --   supports_live = true,
+      --     --   -- In case you want to override the layout for this keymap
+      --     --   layout = 'vscode',
+      --     -- }
+      --   end,
+      --   desc = 'Find Files',
+      -- }, 
+
       {
         "<leader>ff",
         function()
@@ -204,7 +205,7 @@ return {
       { "<leader>sq", function() Snacks.picker.qflist() end, desc = "Quickfix List" },
       { "<leader>su", function() Snacks.picker.undo() end, desc = "Undotree" },
       -- ui
-      { "<leader>uC", function() Snacks.picker.colorschemes() end, desc = "Colorschemes" },
+      -- { "<leader>sx", function() Snacks.picker.colorschemes() end, desc = "Colorschemes" },
     },
   },
 
