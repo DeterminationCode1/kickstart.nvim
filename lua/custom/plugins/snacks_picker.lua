@@ -201,7 +201,7 @@ return {
       -- { "<leader>sl", function() Snacks.picker.loclist() end, desc = "Location List" }, -- me: not needed
       { "<leader>sM", function() Snacks.picker.man() end, desc = "Man Pages" },
       { "<leader>sm", function() Snacks.picker.marks() end, desc = "Marks" },
-      { "<leader>sR", function() Snacks.picker.resume() end, desc = "Resume" },
+      -- { "<leader>sR", function() Snacks.picker.resume() end, desc = "Resume" }, -- conflict with grug-far
       { "<leader>sq", function() Snacks.picker.qflist() end, desc = "Quickfix List" },
       { "<leader>su", function() Snacks.picker.undo() end, desc = "Undotree" },
       -- ui

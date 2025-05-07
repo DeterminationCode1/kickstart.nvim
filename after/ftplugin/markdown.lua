@@ -34,7 +34,76 @@ vim.keymap.set('i', '<C-b>', function()
   -- vim.cmd 'a****<esc><left><left>i' -- doesn't work
 end, { noremap = true, silent = true })
 
--- ======================== Obsidian ========================
+-- ==============================================================================
+-- ======================== Increase/decrease headings ==========================
+-- ==============================================================================
+-- -- Increase/decrease heading levels in markdown files. By default the whole
+-- buffer is process if you are not in visual mode.
+-- markdown_heading_shift.lua
+local M_heading = {}
+
+-- returns (firstLine, lastLine) 1‑based, inclusive
+local function get_visual_lines()
+  local p1 = vim.fn.getpos("'<")[2] -- line number of '<
+  local p2 = vim.fn.getpos("'>")[2] -- line number of '>
+  if p1 > p2 then
+    p1, p2 = p2, p1
+  end
+  return p1, p2
+end
+
+---@param delta integer  +1 to increase, ‑1 to decrease
+local function shift(delta)
+  local buf = vim.api.nvim_get_current_buf()
+  local mode = vim.fn.mode() -- current Vim mode
+  local first, last
+
+  if mode:match '[Vv]' then -- any visual mode
+    first, last = get_visual_lines()
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', false) -- exit visual safely
+  else -- normal -> whole file
+    first, last = 1, vim.api.nvim_buf_line_count(buf)
+  end
+
+  -- Grab slice
+  local slice = vim.api.nvim_buf_get_lines(buf, first - 1, last, false)
+
+  -- Transform headings
+  local pat = '^%s*(#+)(%s?.*)$' -- allow missing space after #'s
+  for i, line in ipairs(slice) do
+    local hashes, rest = line:match(pat)
+    if hashes then
+      local lvl = #hashes + delta
+      lvl = math.max(1, math.min(7, lvl)) -- clamp 1…7
+      slice[i] = string.rep('#', lvl) .. rest
+    end
+  end
+
+  -- Write back
+  vim.api.nvim_buf_set_lines(buf, first - 1, last, false, slice)
+end
+
+function M_heading.increase()
+  shift(1)
+end
+function M_heading.decrease()
+  shift(-1)
+end
+
+-- Expose as user commands
+-- vim.api.nvim_create_user_command("IncreaseMdHeading", M_heading.increase, { range = false })
+-- vim.api.nvim_create_user_command("DecreaseMdHeading", M_heading.decrease, { range = false })
+
+-- Optional keymaps: g> to increase, g< to decrease
+vim.keymap.set({ 'n', 'v' }, 'g>', M_heading.increase, { desc = 'Increase MD heading level' })
+vim.keymap.set({ 'n', 'v' }, 'g<', M_heading.decrease, { desc = 'Decrease MD heading level' })
+
+-- return M_heading
+-- ================================ end ===========================================
+
+-- ==============================================================================
+-- ========================== Open in Obsidian =================================
+-- ==============================================================================
 -- Open current markdown file in Obsidian
 -- See official Obsidian URI documentation:
 -- https://help.obsidian.md/Advanced+topics/Using+obsidian+URI#Examples
@@ -81,3 +150,5 @@ vim.keymap.set('n', 'go', function() -- previously: <leader>mo
     end
   end)
 end, { desc = 'Open current [m]arkdown file in [O]bsidian' })
+
+-- ============================= End ===========================================

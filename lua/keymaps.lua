@@ -82,6 +82,13 @@ vim.keymap.set('n', '<leader><leader>', '<C-6>', { desc = 'Switch between last t
 vim.keymap.set({ 'n', 'v' }, 'H', '0', { desc = 'Move to the start of the line' })
 vim.keymap.set({ 'n', 'v' }, 'L', '$', { desc = 'Move to the end of the line' })
 
+-- ===================== unmap default lsp keymappings from neovim ===============
+-- because I only want to have `go refeferences` quickly trigger with `gr`
+vim.keymap.del('n', 'grr')
+vim.keymap.del('n', 'gri')
+vim.keymap.del('n', 'gra')
+vim.keymap.del('n', 'grn')
+
 -- ======================== remap colemak hjkl to neio ========================
 -- n is not a big problem. but eio are common keys in vim...
 --
