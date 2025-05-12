@@ -21,7 +21,25 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
 -- NOTE:  The kickstarter default was '<Esc><Esc>'.
-vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+vim.keymap.set('t', '<ESC>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+-- NOTE: Vi mode for editing the terminal line problem.
+-- Background:  It is actually possible to use vi motions to edit the command
+-- line (include changing words!) by activiating zsh nativ vi mode in your
+-- `.zshrc` or even better is installing the `zsh-vim-mode` plugin from
+-- https://github.com/jeffreytse/zsh-vi-mode
+-- PROBLEM: neovimts builtin terminal emutaotr starts a terminal instastance
+-- embedded in Neovim. You remapped the <ESC> key to exit neovims terminal and
+-- enter noram vim mode in Neovim (because that allows to use page up/down
+-- keyboard shortcuts to scroll up and down in the terminal which is very nice).
+-- But the way Neovim receives key input, it first checks for remappings like
+-- the one below and if it finds one, it will consume the input without ever
+-- sending it to the embedded terminal instance. That means you can never enter
+-- the vim-edit mode for the terminal mode and you cannot edit the terminal
+-- buffer in neovim normal mode because it is immutable.
+-- Solution:
+vim.keymap.set('t', '<C-s>', '<ESC>', { desc = 'Enter vim-mode for the terminal command line', remap = false })
+-- Alternatively, the below keymap hit ESC twice to enter terminal vim mode.
+vim.keymap.set('t', '<esc><esc>', '<ESC>', { desc = 'Enter vim-mode for the terminal command line', remap = false })
 
 -- TIP: Disable arrow keys in normal mode
 -- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')

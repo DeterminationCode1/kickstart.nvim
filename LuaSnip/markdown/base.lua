@@ -34,9 +34,13 @@ return {
     { trig = 'Fm', snippetType = 'autosnippet' },
     fmta(
       [[---
+<>
+---
 
----]],
+
+]],
       -- { i(1, 'key'), i(2, 'val') } -- snippet expansion was unpleasant... so
+      { i(0) },
       -- in the end, I often just had to delete the `Kei: val` default manually.
       {}
     ),
