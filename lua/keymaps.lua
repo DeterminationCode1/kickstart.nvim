@@ -1,3 +1,5 @@
+-- This file contains many keymaps for Neovim.
+
 -- My utility function collection
 local my_utils = require 'utils'
 
@@ -39,7 +41,9 @@ vim.keymap.set('t', '<ESC>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 -- Solution:
 vim.keymap.set('t', '<C-s>', '<ESC>', { desc = 'Enter vim-mode for the terminal command line', remap = false })
 -- Alternatively, the below keymap hit ESC twice to enter terminal vim mode.
-vim.keymap.set('t', '<esc><esc>', '<ESC>', { desc = 'Enter vim-mode for the terminal command line', remap = false })
+-- NOTE: I stopped using the `<esc><esc>` keymap because it caused a lag because 'which-key' was waiting after the
+-- first `<esc>` for a second keymap which slowed down the noraml <esc> exit terminal mode mapping.
+-- vim.keymap.set('t', '<esc><esc>', '<ESC>', { desc = 'Enter vim-mode for the terminal command line', remap = false })
 
 -- TIP: Disable arrow keys in normal mode
 -- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
@@ -106,6 +110,8 @@ vim.keymap.del('n', 'grr')
 vim.keymap.del('n', 'gri')
 vim.keymap.del('n', 'gra')
 vim.keymap.del('n', 'grn')
+-- annoying snippet auto expansion with <Tab> in insert mode
+vim.keymap.set({ 'i', 's' }, '<Tab>', '<Tab>', { expr = false, noremap = true })
 
 -- ======================== remap colemak hjkl to neio ========================
 -- n is not a big problem. but eio are common keys in vim...

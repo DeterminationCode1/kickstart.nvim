@@ -134,9 +134,23 @@ return {
   {
     'saghen/blink.cmp',
     optional = true,
+    ---@module 'blink.cmp'
+    ---@type blink.cmp.Config
     opts = {
       snippets = {
         preset = 'luasnip',
+        -- Me: successfully turn off snippet expansion because tab is nedded for
+        -- something else and I did not find out how to change the default <Tab>
+        -- keybinding set by blink.cmp...
+        active = function(_)
+          return false
+        end,
+        -- I also turned off any default mappings for tab just in case the
+        -- default vim.snippet expansion in nivm 11 is also consuming <tab>
+        -- in `keymaps.lua`
+        --
+        -- annoying snippet auto expansion with <Tab> in insert mode
+        -- vim.keymap.set({ 'i', 's' }, '<Tab>', '<Tab>', { expr = false, noremap = true }),
       },
     },
   },
