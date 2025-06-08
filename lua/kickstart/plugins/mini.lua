@@ -40,6 +40,8 @@ vim.keymap.set('n', 'cp', 'cip', { desc = 'Change a paragraph' })
 vim.keymap.set('n', 'yp', 'yip', { desc = 'Yank a paragraph' })
 vim.keymap.set('n', 'vp', 'vip', { desc = 'Visually select a paragraph' })
 vim.keymap.set('n', 'qp', 'qip', { desc = 'Comment a paragraph', remap = true })
+vim.keymap.set('n', '>p', '>ip', { desc = 'Indent a paragraph' })
+vim.keymap.set('n', '<p', '<ip', { desc = 'Dedent a paragraph' })
 
 -- Word text object.
 -- The whitespace around a word is almost always autoformatted anyways
