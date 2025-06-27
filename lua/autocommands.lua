@@ -187,6 +187,38 @@ vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufEnter' }, { -- , 'BufLeave'
   group = vim.api.nvim_create_augroup('insert-file-title', { clear = true }),
   pattern = '*.md',
   callback = function()
+    -- === configure what to ignore ===
+    local ignore_paths = {
+      -- any buffer whose full path contains one of these substrings will be skipped
+      -- '/tmp/', -- e.g. ignore anything in /tmp
+      -- 'notes/drafts/', -- e.g. ~/projects/notes/drafts/
+      -- add more...
+      'kanban/',
+    }
+    local ignore_files = {
+      'README.md',
+      -- 'TODO.md',
+      -- add more...
+    }
+
+    -- Get current file’s full path and name
+    local fullpath = vim.fn.expand '%:p'
+    local filename = vim.fn.expand '%:t'
+
+    -- If this file lives in any ignore path, bail out
+    for _, pat in ipairs(ignore_paths) do
+      if fullpath:find(pat, 1, true) then
+        return
+      end
+    end
+
+    -- If this filename is in the ignore list, bail out
+    for _, f in ipairs(ignore_files) do
+      if filename == f then
+        return
+      end
+    end
+
     -- BE AWARE: A markdown heading is always a single line. Even if you have line break in nvim options turned on,
     -- or you're using a formatter like prettier to automatically break lines, the heading will always be a single (wrapped) line.
 
