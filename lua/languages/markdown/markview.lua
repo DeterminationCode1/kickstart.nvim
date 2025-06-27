@@ -6,6 +6,11 @@
 --
 --  markdown-preview.nvim
 
+-- INSTALLATION: This plugin makes use of tree-sitter queries! So, it must be loaded before nvim-treesitter.
+--    You can solve this issue by loading this plugin before nvim-treesitter
+--    (add dependencies = { "OXY2DEV/markview.nvim" } to your config for nvim-treesitter in lazy.nvim).
+--    You may also need to disable lazy-loading(if you use it heavily).
+
 local custom_gx = require('utils.my-utils.custom-gx').my_gx
 
 return {
@@ -17,7 +22,7 @@ return {
     -- You will not need this if you installed the
     -- parsers manually
     -- Or if the parsers are in your $RUNTIMEPATH
-    'nvim-treesitter/nvim-treesitter',
+    -- 'nvim-treesitter/nvim-treesitter',
 
     'nvim-tree/nvim-web-devicons',
   },
@@ -300,13 +305,16 @@ return {
         -- NOTE: this is necessary, otherwise your gx mapping will not be used
         vim.api.nvim_buf_del_keymap(0, 'n', 'gx')
 
+        -- WARNING: turn this on to set your own `gx` keybinding in a markdown
+        -- file.
+        --
         -- set gx keymap for buffer
-        vim.keymap.set({ 'n', 'x' }, 'gx', function()
-          vim.notify('having gx', vim.log.levels.INFO)
-          custom_gx()
-        end, {
-          desc = 'X Open (external) URL under cursor',
-        })
+        -- vim.keymap.set({ 'n', 'x' }, 'gx', function()
+        --   vim.notify('having gx', vim.log.levels.INFO)
+        --   custom_gx()
+        -- end, {
+        --   desc = 'X Open (external) URL under cursor',
+        -- })
 
         -- Debug message
         -- vim.notify('MarkviewAttach event fired', vim.log.levels.DEBUG, {

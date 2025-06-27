@@ -54,29 +54,31 @@ return {
         -- grammar checker lsp for markdown
         -- homepage: https://writewithharper.com/docs/integrations/neovim
         -- Linkarzu video: https://youtu.be/3p2n2-eiuZw?si=RNLeXRypaNdIpea7&t=1098
-        harper_ls = {
-          -- NOTE: to quickly turn harper on and off, set `enabled = false` in the
-          -- config below and restart the lsp with `:LspRestart harper_ls`.
-          enabled = false,
-          filetypes = { 'markdown' },
-          settings = {
+        -- harper_ls = {
+        --   -- NOTE: to quickly turn harper on and off, set `enabled = false` in the
+        --   -- config below and restart the lsp with `:LspRestart harper_ls`.
+        --   enabled = false,
+        --   filetypes = { 'markdown' },
+        --   settings = {
 
-            ['harper-ls'] = {
+        --     ['harper-ls'] = {
 
-              -- userDictPath = '~/dotfiles/nvim/.config/harper/global_dict.txt', -- path to your global dictionary
-              userDictPath = '~/dotfiles/nvim/.config/nvim/spell/en.utf-8.add', -- path to your global dictionary
-              -- fileDictPath = '~/dotfiles/nvim/.config/harper/', -- path to your file-specific dictionary
-              linters = {
-                SpellCheck = true,
-                SentenceCapitalization = false, -- set to false to avoid a lot of false positives
-              },
-              isolateEnglish = true,
-              markdown = {
-                IgnoreLinkTitle = true, -- [ignore this part]() [[and-also-this-part]]
-              },
-            },
-          },
-        },
+        --       -- userDictPath = '~/dotfiles/nvim/.config/harper/global_dict.txt', -- path to your global dictionary
+        --       userDictPath = '~/dotfiles/nvim/.config/nvim/spell/en.utf-8.add', -- path to your global dictionary
+        --       -- fileDictPath = '~/dotfiles/nvim/.config/harper/', -- path to your file-specific dictionary
+
+        --       -- Setting the following linters to false reduces the he number of false positives drastically
+        --       linters = {
+        --         SpellCheck = false,
+        --         SentenceCapitalization = false, -- set to false to avoid a lot of false positives
+        --       },
+        --       isolateEnglish = true,
+        --       markdown = {
+        --         IgnoreLinkTitle = true, -- [ignore this part]() [[and-also-this-part]]
+        --       },
+        --     },
+        --   },
+        -- },
       },
     },
   },
@@ -141,7 +143,7 @@ return {
     opts = {
       ensure_installed = {
         'marksman', -- lsp
-        'harper_ls', -- lsp for grammar checking
+        -- 'harper_ls', -- lsp for grammar checking
         'markdown_oxide', -- lsp
         'prettierd', -- formatter
         'markdownlint', -- linter

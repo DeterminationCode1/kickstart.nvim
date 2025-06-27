@@ -10,6 +10,10 @@ return {
     dependencies = {
       -- Treesitter textobjects module. Laod this when treesitter is loaded.
       'nvim-treesitter/nvim-treesitter-textobjects',
+      -- Markview.nvim plugin raised an error that it must be loaded before
+      -- treesitter. Thus, I am adding it as a dependency here. See:
+      -- https://github.com/OXY2DEV/markview.nvim?tab=readme-ov-file#-installation
+      'OXY2DEV/markview.nvim',
     },
     -- configure lazy to combine values for `ensure_installed` rather than merge
     -- and overwrite them.
