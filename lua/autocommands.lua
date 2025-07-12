@@ -167,8 +167,14 @@ local function format_file_title(filename)
     table.insert(parts, part)
   end
 
+  local function should_capitalize(fname_no_ext)
+    -- Don’t capitalise when the base-name starts with literal "s-"
+    -- NOTE: This is only my personal convention to start "source notes" with "s-"
+    return not fname_no_ext:match '^s%-'
+  end
+
   -- Capitalize the first letter of the first part
-  if #parts > 0 then
+  if #parts > 0 and should_capitalize(filename) then
     parts[1] = parts[1]:gsub('^%s*(%a)', string.upper)
   end
 
