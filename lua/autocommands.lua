@@ -183,11 +183,52 @@ end
 
 -- Autocommand to insert the file title as a markdown heading when creating a
 -- new file or updating an existing file.
-vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufEnter' }, { -- , 'BufLeave'
+vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufEnter', 'BufFilePost' }, { -- , 'BufLeave'
   group = vim.api.nvim_create_augroup('insert-file-title', { clear = true }),
   pattern = '*.md',
   callback = function()
-    -- === configure what to ignore ===
+    -- ======================== Helper functions =============================
+    -- BE AWARE: A markdown heading is always a single line. Even if you have line break in nvim options turned on,
+    -- or you're using a formatter like prettier to automatically break lines, the heading will always be a single (wrapped) line.
+
+    -- Get the line number of the where the title should be inserted
+    local get_title_line_number = function()
+      -- NOTE: *Pure* function that inspects the buffer but never touches the cursor
+      local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+
+      -- front-matter present?
+      if lines[1] == '---' then
+        local fm_end = nil
+        for i = 2, #lines do
+          if lines[i] == '---' then -- closing ---
+            fm_end = i
+            break
+          end
+        end
+        if fm_end then
+          -- first non-blank line after the YAML block
+          for j = fm_end + 1, #lines do
+            if lines[j]:match '%S' then
+              return j
+            end
+          end
+          return #lines + 1 -- only front-matter in file
+        end
+      end
+      return 1 -- no front-matter
+    end
+
+    -- Get the previous title or ''
+    local get_previous_title = function(line)
+      -- Search for the first heading (`# `) in the buffer
+      local title = vim.fn.getline(line)
+      if title:match '^# ' then
+        return title
+      end
+      return ''
+    end
+
+    -- ================ Configure what to ignore ===========================
     local ignore_paths = {
       -- any buffer whose full path contains one of these substrings will be skipped
       -- '/tmp/', -- e.g. ignore anything in /tmp
@@ -219,53 +260,13 @@ vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufEnter' }, { -- , 'BufLeave'
       end
     end
 
-    -- BE AWARE: A markdown heading is always a single line. Even if you have line break in nvim options turned on,
-    -- or you're using a formatter like prettier to automatically break lines, the heading will always be a single (wrapped) line.
-
-    -- Get the line number of the where the title should be inserted
-    local get_title_line_number = function()
-      -- check if the first line is a frontmatter
-      local first_line = vim.fn.getline(1)
-      if first_line == '---' then
-        -- insert after the second '---' occurrence
-
-        -- Move the cursor to the second line
-        vim.api.nvim_win_set_cursor(0, { 2, 0 })
-        -- Now search for the second occurrence of '---'
-        local frontmatter_end = vim.fn.search '^---'
-
-        if frontmatter_end ~= 0 then
-          -- find the first non-empty line after the frontmatter
-          -- In most cases, there will be one empty line after the frontmatter
-          local line = vim.fn.search('^\\S', 'n')
-          if line ~= 0 then
-            return line
-          end
-        else
-          vim.notify('Frontmatter end not found. No second occurrence of `---` found.', vim.log.levels.ERROR, { title = 'Info' })
-        end
-      end
-      -- If no frontmatter is found, insert the title at the top of the buffer
-      return 1
-    end
-
-    -- Get the previous title or ''
-    local get_previous_title = function(line)
-      -- Search for the first heading (`# `) in the buffer
-      local title = vim.fn.getline(line)
-      if title:match '^# ' then
-        return title
-      end
-      return ''
-    end
-
+    -- Remember cursor position (before any operations!)
+    local cursor = vim.api.nvim_win_get_cursor(0)
     -- Get the filename of the current buffer
     local filename = vim.fn.expand '%:t'
     -- line the title should be inserted
     local title_line = get_title_line_number()
     local first_line = vim.fn.getline(1)
-    -- Remember cursor position before the operation
-    local cursor = vim.api.nvim_win_get_cursor(0)
 
     local new_title = format_file_title(filename)
     local previouse_title = get_previous_title(title_line)

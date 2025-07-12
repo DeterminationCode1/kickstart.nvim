@@ -62,7 +62,12 @@ return {
       -- src: https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types
       extension = 'avif', ---@type string -- Linkarzu's setting
       -- Me: I used -quality 75, but it seemed a but low?
-      process_cmd = 'magick - -quality 85 avif:-', ---@type string
+      -- process_cmd = 'magick - -quality 90 avif:-', ---@type string
+      -- For a more "long-term safe" format I added `-depth 10` for 10-bit depth
+      --    (by default it is 8-bit depth i.e. 256 colors per channel even if
+      --    the image source provides higher bit-depth)
+      -- if I ever want to do (automatic) color grading in the future.
+      process_cmd = 'magick - -depth 10 -quality 85 avif:-', ---@type string
 
       -- extension = "webp", ---@type string
       -- process_cmd = "convert - -quality 75 webp:-", ---@type string
@@ -128,6 +133,6 @@ return {
   },
   keys = {
     -- suggested keymap
-    { '<leader>v', '<cmd>PasteImage<cr>', desc = 'Paste image from system clipboard' },
+    { '<leader>v', '<cmd>PasteImage<cr>', mode = { 'n', 'v' }, desc = 'Paste image from system clipboard' },
   },
 }
