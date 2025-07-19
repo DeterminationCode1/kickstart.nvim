@@ -28,7 +28,7 @@ return {
   },
 
   -- ======================== formatter =========================
-  -- C code seems to be less standardized in how symblols are formatted
+  -- C code seems to be less standardized in how symbols are formatted
   -- than other languages like python. For that reason, kickstart.nvim disabled
   -- formatting (conform.nvim) for C/C++ by default.
   --
@@ -45,11 +45,13 @@ return {
         proto = { 'clang-format' },
       },
       formatters = {
-        -- Change formatting style to put braces on the same line as the function. Chatgpt suggestion.
-        ['clang-format'] = {
-          prepend_args = {
-            '-style={BasedOnStyle: LLVM, BraceWrapping: { AfterFunction: false, AfterControlStatement: false, AfterEnum: false, AfterStruct: false, AfterClass: false }}',
+        clang_format = {
+          args = {
+            '--style=file',
+            '--fallback-style={BasedOnStyle: LLVM, BraceWrapping: { AfterFunction: false, AfterControlStatement: false, AfterEnum: false, AfterStruct: false, AfterClass: false }}',
+            '--assume-filename=${INPUT}',
           },
+          -- args = { '--style=llvm', '--fallback-style=none', '--assume-filename=${INPUT}' },
         },
       },
       -- formatters = {
