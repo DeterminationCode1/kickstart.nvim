@@ -1,4 +1,15 @@
 -- LazyVim https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/plugins/extras/lang/ocaml.lua
+--
+--
+-- <><> ocp-indent.1.8.1 installed successfully ><><><><><><><><><><><><><><><>  🐫
+-- => This package requires additional configuration for use in editors. Install package 'user-setup', or manually:
+
+--    * for Emacs, add these lines to ~/.emacs:
+--      (add-to-list 'load-path "/Users/main/.opam/5.3.0/share/emacs/site-lisp")
+--      (require 'ocp-indent)
+
+--    * for Vim, add this line to ~/.vimrc:
+--      set rtp^="/Users/main/.opam/5.3.0/share/ocp-indent/vim"
 return {
   -- recommended = function()
   --   return LazyVim.extras.wants {

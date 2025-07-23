@@ -46,18 +46,15 @@ return {
     'stevearc/conform.nvim',
     opts = {
       formatters_by_ft = {
-        java = { 'google-java-format' },
+        java = { 'google-java-format' }, -- NOT 'google-java-format'!
       },
-      -- formatters = {
-      --   clang_format = {
-      --     args = {
-      --       '--style=llvm',
-      --       '--fallback-style=none',
-      --       '--assume-filename=${INPUT}',
-      --     },
-      --     -- args = { '--style=llvm', '--fallback-style=none', '--assume-filename=${INPUT}' },
-      --   },
-      -- },
+      -- From the official `google-java-format -h` documentation
+      -- and https://github.com/LazyVim/LazyVim/discussions/1965
+      formatters = {
+        ['google-java-format'] = {
+          prepend_args = { '--aosp' }, -- Ensure 4-space indentation
+        },
+      },
     },
   },
 

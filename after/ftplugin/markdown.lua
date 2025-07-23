@@ -39,64 +39,70 @@ end, { noremap = true, silent = true })
 -- ==============================================================================
 -- -- Increase/decrease heading levels in markdown files. By default the whole
 -- buffer is process if you are not in visual mode.
+--   g>  → increase one level   (Normal / Visual)
+--   g<  → decrease one level
 -- markdown_heading_shift.lua
+-- ============================================================================
+
 local M_heading = {}
 
--- returns (firstLine, lastLine) 1‑based, inclusive
-local function get_visual_lines()
-  local p1 = vim.fn.getpos("'<")[2] -- line number of '<
-  local p2 = vim.fn.getpos("'>")[2] -- line number of '>
-  if p1 > p2 then
-    p1, p2 = p2, p1
+-- Return visual range (inclusive, 1-based) *after* leaving visual mode
+local function get_visual_range()
+  -- Send <Esc> *now* so marks '< and '> become available
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'x', false)
+  local first = vim.fn.getpos("'<")[2]
+  local last = vim.fn.getpos("'>")[2]
+  if first > last then
+    first, last = last, first
   end
-  return p1, p2
+  return first, last
 end
 
----@param delta integer  +1 to increase, ‑1 to decrease
+---@param delta integer  (+1 = deeper, -1 = shallower)
 local function shift(delta)
   local buf = vim.api.nvim_get_current_buf()
-  local mode = vim.fn.mode() -- current Vim mode
-  local first, last
+  local mode = vim.fn.mode()
 
-  if mode:match '[Vv]' then -- any visual mode
-    first, last = get_visual_lines()
-    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', false) -- exit visual safely
-  else -- normal -> whole file
+  -- Decide the line range
+  local first, last
+  if mode:find '[vV]' then -- any visual mode
+    first, last = get_visual_range()
+  else -- whole buffer
     first, last = 1, vim.api.nvim_buf_line_count(buf)
   end
 
-  -- Grab slice
-  local slice = vim.api.nvim_buf_get_lines(buf, first - 1, last, false)
+  -- Grab the lines
+  local lines = vim.api.nvim_buf_get_lines(buf, first - 1, last, false)
 
-  -- Transform headings
-  local pat = '^%s*(#+)(%s?.*)$' -- allow missing space after #'s
-  for i, line in ipairs(slice) do
+  -- Regex: start-of-line optional indent, (#+), optional spaces, the rest
+  local pat = '^%s*(#+)%s*(.*)$'
+
+  for i, line in ipairs(lines) do
     local hashes, rest = line:match(pat)
     if hashes then
-      local lvl = #hashes + delta
-      lvl = math.max(1, math.min(7, lvl)) -- clamp 1…7
-      slice[i] = string.rep('#', lvl) .. rest
+      local level = #hashes + delta
+      if level >= 1 and level <= 7 then
+        -- guarantee exactly *one* space before the text
+        lines[i] = string.rep('#', level) .. ' ' .. rest
+      end
     end
   end
 
-  -- Write back
-  vim.api.nvim_buf_set_lines(buf, first - 1, last, false, slice)
+  -- Replace in buffer (keepjumps avoids jumplist pollution)
+  vim.cmd 'keepjumps keepmarks silent!' -- keep marks/undo clean
+  vim.api.nvim_buf_set_lines(buf, first - 1, last, false, lines)
 end
 
-function M_heading.increase()
+M_heading.increase = function()
   shift(1)
 end
-function M_heading.decrease()
+M_heading.decrease = function()
   shift(-1)
 end
 
--- Expose as user commands
--- vim.api.nvim_create_user_command("IncreaseMdHeading", M_heading.increase, { range = false })
--- vim.api.nvim_create_user_command("DecreaseMdHeading", M_heading.decrease, { range = false })
-
--- Optional keymaps: g> to increase, g< to decrease
-vim.keymap.set({ 'n', 'v' }, 'g>', M_heading.increase, { desc = 'Increase MD heading level' })
-vim.keymap.set({ 'n', 'v' }, 'g<', M_heading.decrease, { desc = 'Decrease MD heading level' })
+-- Keymaps: works in Normal *and* Visual
+vim.keymap.set({ 'n', 'v' }, 'g>', M_heading.increase, { desc = 'Markdown: increase heading level' })
+vim.keymap.set({ 'n', 'v' }, 'g<', M_heading.decrease, { desc = 'Markdown: decrease heading level' })
 
 -- return M_heading
 -- ================================ end ===========================================
