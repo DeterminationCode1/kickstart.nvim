@@ -1,4 +1,6 @@
 -- repo https://github.com/nvim-java/nvim-java?tab=readme-ov-file
+--
+-- bug fix?  https://www.reddit.com/r/neovim/comments/1km9kmu/issues_with_lsp_lines_using_nvim_jdtls/
 return {
   'nvim-java/nvim-java',
   dependencies = {

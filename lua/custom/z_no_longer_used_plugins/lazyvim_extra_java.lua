@@ -1,67 +1,5 @@
 -- LazyVim https://www.lazyvim.org/extras/lang/java
 
--- -- repo https://github.com/nvim-java/nvim-java?tab=readme-ov-file
--- return {
---   'nvim-java/nvim-java',
---   dependencies = {
---     'nvim-java/lua-async-await',
---     'nvim-java/nvim-java-refactor',
---     'nvim-java/nvim-java-core',
---     'nvim-java/nvim-java-test',
---     'nvim-java/nvim-java-dap',
---     'MunifTanjim/nui.nvim',
---     'neovim/nvim-lspconfig',
---     'JavaHello/spring-boot.nvim', -- Unsure if this is correct?
---     'mfussenegger/nvim-dap',
---     {
---       'williamboman/mason.nvim',
---       opts = {
---         registries = {
---           'github:nvim-java/mason-registry',
---           'github:mason-org/mason-registry',
---         },
---       },
---     },
---   },
---   ft = { 'java' },
---   config = function()
---     require('java').setup {}
---     require('lspconfig').jdtls.setup {}
-
---     -- FIX: .run_app() needs an argument i don't know.
---     -- vim.keymap.set('n', '<leader>ja', function()
---     --   require('java').runner.built_in.run_app()
---     -- end, { desc = 'Run Java app' })
-
---     vim.keymap.set('n', '<leader>ja', '<cmd>JavaRunnerRunMain<CR>', { desc = 'Run Java [A]pp' })
-
---     -- NOTE: maybe set a r for run beforte the jt and ja.
---     vim.keymap.set('n', '<leader>jt', function()
---       require('java').test.run_current_class()
---     end, { desc = 'Run Java Test' })
---     vim.keymap.set('n', '<leader>djt', function()
---       require('java').test.debug_current_class()
---     end, { desc = 'Debug Java Test' })
---   end,
--- }
-
--- return {
---   'nvim-java/nvim-java',
---   ft = { 'java' },
-
---   dependencies = {
---     {
---       'nvim-java/nvim-java-core',
---       url = 'https://github.com/Kabil777/nvim-java-core.git',
---       branch = 'fix/mason-api-update',
---     },
---   },
---   config = function()
---     require('java').setup()
---     require('lspconfig').jdtls.setup {}
---   end,
--- }
-
 -- WARNING:  still not working as of May 2025 even though it is is quite close
 -- to the LazyVim original implementation.
 
@@ -108,15 +46,18 @@ return {
     'stevearc/conform.nvim',
     opts = {
       formatters_by_ft = {
-        java = { 'google-java-format' }, -- NOT 'google-java-format'!
+        java = { 'google-java-format' },
       },
-      -- From the official `google-java-format -h` documentation
-      -- and https://github.com/LazyVim/LazyVim/discussions/1965
-      formatters = {
-        ['google-java-format'] = {
-          prepend_args = { '--aosp' }, -- Ensure 4-space indentation
-        },
-      },
+      -- formatters = {
+      --   clang_format = {
+      --     args = {
+      --       '--style=llvm',
+      --       '--fallback-style=none',
+      --       '--assume-filename=${INPUT}',
+      --     },
+      --     -- args = { '--style=llvm', '--fallback-style=none', '--assume-filename=${INPUT}' },
+      --   },
+      -- },
     },
   },
 

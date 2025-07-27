@@ -7,13 +7,47 @@ local i = ls.insert_node
 local fmta = require('luasnip.extras.fmt').fmta
 
 return {
-  s({ trig = 'i ', snippetType = 'autosnippet' }, {
-    t 'I ',
-  }, {
-    condition = function()
-      -- check is markdown file
-      return vim.bo.filetype == 'markdown'
-    end,
+  -- s({ trig = 'i ', snippetType = 'autosnippet' }, {
+  --   t 'I ',
+  -- }, {
+  --   condition = function()
+  --     -- check is markdown file
+  --     return vim.bo.filetype == 'markdown'
+  --   end,
+  -- }),
+  -- My special acronyms
+  s({ trig = 'os ', snippetType = 'autosnippet', desc = 'Computer science: Operating systems' }, {
+    t 'OS ',
+  }),
+  s({ trig = 'Os ', snippetType = 'autosnippet', desc = 'Computer science: Operating systems' }, {
+    t 'OS ',
+  }),
+  s({ trig = 'cpu ', snippetType = 'autosnippet', desc = 'Computer science: Central Processing Unit' }, {
+    t 'CPU ',
+  }),
+  s({ trig = 'cpus ', snippetType = 'autosnippet', desc = 'Computer science: Central Processing Unit' }, {
+    t 'CPUs ',
+  }),
+  s({ trig = 'Cpu ', snippetType = 'autosnippet', desc = 'Computer science: Central Processing Unit' }, {
+    t 'CPU ',
+  }),
+  s({ trig = 'io ', snippetType = 'autosnippet', desc = 'Computer science: Input/Output' }, {
+    t 'I/O ',
+  }),
+  s({ trig = 'Io ', snippetType = 'autosnippet', desc = 'Computer science: Input/Output' }, {
+    t 'I/O ',
+  }),
+  s({ trig = 'cli ', snippetType = 'autosnippet', desc = 'Computer science: commandline interface' }, {
+    t 'CLI ',
+  }),
+  s({ trig = 'csv ', snippetType = 'autosnippet', desc = 'Computer science: comma separated values' }, {
+    t 'CSV ',
+  }),
+  s({ trig = 'csvs ', snippetType = 'autosnippet', desc = 'Computer science: comma separated values' }, {
+    t 'CSVs ',
+  }),
+  s({ trig = 'Csv ', snippetType = 'autosnippet', desc = 'Computer science: comma separated values' }, {
+    t 'CSV ',
   }),
   -- Most common countries
   s({ trig = 'england ', snippetType = 'autosnippet' }, {
