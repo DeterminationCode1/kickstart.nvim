@@ -26,34 +26,43 @@ return {
     'stevearc/conform.nvim',
     opts = {
       formatters_by_ft = {
+        javascript = { 'biome', 'biome-organize-imports' },
+        javascriptreact = { 'biome', 'biome-organize-imports' },
+        typescript = { 'biome', 'biome-organize-imports' },
+        typescriptreact = { 'biome', 'biome-organize-imports' },
+
+        -- OLD: Previously used Prettier and Prettierd
         -- You can use 'stop_after_first' to run the first available formatter from the list
-        javascript = { 'prettierd', 'prettier', stop_after_first = true },
-        typescript = { 'prettierd', 'prettier', stop_after_first = true },
-        javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
-        typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+        -- javascript = { 'prettierd', 'prettier', stop_after_first = true },
+        -- typescript = { 'prettierd', 'prettier', stop_after_first = true },
+        -- javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+        -- typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
       },
     },
   },
   -- ======================== Linter =========================
-  {
-    'mfussenegger/nvim-lint',
-    opts = {
-      linters_by_ft = {
-        javascript = { 'eslint_d' },
-        typescript = { 'eslint_d' },
-        javascriptreact = { 'eslint_d' },
-        typescriptreact = { 'eslint_d' },
-      },
-    },
-  },
+  -- ME: I think this is no longer needed since biome also does linting
+  --
+  -- {
+  --   'mfussenegger/nvim-lint',
+  --   opts = {
+  --     linters_by_ft = {
+  --       javascript = { 'eslint_d' },
+  --       typescript = { 'eslint_d' },
+  --       javascriptreact = { 'eslint_d' },
+  --       typescriptreact = { 'eslint_d' },
+  --     },
+  --   },
+  -- },
   -- ====================== Install cli tools ============================
   {
     'WhoIsSethDaniel/mason-tool-installer.nvim',
     opts = {
       ensure_installed = {
         -- 'prettier', -- formatter
-        'prettierd', -- formatter. Like prettier by demonizes it to make it faster.
-        'eslint_d', -- linter. Eslint but in deamonized verson for better performance
+        -- 'prettierd', -- formatter. Like prettier by demonizes it to make it faster.
+        'biome', -- formatter
+        -- 'eslint_d', -- linter. Eslint but in deamonized verson for better performance
       },
     },
   },
