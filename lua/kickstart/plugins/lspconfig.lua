@@ -177,9 +177,36 @@ return {
           --  Most Language Servers support renaming across files, etc.
           map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
 
+          -- -------------------- Code action problem -------------------------
           -- Execute a code action, usually your cursor needs to be on top of an error
           -- or a suggestion from your LSP for this to activate.
+          -- ME:  <leader>ca is the kickstarter default
           map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
+
+          -- " Alternative binding I use in IntelliJ (clashes with fix spelling error in .md files) i.e. quickfix and refactoring actions suggestions for current cursor position
+          -- " IntelliJ IDEA default: `Alt-Enter`
+          -- " Neovim: `<leader>ca`
+
+          -- ME: in text files I want `ga` to be 'fix spelling error' because in
+          -- 19 out of 20 cases this is the action i want to be immediately
+          -- executed. This config happens in my markdown after file.
+
+          -- local fix_last_spelling_error = require('options_spell').fix_last_spelling_error
+          -- vim.keymap.set('n', 'ga', fix_last_spelling_error, { desc = '[G]o spelling: Fix next spelling error' })
+
+          -- helper: treat these as "text-like" filetypes
+          local TEXT_FT = { markdown = true, text = true, rst = true, tex = true }
+
+          local ft = vim.bo[event.buf].filetype
+
+          -- only map `ga` to code action if NOT a text-like filetype
+          -- NOTE: the onAttach function called per buffer, so it could easily
+          -- overwrite your keybindings defined in /after. Thus,  you must
+          -- excluded it here instead.
+          if not TEXT_FT[ft] then
+            map('ga', vim.lsp.buf.code_action, '[C]ode [A]ction')
+          end
+          -- ---------------------------- End ---------------------------------
 
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.

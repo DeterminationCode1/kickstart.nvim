@@ -24,6 +24,16 @@
 -- The here listed keybindings only exist in .md files. they can override
 -- pre-existing keybindings in the global keybindings section.
 
+-- Replace `ga: Code Action` with `Fix spelling error` because
+--
+-- Shortcut to accept the first suggestion for the word under the cursor
+-- `Ga` was free. It defaults to 'print ASCII val under cursor' but I don't use that.
+-- vim.key map.set('n', 'Ga', '1z=', { desk = '[G]o spelling: [A]accept the first suggestion for the word under the cursor' })
+-- NOTE: in 2025, I overwrote ga with `Code Action` for code files.
+-- vim.keymap.del('n', 'ga')
+local fix_last_spelling_error = require('options_spell').fix_last_spelling_error
+vim.keymap.set('n', 'ga', fix_last_spelling_error, { desc = '[G]o spelling: Fix next spelling error' })
+
 -- Use the familiar `ctr+b` command in insert mode to make the following text
 -- bold in markdown. This command also work in .md files.
 -- FIX: at the moment the "go back 2 chars" doesn't work. fix it.

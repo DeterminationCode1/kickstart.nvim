@@ -22,27 +22,29 @@
 -- FIX: you can prinout out the environment wit `env` command in the terminal anytime and. that is dangerous.
 -- It'S a tradeoff between security and convenience.
 
-return {
-  'jackMort/ChatGPT.nvim',
-  event = 'VeryLazy',
-  config = function()
-    -- WARNING: "Dreams of Code" ueses his own async fork version to speed up startup time.
-    --  You could also use a environment var $OPENAI_API_KEY. https://github.com/jackMort/ChatGPT.nvim?tab=readme-ov-file#installation
-    require('chatgpt').setup {
-      -- NOTES using gpg encryption to manage secrets is the official recommended way.
-      -- See https://github.com/jackMort/ChatGPT.nvim?tab=readme-ov-file#secrets-management
-      -- FIX: Not sure if using `| head -and 1` is secure. The official docs would suggest to ues "pass show apikey"
-      --   You would just need to exclud the oth fileds / information in the api pass file.
-      --   There is no option to only get the first line in the pass cli-tool.
-      --  See debate pass forum https://lists.zx2c4.com/pipermail/password-store/2017-August/003017.html
-      -- api_key_cmd = 'pass show openai.com/api_key_chatgptneovim_2024-08-01_pure',
-      -- api_key_cmd = 'pass show openai.com/api_key_chatgptneovim_2024-08-01 | head -n 1',
-    }
-  end,
-  dependencies = {
-    'MunifTanjim/nui.nvim',
-    'nvim-lua/plenary.nvim',
-    'folke/trouble.nvim',
-    'nvim-telescope/telescope.nvim',
-  },
-}
+-- return {
+--   'jackMort/ChatGPT.nvim',
+--   event = 'VeryLazy',
+--   config = function()
+--     -- WARNING: "Dreams of Code" ueses his own async fork version to speed up startup time.
+--     --  You could also use a environment var $OPENAI_API_KEY. https://github.com/jackMort/ChatGPT.nvim?tab=readme-ov-file#installation
+--     require('chatgpt').setup {
+--       -- NOTES using gpg encryption to manage secrets is the official recommended way.
+--       -- See https://github.com/jackMort/ChatGPT.nvim?tab=readme-ov-file#secrets-management
+--       -- FIX: Not sure if usisg `| head -and 1` is secure. The official docs would suggest to ues "pass show apikey"
+--       --   You would just need to exclud the oth fileds / information in the api pass file.
+--       --   There is no option to only get the first line in the pass cli-tool.
+--       --  See debate pass forum https://lists.zx2c4.com/pipermail/password-store/2017-August/003017.html
+--       -- api_key_cmd = 'pass show openai.com/api_key_chatgptneovim_2024-08-01_pure',
+--       -- api_key_cmd = 'pass show openai.com/api_key_chatgptneovim_2024-08-01 | head -n 1',
+--     }
+--   end,
+--   dependencies = {
+--     'MunifTanjim/nui.nvim',
+--     'nvim-lua/plenary.nvim',
+--     'folke/trouble.nvim',
+--     'nvim-telescope/telescope.nvim',
+--   },
+-- }
+--
+return {}

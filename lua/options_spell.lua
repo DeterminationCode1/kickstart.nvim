@@ -51,6 +51,10 @@ vim.keymap.set('n', prefix .. 'ub', 'zuw', { desc = 'Delete (bad) word from dict
 -- =================== Fix spelling errors ========================
 -- ================================================================
 
+-- export the fix_last_spelling_error function for usage in the
+-- /after/markdown/keybindings.lua file
+local M = {}
+
 local fix_last_spelling_error = function()
   -- official nvim docs:  returns bad words in the current line or sentence and move the cursor to
   -- the start of the last bad word
@@ -87,7 +91,10 @@ end
 -- Shortcut to accept the first suggestion for the word under the cursor
 -- `Ga` was free. It defaults to 'print ASCII val under cursor' but I don't use that.
 -- vim.key map.set('n', 'Ga', '1z=', { desk = '[G]o spelling: [A]accept the first suggestion for the word under the cursor' })
+-- NOTE: in 2025, I overwrote ga with `Code Action` for code files.
 vim.keymap.set('n', 'ga', fix_last_spelling_error, { desc = '[G]o spelling: Fix next spelling error' })
+
+M.fix_last_spelling_error = fix_last_spelling_error
 
 -- NOTE: maybe use the function about instead of the first part of the following
 -- code. Only the last line is significantly different.
@@ -366,3 +373,5 @@ vim.keymap.set('n', prefix .. 'd', function()
 
   vim.notify('Snippets language set to German', vim.log.levels.INFO)
 end, { desc = 'Set spelling and snippets to [D]eutsch' })
+
+return M

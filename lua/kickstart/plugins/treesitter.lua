@@ -49,6 +49,7 @@ return {
         -- 'java',
         -- 'asm', -- assembly
         'xml',
+        'proto', -- Protocol Buffers (protobuf)
       },
       -- Autoinstall languages that are not installed
       auto_install = true,

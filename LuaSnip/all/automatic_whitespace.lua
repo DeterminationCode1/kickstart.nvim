@@ -13,7 +13,8 @@ return {
   -- automatic white space
 
   s({ trig = ',', snippetType = 'autosnippet', wordTrig = false }, { t ', ' }),
-  s({ trig = ':', snippetType = 'autosnippet', wordTrig = false }, { t ': ' }),
+  s({ trig = ';', snippetType = 'autosnippet', wordTrig = false }, { t '; ' }),
+  -- s({ trig = ':', snippetType = 'autosnippet', wordTrig = false }, { t ': ' }),
   s({ trig = '?', snippetType = 'autosnippet', wordTrig = false }, { t '? ' }),
   -- s({ trig = '!', snippetType = 'autosnippet', wordTrig = false }, { t '! ' }), -- NOTE:  '!' is not used because of `!=` operator
   -- NOTE:  '.' is not used because as a programmer dot notation like `foo.bar` is common

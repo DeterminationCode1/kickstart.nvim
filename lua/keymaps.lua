@@ -113,6 +113,14 @@ vim.keymap.del('n', 'grn')
 -- annoying snippet auto expansion with <Tab> in insert mode
 vim.keymap.set({ 'i', 's' }, '<Tab>', '<Tab>', { expr = false, noremap = true })
 
+vim.keymap.set('n', '<leader>e', function()
+  vim.diagnostic.open_float(nil, {
+    border = 'rounded',
+    focus = false,
+    scope = 'line',
+  })
+end, { desc = 'Show diagnostic popup message under cursor' })
+
 -- ======================== remap colemak hjkl to neio ========================
 -- n is not a big problem. but eio are common keys in vim...
 --
@@ -443,8 +451,8 @@ vim.keymap.set('x', '<leader>p', '"_dP', { desc = "[P]aste text but don't loose 
 -- He explains it in this video: https://youtu.be/-ybCiHPWKNA?si=nWChMDCoTzSIHF7p&t=2974
 vim.keymap.set('n', '<C-Up>', '<cmd>cnext<CR>zz')
 vim.keymap.set('n', '<C-Down>', '<cmd>cprev<CR>zz')
-vim.keymap.set('n', '<leader>Up', '<cmd>lnext<CR>zz')
-vim.keymap.set('n', '<leader>Down', '<cmd>lprev<CR>zz')
+vim.keymap.set('n', '<leader><Up>', '<cmd>lnext<CR>zz')
+vim.keymap.set('n', '<leader><Down>', '<cmd>lprev<CR>zz')
 
 -- Quick substitution. Primegan a bit modified.
 -- vim.keymap.set('n', '<leader>rs', [[:%s/<C-r><C-w>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = 'Quickly [S]ubsitute word under curser in current buffer.' })

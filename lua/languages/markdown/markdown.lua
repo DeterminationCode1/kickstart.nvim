@@ -89,6 +89,10 @@ return {
     opts = {
       formatters_by_ft = {
         markdown = { 'prettierd', 'markdownlint-cli2' }, -- 'markdownlint-cli2', markdown-toc
+        -- -- NOTE: `biome` does not jet support formatting markdown, but it is
+        -- -- in progress... TODO: replace prettier and markdownlint
+        -- markdown = { 'biome', 'markdownlint-cli2' }, -- 'markdownlint-cli2', markdown-toc
+        -- markdown = { 'biome' }, -- 'markdownlint-cli2', markdown-toc
         ['markdown.mdx'] = { 'prettierd', 'markdownlint-cli2' }, -- markdown-toc
       },
       -- formatters = {
@@ -146,6 +150,7 @@ return {
         -- 'harper_ls', -- lsp for grammar checking
         'markdown_oxide', -- lsp
         'prettierd', -- formatter
+        'biome', -- formatter
         'markdownlint', -- linter
         'markdownlint-cli2', -- linter
         'markdown-toc',
