@@ -3,10 +3,11 @@ return {
   {
     'mbbill/undotree',
     config = function()
-      -- Note: this   plugin just provides the gui for a vim built-in feature
+      -- Note: this plugin just provides the GUI for a VIM built-in feature
       -- that stores undo history in a tree like structure.
-      -- The primegan configured this vim settings like the following:
-      -- Activate nvim's built-in feature of pestsisting undo history on disk
+      -- ThePrimeagen configured this vim settings like the following:
+
+      -- Activate nvim's built-in feature of persisting undo history on disk
       -- It stores history incrementally like git
       vim.opt.swapfile = false
       vim.opt.backup = false

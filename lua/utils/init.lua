@@ -45,6 +45,22 @@ local lsp = {
     end
     return require('lspconfig.server_configurations.' .. server)
   end,
+
+  -- Maybe not needed anymore?
+  execute = function(opts)
+    local params = {
+      command = opts.command,
+      arguments = opts.arguments,
+    }
+    if opts.open then
+      require('trouble').open {
+        mode = 'lsp_command',
+        params = params,
+      }
+    else
+      return vim.lsp.buf_request(0, 'workspace/executeCommand', params, opts.handler)
+    end
+  end,
 }
 
 M.lsp = lsp
